@@ -14,4 +14,10 @@
     <string name="length">length</string>
     <string name="modify">Modify</string>
     <string name="delete">Delete</string>
+
+    <string-array name="dimensions_array">
+        <item>"mass"</item>
+        <item>volume</item>
+        <item>length</item>
+    </string-array>
 </resources>
