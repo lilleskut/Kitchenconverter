@@ -9,9 +9,6 @@
     <string name="dimension">Dimension</string>
     <string name="unit">Unit</string>
     <string name="add">Add</string>
-    <string name="mass">mass</string>
-    <string name="volume">volume</string>
-    <string name="length">length</string>
     <string name="modify">Modify</string>
     <string name="delete">Delete</string>
 
