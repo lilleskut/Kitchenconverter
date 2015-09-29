@@ -188,30 +188,31 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
         editUnit.setText(unit.getUnit());
 
+        String savedDimension=unit.getDimension();
 
         final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
-        RadioButton massBtn = (RadioButton) d.findViewById(R.id.radio_mass);
-        RadioButton volumeBtn = (RadioButton) d.findViewById(R.id.radio_volume);
-        RadioButton lengthBtn = (RadioButton) d.findViewById(R.id.radio_length);
 
-        switch(unit.getDimension()) {
-            case "mass":
-                massBtn.setChecked(true);
-                break;
-            case "volume":
-                volumeBtn.setChecked(true);
-                break;
-            case "length":
-                lengthBtn.setChecked(true);
-                break;
+        // add radio buttons programmatically
+        LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                RadioGroup.LayoutParams.WRAP_CONTENT,
+                RadioGroup.LayoutParams.WRAP_CONTENT);
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
+        for(int i=0; i < dimensions.length; i++) {
+            RadioButton rb= new RadioButton(context);
+            rb.setText(dimensions[i]);
+            rb.setId(i);
+            if(dimensions[i].equals(savedDimension)) { rb.setChecked(true); }
+            radioDimensionGroup.addView(rb,i,layoutParams);
         }
+
 
         final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
         editFactor.setText(Float.toString(unit.getFactor()));
 
         d.show();
 
-        final int rgid = radioDimensionGroup.getCheckedRadioButtonId();
+
 
 
         Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
@@ -235,10 +236,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                              DataBaseHelper myDbHelper = new DataBaseHelper(context);
 
                                              String unitName = editUnit.getText().toString();
+                                             int rgid = radioDimensionGroup.getCheckedRadioButtonId();
 
                                              radioButton = (RadioButton) d.findViewById(rgid);
                                              String unitDimension = radioButton.getText().toString();
-                                             //String unitDimension="mass";
+
                                              Float unitFactor = Float.valueOf(editFactor.getText().toString());
 
                                              unit.setUnit(unitName);
