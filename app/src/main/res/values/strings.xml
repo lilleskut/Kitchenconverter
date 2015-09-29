@@ -16,7 +16,7 @@
     <string name="delete">Delete</string>
 
     <string-array name="dimensions_array">
-        <item>"mass"</item>
+        <item>mass</item>
         <item>volume</item>
         <item>length</item>
     </string-array>
