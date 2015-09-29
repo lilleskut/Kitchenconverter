@@ -15,21 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <RadioButton
-            android:id="@+id/radio_mass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mass"/>
-        <RadioButton
-            android:id="@+id/radio_volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/volume"/>
-        <RadioButton
-            android:id="@+id/radio_length"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/length"/>
+        <!-- to be filled with radiobuttons from java -->
     </RadioGroup>
     <EditText
         android:id="@+id/editTextFactor"

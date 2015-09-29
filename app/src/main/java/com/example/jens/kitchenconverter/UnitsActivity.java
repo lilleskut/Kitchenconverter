@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,7 +23,6 @@ import java.util.List;
 
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private Toolbar toolbar;
-//    private RadioGroup radioDimensionGroup;
     private RadioButton radioButton;
     final Context context = this;
 
@@ -111,6 +111,19 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
                 final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
 
+                // add radio buttons programmatically
+                LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                        RadioGroup.LayoutParams.WRAP_CONTENT,
+                        RadioGroup.LayoutParams.WRAP_CONTENT);
+                String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
+                for(int i=0; i < dimensions.length; i++) {
+                    RadioButton rb= new RadioButton(context);
+                    rb.setText(dimensions[i]);
+                    rb.setId(i);
+                    radioDimensionGroup.addView(rb,i,layoutParams);
+                }
+
                 final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
 
                 Button addBtn = (Button) d.findViewById(R.id.button1);
@@ -123,7 +136,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                                   int rgid = radioDimensionGroup.getCheckedRadioButtonId();
                                                   radioButton = (RadioButton) d.findViewById(rgid);
                                                   String unitDimension = radioButton.getText().toString();
-
 
                                                   Float unitFactor = Float.valueOf(editFactor.getText().toString());
 
