@@ -74,7 +74,6 @@ public class UnitAdapter extends BaseAdapter {
             // and just get the holder you already made
             holder = (ViewHolder) convertView.getTag();
         }
-        // More code after this
 
         Unit unit = getItem(position);
 
