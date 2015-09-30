@@ -33,7 +33,6 @@ public class Unit {
 
     public Float getFactor() { return factor; }
 
-
     @Override
     public String toString() {
         return "Unit [id=" + id + ", name=" + unit + ", dimension=" + dimension + ", factor=" + factor + "]";
