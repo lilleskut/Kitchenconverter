@@ -1,5 +1,6 @@
 package com.example.jens.kitchenconverter;
 
+import java.util.Arrays;
 
 public class Unit {
 
@@ -21,7 +22,9 @@ public class Unit {
 
     public void setUnit(String u) { this.unit = u; }
 
-    public void setDimension(String d) { this.dimension = d; }
+    public void setDimension(String d) {
+            this.dimension = d;
+    }
 
     public void setFactor(Float f) { this.factor = f; }
 

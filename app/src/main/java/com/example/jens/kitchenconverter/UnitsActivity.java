@@ -55,23 +55,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             throw sqle;
         }
 
-
-        // add unit
-        // Unit unitadd = new Unit("kg","mass", (float) 1.0);
-        // myDbHelper.addUnit(unitadd);
-
-        // modify unit
-        // Unit unitget = myDbHelper.getUnit(4);
-
-        // unitget.setUnit("g");
-        // unitget.setFactor((float) 0.001);
-        // myDbHelper.updateUnit(unitget);
-
-        // delete unit
-        // myDbHelper.deleteUnit(unitget);
-
-        // output database data
-
         mainListView = (ListView) findViewById(R.id.listView);
 
         // 5. Set this Activity to react to list items being pressed
