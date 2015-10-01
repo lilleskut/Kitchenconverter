@@ -13,20 +13,39 @@ public class Unit {
 
     public Unit(String unit, String dimension, Float factor) {
         super();
-        this.unit = unit;
-        this.dimension = dimension;
-        this.factor = factor;
+        setUnit(unit);
+        setDimension(dimension);
+        setFactor(factor);
     }
 
     public void setId(int i) { this.id = i; }
 
-    public void setUnit(String u) { this.unit = u; }
+    public void setUnit(String u) {
+        if( u == null ) {
+            throw new IllegalArgumentException("Unit name is null");
+        }
+        this.unit = u; }
 
     public void setDimension(String d) {
+        if( d == null ) {
+            throw new IllegalArgumentException("Dimension is null");
+        }
+
+        /*
+        String[] dimensions_array=null; // need to get from resources
+
+        if(!Arrays.asList(dimensions_array).contains(d)){
+            throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
+        }
+        */
             this.dimension = d;
     }
 
-    public void setFactor(Float f) { this.factor = f; }
+    public void setFactor(Float f) {
+        if( f == null ) {
+            throw new IllegalArgumentException("Factor is null");
+        }
+        this.factor = f; }
 
     public int getId() { return id; }
 
