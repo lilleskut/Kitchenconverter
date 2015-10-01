@@ -122,7 +122,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                                   Float unitFactor = Float.valueOf(editFactor.getText().toString());
 
-                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor);
+                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor, getApplicationContext());
                                                   DataBaseHelper myDbHelper = new DataBaseHelper(context);
                                                   myDbHelper.addUnit(addunit);
                                                   mUnitAdapter.updateData(myDbHelper.getAllUnits());

@@ -1,5 +1,7 @@
 package com.example.jens.kitchenconverter;
 
+import android.content.Context;
+
 import java.util.Arrays;
 
 public class Unit {
@@ -9,13 +11,18 @@ public class Unit {
     private String dimension; // "length", "mass",...
     private Float factor; // factor relative to base unit
 
+    private static Context ctx;
+
+
     public Unit(){}
 
-    public Unit(String unit, String dimension, Float factor) {
+    public Unit(String unit, String dimension, Float factor, Context context) {
         super();
         setUnit(unit);
         setDimension(dimension);
         setFactor(factor);
+
+        this.ctx = context;
     }
 
     public void setId(int i) { this.id = i; }
@@ -31,13 +38,12 @@ public class Unit {
             throw new IllegalArgumentException("Dimension is null");
         }
 
-        /*
-        String[] dimensions_array=null; // need to get from resources
+        String[] dimensions = ctx.getResources().getStringArray(R.array.dimensions_array);
 
-        if(!Arrays.asList(dimensions_array).contains(d)){
+        if(!Arrays.asList(dimensions).contains(d)){
             throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
         }
-        */
+
             this.dimension = d;
     }
 

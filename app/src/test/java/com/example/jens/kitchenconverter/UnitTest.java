@@ -1,9 +1,12 @@
 package com.example.jens.kitchenconverter;
 
+
+
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -17,6 +20,7 @@ public class UnitTest {
     @Before
     public void init() throws Exception {
         System.out.println("Setting up ...");
+
         unit = new Unit("dm","length", (float) 0.1);
     }
 
