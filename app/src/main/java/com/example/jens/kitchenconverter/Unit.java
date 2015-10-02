@@ -11,19 +11,22 @@ public class Unit {
     private String dimension; // "length", "mass",...
     private Float factor; // factor relative to base unit
 
-    private static Context ctx;
+    private Context ctx;
 
 
-    public Unit(){}
+    public Unit(Context context){ this.ctx = context; }
 
     public Unit(String unit, String dimension, Float factor, Context context) {
         super();
+        this.ctx = context;
         setUnit(unit);
         setDimension(dimension);
         setFactor(factor);
 
-        this.ctx = context;
+
     }
+
+    public void setCtx(Context context) { this.ctx = context; }
 
     public void setId(int i) { this.id = i; }
 

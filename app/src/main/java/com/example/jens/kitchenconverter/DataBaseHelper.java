@@ -191,7 +191,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         // 4. Build Unit object
-        Unit unit = new Unit();
+        Unit unit = new Unit(myContext);
 
         unit.setId(Integer.parseInt(cursor.getString(0)));
         unit.setUnit(cursor.getString(1));
@@ -219,7 +219,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Unit unit;
         if(cursor.moveToFirst()) {
             do {
-                unit = new Unit();
+                unit = new Unit(myContext);
                 unit.setId(Integer.parseInt(cursor.getString(0)));
                 unit.setUnit(cursor.getString(1));
                 unit.setDimension(cursor.getString(2));
