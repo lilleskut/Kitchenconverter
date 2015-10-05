@@ -5,10 +5,14 @@ import android.content.Context;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -60,6 +64,15 @@ public class UnitTest {
         assertEquals("unit name should be g","g",unit.getUnit());
     }
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+    @Test
+    public void testSetUnitException() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(equalTo("Unit name is null"));
+        unit.setUnit(null);
+    }
+
     @Test
     public void testSetDimension() throws Exception {
         unit.setDimension("mass");
@@ -68,10 +81,31 @@ public class UnitTest {
     }
 
     @Test
+    public void testSetDimensionExceptionNull() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(equalTo("Dimension is null"));
+        unit.setDimension(null);
+    }
+
+    @Test
+    public void testSetDimensionExceptionArray() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(equalTo("Dimension is not one of the permittable dimension names"));
+        unit.setDimension("foo");
+    }
+
+    @Test
     public void testSetFactor() throws Exception {
         unit.setFactor(0.001f);
 
-        assertEquals("unit factor should be 0.0001f",0.001f,unit.getFactor(),0.0001);
+        assertEquals("unit factor should be 0.0001f", 0.001f, unit.getFactor(), 0.0001);
+    }
+
+    @Test
+    public void testSetFactorException() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(equalTo("Factor is null"));
+        unit.setFactor(null);
     }
 
     @Test
