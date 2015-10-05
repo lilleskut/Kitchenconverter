@@ -1,28 +1,32 @@
 package com.example.jens.kitchenconverter;
 
 
-
-
 import android.content.Context;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import static org.mockito.Mockito.*;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.containsString;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class UnitTest {
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS) private Context context;
     Unit unit;
 
 
     @Before
     public void init() throws Exception {
         System.out.println("Setting up ...");
-
-        unit = new Unit("dm","length", (float) 0.1,null);
+        when(context.getResources().getStringArray(R.array.dimensions_array)).thenReturn(new String [] {"length", "mass", "volume"});
+        unit = new Unit("dm","length", (float) 0.1,context);
     }
 
     @After
@@ -38,7 +42,9 @@ public class UnitTest {
         assertEquals("unit name is dm", "dm", unit.getUnit());
         assertEquals("unit dimension is length", "length", unit.getDimension());
         assertEquals("unit factor is 0.1",0.1f,unit.getFactor(),0.0001);
+
     }
+
 
     @Test
     public void testSetId() throws Exception {
@@ -74,4 +80,5 @@ public class UnitTest {
         assertThat(unit.toString(),containsString("length"));
         assertThat(unit.toString(),containsString("0.1"));
     }
+
 }

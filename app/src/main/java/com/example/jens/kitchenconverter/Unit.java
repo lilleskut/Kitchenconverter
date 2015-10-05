@@ -22,11 +22,7 @@ public class Unit {
         setUnit(unit);
         setDimension(dimension);
         setFactor(factor);
-
-
     }
-
-    public void setCtx(Context context) { this.ctx = context; }
 
     public void setId(int i) { this.id = i; }
 
@@ -34,7 +30,8 @@ public class Unit {
         if( u == null ) {
             throw new IllegalArgumentException("Unit name is null");
         }
-        this.unit = u; }
+        this.unit = u;
+    }
 
     public void setDimension(String d) {
         if( d == null ) {
