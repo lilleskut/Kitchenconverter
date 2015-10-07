@@ -1,6 +1,7 @@
 package com.example.jens.kitchenconverter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
     public void updateData(List<Unit> units) {
         //update the adapter's dataset
         oUnits = units;
+        fUnits = units;
         notifyDataSetChanged();
     }
 
@@ -119,9 +121,11 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
                     nlist.add(list.get(i));
                 }
             }
-
+            Log.d("UnitFilter", "count: "+ count);
             results.values = nlist;
+            // results.values = list;
             results.count = nlist.size();
+            //results.count = list.size();
 
             return results;
         }

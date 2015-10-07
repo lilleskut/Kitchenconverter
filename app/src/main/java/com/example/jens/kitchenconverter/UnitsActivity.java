@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +59,9 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         mainListView = (ListView) findViewById(R.id.listView);
 
+        EditText editFilter = (EditText) findViewById(R.id.filterText);
+
+
         // 5. Set this Activity to react to list items being pressed
         mainListView.setOnItemClickListener(this);
 
@@ -67,8 +72,28 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         // Create a UnitAdapter for the ListView
         mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
 
+
+
         // Set the ListView to use the UnitAdapter
         mainListView.setAdapter(mUnitAdapter);
+
+        editFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                System.out.println("Text [" + s + "]");
+                mUnitAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         mUnitAdapter.updateData(list);
         myDbHelper.close();

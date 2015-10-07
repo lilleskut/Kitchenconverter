@@ -11,6 +11,10 @@
         layout="@layout/tool_bar">
     </include>
 
+    <EditText
+        android:id="@+id/filterText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
