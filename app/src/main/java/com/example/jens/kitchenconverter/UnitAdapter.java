@@ -5,44 +5,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by jens on 9/19/15.
- * used for display as listview
- */
-public class UnitAdapter extends BaseAdapter {
+public class UnitAdapter extends BaseAdapter implements Filterable {
 
-    Context mContext;
-    LayoutInflater mInflater;
-    List<Unit> mUnits;
+    private Context mContext;
+    private LayoutInflater mInflater;
+    private List<Unit> oUnits; // original data
+    private List<Unit> fUnits; // filtered data
+    private UnitFilter mFilter = new UnitFilter();
 
     public UnitAdapter(Context context, LayoutInflater inflater) {
-        mContext = context;
-        mInflater = inflater;
-        mUnits = new LinkedList<>();
+        this.mContext = context;
+        this.mInflater = inflater;
+        oUnits = new LinkedList<>();
+        fUnits = new LinkedList<>();
     }
 
     public void updateData(List<Unit> units) {
         //update the adapter's dataset
-        mUnits = units;
+        oUnits = units;
         notifyDataSetChanged();
     }
 
-
-
     @Override
     public int getCount() {
-        return mUnits.size();
+        return fUnits.size();
     }
 
     @Override
     // public Object getItem(int position) {
     public Unit getItem(int position) {
-        return mUnits.get(position);
+        return fUnits.get(position);
     }
 
     @Override
@@ -91,6 +91,46 @@ public class UnitAdapter extends BaseAdapter {
         holder.factorTextView.setText(factorTitle);
 
         return convertView;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return mFilter;
+    }
+
+    private class UnitFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            String filterString = constraint.toString().toLowerCase();
+
+            FilterResults results = new FilterResults();
+
+            final List<Unit> list = oUnits;
+            int count = list.size();
+
+            final ArrayList<Unit> nlist = new ArrayList<>(count);
+
+            String filterableString;
+
+            for(int i=0; i < count; i++) {
+                filterableString = list.get(i).getDimension();
+                if(filterableString.toLowerCase().contains(filterString)) {
+                    nlist.add(list.get(i));
+                }
+            }
+
+            results.values = nlist;
+            results.count = nlist.size();
+
+            return results;
+        }
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            fUnits = (ArrayList<Unit>) results.values;
+            notifyDataSetChanged();
+        }
     }
 
     private static class ViewHolder {
