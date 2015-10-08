@@ -121,7 +121,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
                     nlist.add(list.get(i));
                 }
             }
-            Log.d("UnitFilter", "count: "+ count);
+
             results.values = nlist;
             // results.values = list;
             results.count = nlist.size();

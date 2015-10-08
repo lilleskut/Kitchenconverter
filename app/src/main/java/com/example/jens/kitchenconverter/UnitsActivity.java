@@ -59,9 +59,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         mainListView = (ListView) findViewById(R.id.listView);
 
-        EditText editFilter = (EditText) findViewById(R.id.filterText);
-
-
         // 5. Set this Activity to react to list items being pressed
         mainListView.setOnItemClickListener(this);
 
@@ -72,26 +69,36 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         // Create a UnitAdapter for the ListView
         mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
 
-
-
         // Set the ListView to use the UnitAdapter
         mainListView.setAdapter(mUnitAdapter);
 
-        editFilter.addTextChangedListener(new TextWatcher() {
+        // radio group filter
+        RadioGroup radGrp = (RadioGroup) findViewById(R.id.radio_group);
+        int checkedRadioButtonId = radGrp.getCheckedRadioButtonId();
+        radGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                System.out.println("Text [" + s + "]");
-                mUnitAdapter.getFilter().filter(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId) {
+                    case R.id.length_dimensions:
+                        Log.d("RadioGroupActivity","chose length");
+                        mUnitAdapter.getFilter().filter("length");
+                        break;
+                    case R.id.length_mass:
+                        Log.d("RadioGroupActivity","chose mass");
+                        mUnitAdapter.getFilter().filter("mass");
+                        break;
+                    case R.id.length_volume:
+                        Log.d("RadioGroupActivity","chose volume");
+                        mUnitAdapter.getFilter().filter("volume");
+                        break;
+                    case R.id.all_dimensions:
+                        Log.d("RadioGroupActivity","chose all");
+                        mUnitAdapter.getFilter().filter("");
+                        break;
+                    default:
+                        Log.d("RadioGroupActivity","Huh?");
+                        break;
+                }
             }
         });
 
