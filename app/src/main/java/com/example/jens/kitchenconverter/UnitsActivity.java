@@ -26,10 +26,16 @@ import java.util.List;
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private Toolbar toolbar;
     private RadioButton radioButton;
+    private RadioButton radioFilterButton;
     final Context context = this;
 
     UnitAdapter mUnitAdapter;
     ListView mainListView;
+
+
+    LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            RadioGroup.LayoutParams.WRAP_CONTENT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,47 +63,42 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             throw sqle;
         }
 
-        mainListView = (ListView) findViewById(R.id.listView);
+        final RadioGroup radioFilterGroup= (RadioGroup) findViewById(R.id.radio_filter_group);
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
+        for(int i=0; i < dimensions.length; i++) {
+            RadioButton rb= new RadioButton(context);
+            rb.setText(dimensions[i]);
+            rb.setId(i);
+            radioFilterGroup.addView(rb,i,layoutParams);
+        }
+
+
 
         // 5. Set this Activity to react to list items being pressed
+        mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
         // output as list
-
         List<Unit> list = myDbHelper.getAllUnits();
 
-        // Create a UnitAdapter for the ListView
+        // Create a UnitAdapter for the ListView and Set the ListView to use the UnitAdapter
         mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
-
-        // Set the ListView to use the UnitAdapter
         mainListView.setAdapter(mUnitAdapter);
 
-        // radio group filter
-        RadioGroup radGrp = (RadioGroup) findViewById(R.id.radio_group);
-        int checkedRadioButtonId = radGrp.getCheckedRadioButtonId();
-        radGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        // radio group filter listener
+
+        radioFilterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.length_dimensions:
-                        Log.d("RadioGroupActivity","chose length");
-                        mUnitAdapter.getFilter().filter("length");
-                        break;
-                    case R.id.length_mass:
-                        Log.d("RadioGroupActivity","chose mass");
-                        mUnitAdapter.getFilter().filter("mass");
-                        break;
-                    case R.id.length_volume:
-                        Log.d("RadioGroupActivity","chose volume");
-                        mUnitAdapter.getFilter().filter("volume");
-                        break;
-                    case R.id.all_dimensions:
-                        Log.d("RadioGroupActivity","chose all");
-                        mUnitAdapter.getFilter().filter("");
-                        break;
-                    default:
-                        Log.d("RadioGroupActivity","Huh?");
-                        break;
+
+                int rfid = radioFilterGroup.getCheckedRadioButtonId();
+                radioFilterButton = (RadioButton) findViewById(rfid);
+                String filterString = radioFilterButton.getText().toString();
+                if(filterString.equalsIgnoreCase("all")) {
+                    mUnitAdapter.getFilter().filter("");
+                } else {
+                    mUnitAdapter.getFilter().filter(filterString);
                 }
             }
         });
@@ -125,11 +126,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
                 final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
-
-                // add radio buttons programmatically
-                LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
-                        RadioGroup.LayoutParams.WRAP_CONTENT,
-                        RadioGroup.LayoutParams.WRAP_CONTENT);
                 String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
                 for(int i=0; i < dimensions.length; i++) {
@@ -206,12 +202,12 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         String savedDimension=unit.getDimension();
 
         final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
-
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         // add radio buttons programmatically
         LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.WRAP_CONTENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT);
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
 
         for(int i=0; i < dimensions.length; i++) {
             RadioButton rb= new RadioButton(context);

@@ -123,9 +123,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
             }
 
             results.values = nlist;
-            // results.values = list;
             results.count = nlist.size();
-            //results.count = list.size();
 
             return results;
         }

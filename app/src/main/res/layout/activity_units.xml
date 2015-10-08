@@ -12,7 +12,7 @@
     </include>
 
     <RadioGroup
-        android:id="@+id/radio_group"
+        android:id="@+id/radio_filter_group"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -22,21 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="all"/>
-        <RadioButton
-            android:id="@+id/length_dimensions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="length"/>
-        <RadioButton
-            android:id="@+id/length_mass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="mass"/>
-        <RadioButton
-            android:id="@+id/length_volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="volume"/>
     </RadioGroup>
 
     <ListView
