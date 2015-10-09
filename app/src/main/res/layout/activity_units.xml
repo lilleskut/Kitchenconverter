@@ -11,30 +11,10 @@
         layout="@layout/tool_bar">
     </include>
 
-    <RadioGroup
-        android:id="@+id/radio_filter_group"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <RadioButton
-            android:id="@+id/all_dimensions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="all"/>
-    </RadioGroup>
-
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
     </ListView>
-    
-    <Button
-        android:id="@+id/addBtn"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_weight="0.5"
-        android:text="@string/addUnit" />
 </LinearLayout>

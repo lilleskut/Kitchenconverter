@@ -7,9 +7,6 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,18 +60,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             throw sqle;
         }
 
-        final RadioGroup radioFilterGroup= (RadioGroup) findViewById(R.id.radio_filter_group);
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
-
-        for(int i=0; i < dimensions.length; i++) {
-            RadioButton rb= new RadioButton(context);
-            rb.setText(dimensions[i]);
-            rb.setId(i);
-            radioFilterGroup.addView(rb,i,layoutParams);
-        }
-
-
-
         // 5. Set this Activity to react to list items being pressed
         mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
@@ -86,53 +71,80 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
         mainListView.setAdapter(mUnitAdapter);
 
-        // radio group filter listener
-
-        radioFilterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                int rfid = radioFilterGroup.getCheckedRadioButtonId();
-                radioFilterButton = (RadioButton) findViewById(rfid);
-                String filterString = radioFilterButton.getText().toString();
-                if(filterString.equalsIgnoreCase("all")) {
-                    mUnitAdapter.getFilter().filter("");
-                } else {
-                    mUnitAdapter.getFilter().filter(filterString);
-                }
-            }
-        });
-
         mUnitAdapter.updateData(list);
         myDbHelper.close();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
+        menu.add(Menu.NONE, 98,Menu.NONE,R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // set click listener for "Add Unit" button in activity_units
-        Button addUnitBtn = (Button) findViewById(R.id.addBtn);
-        addUnitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+        switch(id) {
+            case R.id.action_settings:
+                Intent i = new Intent(UnitsActivity.this,SettingsActivity.class);
+                startActivity(i);
+                break;
+             case 98: // filter
+                final Dialog fd = new Dialog(context);
+                fd.setContentView(R.layout.filter_dialog);
+                fd.setTitle("Filter");
+                fd.setCancelable(true);
+
+                final RadioGroup radioFilterGroup= (RadioGroup) fd.findViewById(R.id.radio_group);
+                for(int j=0; j < dimensions.length; j++) {
+                     RadioButton rb= new RadioButton(context);
+                     rb.setText(dimensions[j]);
+                     rb.setId(j);
+                     radioFilterGroup.addView(rb,j,layoutParams);
+                }
+
+                radioFilterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                     @Override
+                     public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                         int rfid = radioFilterGroup.getCheckedRadioButtonId();
+                         radioFilterButton = (RadioButton) fd.findViewById(rfid);
+                         String filterString = radioFilterButton.getText().toString();
+                         if(filterString.equalsIgnoreCase("all")) {
+                             mUnitAdapter.getFilter().filter("");
+                         } else {
+                             mUnitAdapter.getFilter().filter(filterString);
+                         }
+                         fd.dismiss();
+                  }
+                 });
+                 fd.show();
+                break;
+
+            case 99: // add
                 final Dialog d = new Dialog(context);
                 d.setContentView(R.layout.add_dialog);
                 d.setTitle("Add unit");
                 d.setCancelable(true);
-
-
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
                 final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
-                String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
-                for(int i=0; i < dimensions.length; i++) {
+
+                for(int j=0; j < dimensions.length; j++) {
                     RadioButton rb= new RadioButton(context);
-                    rb.setText(dimensions[i]);
-                    rb.setId(i);
-                    radioDimensionGroup.addView(rb,i,layoutParams);
+                    rb.setText(dimensions[j]);
+                    rb.setId(j);
+                    radioDimensionGroup.addView(rb,j,layoutParams);
                 }
 
                 final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
@@ -162,22 +174,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 );
                 d.show();
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch(id) {
-            case R.id.action_settings:
-                Intent i = new Intent(UnitsActivity.this,SettingsActivity.class);
-                startActivity(i);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
