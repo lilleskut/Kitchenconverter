@@ -1,6 +1,6 @@
 package com.example.jens.kitchenconverter;
 
-import android.app.Dialog;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,23 +9,40 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.GridLayout;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
 
+        final GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
+        for(int j=0; j < dimensions.length; j++) {
+            final String dim = dimensions[j];
+            Button b= new Button(getApplicationContext());
+            b.setText(dim);
+            b.setId(j);
+
+            b.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    Intent i = new Intent(MainActivity.this, ConverterActivity.class);
+                    i.putExtra("dimension",dim);
+                    startActivity(i);
+                }
+            });
+
+            gridLayout.addView(b,j);
+        }
 
         // Button part
         Button b = (Button) findViewById(R.id.converterBtn);
