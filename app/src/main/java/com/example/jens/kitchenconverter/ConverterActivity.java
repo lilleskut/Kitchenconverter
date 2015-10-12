@@ -15,10 +15,14 @@ public class ConverterActivity extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
+        String dim = getIntent().getStringExtra("dimension");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        TextView testDisplay = (TextView) findViewById(R.id.test_display);
+        testDisplay.setText("Dimension is: "+dim);
 
     }
 

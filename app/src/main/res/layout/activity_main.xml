@@ -2,30 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-
+    android:orientation="vertical">
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar">
     </include>
 
-    <TextView
-        android:text="@string/main_screen"
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tool_bar"/>
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:id="@+id/grid_layout"
+        tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/converterBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Converter" />
+        <Button
+            android:id="@+id/converterBtn"
+            android:layout_gravity="left|top"
+            android:text="Open Converter" />
 
-    <Button
-        android:id="@+id/unitsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Units" />
+        <Button
+            android:id="@+id/unitsBtn"
+            android:layout_gravity="left|top"
+            android:text="Open Units" />
 
+    </GridLayout>
 </LinearLayout>
