@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -230,7 +231,41 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        Log.d("getAllUnits()", units.toString());
+        cursor.close();
+
+        return units;
+    }
+
+    public List<Unit> getUnitsDimension(String dimension) {
+        List<Unit> units = new LinkedList<>();
+
+        String[] dimensions = myContext.getResources().getStringArray(R.array.dimensions_array);
+
+        if(!Arrays.asList(dimensions).contains(dimension)){
+            throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
+        }
+
+        // 1. build the query
+        String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION + " = '" + dimension + "'";
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build unit and add it to list
+        Unit unit;
+        if(cursor.moveToFirst()) {
+            do {
+                unit = new Unit(myContext);
+                unit.setId(Integer.parseInt(cursor.getString(0)));
+                unit.setUnit(cursor.getString(1));
+                unit.setDimension(cursor.getString(2));
+                unit.setFactor(Float.parseFloat(cursor.getString(3)));
+
+                // add unit to units
+                units.add(unit);
+            } while (cursor.moveToNext());
+        }
 
         cursor.close();
 

@@ -8,8 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +22,7 @@ public class ConverterActivity extends AppCompatActivity {
 
     Spinner from_spinner;
     Spinner to_spinner;
-    UnitAdapter mUnitAdapter;
+    SpinnerUnitAdapter sUnitAdapter;
 
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,14 +57,28 @@ public class ConverterActivity extends AppCompatActivity {
             throw sqle;
         }
 
-        List<Unit> list = myDbHelper.getAllUnits();
-        mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
+        List<Unit> list = myDbHelper.getUnitsDimension(dim);
+
+        sUnitAdapter = new SpinnerUnitAdapter(this,android.R.layout.simple_spinner_item,list);
+        from_spinner.setAdapter(sUnitAdapter);
+        to_spinner.setAdapter(sUnitAdapter);
 
 
-        from_spinner.setAdapter(mUnitAdapter);
-        to_spinner.setAdapter(mUnitAdapter);
-        mUnitAdapter.updateData(list);
-        mUnitAdapter.getFilter().filter(dim);
+        from_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+                // Here you get the current item (a unit object) that is selected by its position
+                Unit unit = sUnitAdapter.getItem(position);
+                // Here you can do the action you want to...
+                Toast.makeText(ConverterActivity.this, unit.toString(),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapter) {
+            }
+        });
 
         myDbHelper.close();
 
