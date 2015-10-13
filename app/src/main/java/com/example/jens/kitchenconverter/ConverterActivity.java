@@ -1,16 +1,25 @@
 package com.example.jens.kitchenconverter;
 
 import android.content.Intent;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class ConverterActivity extends AppCompatActivity {
+
+    Spinner from_spinner;
+    Spinner to_spinner;
+    UnitAdapter mUnitAdapter;
 
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +31,39 @@ public class ConverterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView testDisplay = (TextView) findViewById(R.id.test_display);
-        testDisplay.setText("Dimension is: "+dim);
+        testDisplay.setText("Dimension is: " + dim);
+
+        from_spinner = (Spinner) findViewById(R.id.from_spinner);
+        to_spinner = (Spinner) findViewById(R.id.to_spinner);
+
+
+
+        // create or open Database
+
+        DataBaseHelper myDbHelper = new DataBaseHelper(this);
+
+        try {
+            myDbHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+
+        try {
+            myDbHelper.openDataBase();
+        }catch(SQLException sqle){
+            throw sqle;
+        }
+
+        List<Unit> list = myDbHelper.getAllUnits();
+        mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
+
+
+        from_spinner.setAdapter(mUnitAdapter);
+        to_spinner.setAdapter(mUnitAdapter);
+        mUnitAdapter.updateData(list);
+        mUnitAdapter.getFilter().filter(dim);
+
+        myDbHelper.close();
 
     }
 

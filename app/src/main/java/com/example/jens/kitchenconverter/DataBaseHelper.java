@@ -21,7 +21,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
     private static String DB_PATH = "/data/data/com.example.jens.kitchenconverter/databases/";
 
-    private static String DB_NAME = "kitchenConverter.db";
+    private static final String DB_NAME = "kitchenConverter.db";
 
     private static final int DATABASE_VERSION = 1;
 

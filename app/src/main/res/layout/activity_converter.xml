@@ -24,14 +24,17 @@
     <EditText
         android:id="@+id/enter_value"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android: android:inputType="numberDecimal"/>
     <Spinner
         android:id="@+id/from_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"/>
     <Spinner
         android:id="@+id/to_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"/>
 
 </LinearLayout>
