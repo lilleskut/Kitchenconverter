@@ -21,20 +21,25 @@
         android:layout_height="wrap_content"
         />
 
-    <EditText
-        android:id="@+id/enter_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"/>
-    <Spinner
-        android:id="@+id/from_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dialog"/>
-    <Spinner
-        android:id="@+id/to_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dialog"/>
-
+        <EditText
+            android:id="@+id/enter_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text="1"/>
+        <Spinner
+            android:id="@+id/from_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog"/>
+        <TextView
+            android:id="@+id/result_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1" />
+        <Spinner
+            android:id="@+id/to_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog"/>
 </LinearLayout>

@@ -5,11 +5,13 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +22,10 @@ import java.util.List;
 
 public class ConverterActivity extends AppCompatActivity {
 
-    Spinner from_spinner;
-    Spinner to_spinner;
-    SpinnerUnitAdapter sUnitAdapter;
+    private Spinner from_spinner;
+    private Spinner to_spinner;
+    SpinnerUnitAdapter fUnitAdapter;
+    SpinnerUnitAdapter tUnitAdapter;
 
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,8 @@ public class ConverterActivity extends AppCompatActivity {
         from_spinner = (Spinner) findViewById(R.id.from_spinner);
         to_spinner = (Spinner) findViewById(R.id.to_spinner);
 
+        final EditText enterString = (EditText) findViewById(R.id.enter_value);
+        final TextView resultValue = (TextView) findViewById(R.id.result_value);
 
 
         // create or open Database
@@ -59,20 +64,77 @@ public class ConverterActivity extends AppCompatActivity {
 
         List<Unit> list = myDbHelper.getUnitsDimension(dim);
 
-        sUnitAdapter = new SpinnerUnitAdapter(this,android.R.layout.simple_spinner_item,list);
-        from_spinner.setAdapter(sUnitAdapter);
-        to_spinner.setAdapter(sUnitAdapter);
+        fUnitAdapter = new SpinnerUnitAdapter(this,android.R.layout.simple_spinner_item,list);
+        tUnitAdapter = new SpinnerUnitAdapter(this,android.R.layout.simple_spinner_item,list);
+        from_spinner.setAdapter(fUnitAdapter);
+        to_spinner.setAdapter(tUnitAdapter);
 
+
+        enterString.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //float enterValue = Float.valueOf(enterString.getText().toString());
+                if(!s.toString().isEmpty()) {
+                    float enterValue = Float.valueOf(s.toString());
+
+                    Unit fUnit = (Unit) from_spinner.getSelectedItem();
+                    float from_factor = fUnit.getFactor();
+
+                    Unit tUnit = (Unit) to_spinner.getSelectedItem();
+                    float to_factor = tUnit.getFactor();
+
+                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                }
+            }
+        });
 
         from_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
-                // Here you get the current item (a unit object) that is selected by its position
-                Unit unit = sUnitAdapter.getItem(position);
-                // Here you can do the action you want to...
-                Toast.makeText(ConverterActivity.this, unit.toString(),Toast.LENGTH_SHORT).show();
+
+                float enterValue = Float.valueOf(enterString.getText().toString());
+
+                Unit fUnit = fUnitAdapter.getItem(position);
+                float from_factor = fUnit.getFactor();
+
+                Unit tUnit = (Unit) to_spinner.getSelectedItem();
+                float to_factor = tUnit.getFactor();
+
+                resultValue.setText(String.valueOf(enterValue*from_factor / to_factor));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapter) {
+            }
+        });
+
+        to_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+
+                float enterValue = Float.valueOf(enterString.getText().toString());
+
+                Unit fUnit = (Unit) from_spinner.getSelectedItem();
+                float from_factor = fUnit.getFactor();
+
+                Unit tUnit = tUnitAdapter.getItem(position);
+                float to_factor = tUnit.getFactor();
+
+                resultValue.setText(String.valueOf(enterValue*from_factor / to_factor));
             }
 
             @Override
