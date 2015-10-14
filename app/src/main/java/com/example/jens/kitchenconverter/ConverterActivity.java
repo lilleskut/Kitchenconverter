@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.io.IOException;
 import java.util.List;
 
@@ -85,13 +85,13 @@ public class ConverterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 //float enterValue = Float.valueOf(enterString.getText().toString());
                 if(!s.toString().isEmpty()) {
-                    float enterValue = Float.valueOf(s.toString());
+                    double enterValue = Double.valueOf(s.toString());
 
                     Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                    float from_factor = fUnit.getFactor();
+                    double from_factor = fUnit.getFactor();
 
                     Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                    float to_factor = tUnit.getFactor();
+                    double to_factor = tUnit.getFactor();
 
                     resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
                 }
@@ -104,13 +104,13 @@ public class ConverterActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
                 if(!enterString.getText().toString().isEmpty()) {
-                    float enterValue = Float.valueOf(enterString.getText().toString());
+                    double enterValue = Double.valueOf(enterString.getText().toString());
 
                     Unit fUnit = fUnitAdapter.getItem(position);
-                    float from_factor = fUnit.getFactor();
+                    double from_factor = fUnit.getFactor();
 
                     Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                    float to_factor = tUnit.getFactor();
+                    double to_factor = tUnit.getFactor();
 
                     resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
                 }
@@ -127,13 +127,13 @@ public class ConverterActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
                 if(!enterString.getText().toString().isEmpty()) {
-                    float enterValue = Float.valueOf(enterString.getText().toString());
+                    double enterValue = Double.valueOf(enterString.getText().toString());
 
                     Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                    float from_factor = fUnit.getFactor();
+                    double from_factor = fUnit.getFactor();
 
                     Unit tUnit = tUnitAdapter.getItem(position);
-                    float to_factor = tUnit.getFactor();
+                    double to_factor = tUnit.getFactor();
 
                     resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
                 }

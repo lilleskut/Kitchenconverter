@@ -9,14 +9,14 @@ public class Unit {
     private int id;
     private String unit; // name of unit, e.g. "m", "cm"
     private String dimension; // "length", "mass",...
-    private Float factor; // factor relative to base unit
+    private Double factor; // factor relative to base unit
 
     private Context ctx;
 
 
     public Unit(Context context){ this.ctx = context; }
 
-    public Unit(String unit, String dimension, Float factor, Context context) {
+    public Unit(String unit, String dimension, Double factor, Context context) {
         super();
         this.ctx = context;
         setUnit(unit);
@@ -47,7 +47,7 @@ public class Unit {
             this.dimension = d;
     }
 
-    public void setFactor(Float f) {
+    public void setFactor(Double f) {
         if( f == null ) {
             throw new IllegalArgumentException("Factor is null");
         }
@@ -59,7 +59,7 @@ public class Unit {
 
     public String getDimension() { return dimension; }
 
-    public Float getFactor() { return factor; }
+    public Double getFactor() { return factor; }
 
     @Override
     public String toString() {

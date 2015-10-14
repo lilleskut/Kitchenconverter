@@ -160,7 +160,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                                   radioButton = (RadioButton) d.findViewById(rgid);
                                                   String unitDimension = radioButton.getText().toString();
 
-                                                  Float unitFactor = Float.valueOf(editFactor.getText().toString());
+                                                  Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
                                                   Unit addunit = new Unit(unitName, unitDimension, unitFactor, context);
                                                   DataBaseHelper myDbHelper = new DataBaseHelper(context);
@@ -215,7 +215,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
         final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
-        editFactor.setText(Float.toString(unit.getFactor()));
+        editFactor.setText(Double.toString(unit.getFactor()));
 
         d.show();
 
@@ -248,7 +248,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                              radioButton = (RadioButton) d.findViewById(rgid);
                                              String unitDimension = radioButton.getText().toString();
 
-                                             Float unitFactor = Float.valueOf(editFactor.getText().toString());
+                                             Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
                                              unit.setUnit(unitName);
                                              unit.setDimension(unitDimension);
