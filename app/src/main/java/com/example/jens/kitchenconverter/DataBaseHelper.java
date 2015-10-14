@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -245,12 +246,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
         }
 
-        // 1. build the query
-        String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION + " = '" + dimension + "'";
+        // 1. build the query, avoid SQL injection
+        // String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION + " = ?'" + dimension + "'";
+        //String query = "SELECT * FROM ? WHERE ? = ?";
+        String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION +" = ?";
+
+
 
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[] { dimension });
 
         // 3. go over each row, build unit and add it to list
         Unit unit;
