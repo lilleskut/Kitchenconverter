@@ -103,16 +103,17 @@ public class ConverterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
+                if(!enterString.getText().toString().isEmpty()) {
+                    float enterValue = Float.valueOf(enterString.getText().toString());
 
-                float enterValue = Float.valueOf(enterString.getText().toString());
+                    Unit fUnit = fUnitAdapter.getItem(position);
+                    float from_factor = fUnit.getFactor();
 
-                Unit fUnit = fUnitAdapter.getItem(position);
-                float from_factor = fUnit.getFactor();
+                    Unit tUnit = (Unit) to_spinner.getSelectedItem();
+                    float to_factor = tUnit.getFactor();
 
-                Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                float to_factor = tUnit.getFactor();
-
-                resultValue.setText(String.valueOf(enterValue*from_factor / to_factor));
+                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                }
             }
 
             @Override
@@ -125,16 +126,17 @@ public class ConverterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int position, long id) {
+                if(!enterString.getText().toString().isEmpty()) {
+                    float enterValue = Float.valueOf(enterString.getText().toString());
 
-                float enterValue = Float.valueOf(enterString.getText().toString());
+                    Unit fUnit = (Unit) from_spinner.getSelectedItem();
+                    float from_factor = fUnit.getFactor();
 
-                Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                float from_factor = fUnit.getFactor();
+                    Unit tUnit = tUnitAdapter.getItem(position);
+                    float to_factor = tUnit.getFactor();
 
-                Unit tUnit = tUnitAdapter.getItem(position);
-                float to_factor = tUnit.getFactor();
-
-                resultValue.setText(String.valueOf(enterValue*from_factor / to_factor));
+                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                }
             }
 
             @Override
