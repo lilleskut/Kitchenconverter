@@ -30,7 +30,7 @@ public class UnitTest {
     public void init() throws Exception {
         System.out.println("Setting up ...");
         when(context.getResources().getStringArray(R.array.dimensions_array)).thenReturn(new String [] {"length", "mass", "volume"});
-        unit = new Unit("dm","length", (float) 0.1,context);
+        unit = new Unit("dm","length", (double) 0.1,context);
     }
 
     @After
@@ -45,7 +45,7 @@ public class UnitTest {
 
         assertEquals("unit name is dm", "dm", unit.getUnit());
         assertEquals("unit dimension is length", "length", unit.getDimension());
-        assertEquals("unit factor is 0.1",0.1f,unit.getFactor(),0.0001);
+        assertEquals("unit factor is 0.1",0.1d,unit.getFactor(),0.0001);
 
     }
 
@@ -96,7 +96,7 @@ public class UnitTest {
 
     @Test
     public void testSetFactor() throws Exception {
-        unit.setFactor(0.001f);
+        unit.setFactor(0.001d);
 
         assertEquals("unit factor should be 0.0001f", 0.001f, unit.getFactor(), 0.0001);
     }
