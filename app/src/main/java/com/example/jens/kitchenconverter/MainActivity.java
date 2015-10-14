@@ -45,13 +45,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Button part
-        Button b = (Button) findViewById(R.id.converterBtn);
-        b.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent i = new Intent(MainActivity.this, ConverterActivity.class);
-                startActivity(i);
-            }
-        });
 
         Button c = (Button) findViewById(R.id.unitsBtn);
         c.setOnClickListener(new View.OnClickListener() {

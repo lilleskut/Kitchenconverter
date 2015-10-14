@@ -17,15 +17,11 @@
         android:id="@+id/grid_layout"
         tools:context=".MainActivity">
 
-        <Button
-            android:id="@+id/converterBtn"
-            android:layout_gravity="left|top"
-            android:text="Open Converter" />
-
-        <Button
-            android:id="@+id/unitsBtn"
-            android:layout_gravity="left|top"
-            android:text="Open Units" />
-
     </GridLayout>
+
+    <Button
+        android:id="@+id/unitsBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Open Units" />
 </LinearLayout>
