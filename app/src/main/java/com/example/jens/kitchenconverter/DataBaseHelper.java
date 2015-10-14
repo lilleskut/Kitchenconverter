@@ -197,7 +197,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         unit.setId(Integer.parseInt(cursor.getString(0)));
         unit.setUnit(cursor.getString(1));
         unit.setDimension(cursor.getString(2));
-        unit.setFactor(Float.parseFloat(cursor.getString(3)));
+        unit.setFactor(Double.parseDouble(cursor.getString(3)));
 
         //log
         Log.d("getUnit(" + id + ")", unit.toString());
@@ -224,7 +224,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 unit.setId(Integer.parseInt(cursor.getString(0)));
                 unit.setUnit(cursor.getString(1));
                 unit.setDimension(cursor.getString(2));
-                unit.setFactor(Float.parseFloat(cursor.getString(3)));
+                unit.setFactor(Double.parseDouble(cursor.getString(3)));
 
                 // add unit to units
                 units.add(unit);
@@ -260,7 +260,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 unit.setId(Integer.parseInt(cursor.getString(0)));
                 unit.setUnit(cursor.getString(1));
                 unit.setDimension(cursor.getString(2));
-                unit.setFactor(Float.parseFloat(cursor.getString(3)));
+                unit.setFactor(Double.parseDouble(cursor.getString(3)));
 
                 // add unit to units
                 units.add(unit);
