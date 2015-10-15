@@ -38,6 +38,7 @@ public class ConverterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Convert " + dim);
 
         from_spinner = (Spinner) findViewById(R.id.from_spinner);
         to_spinner = (Spinner) findViewById(R.id.to_spinner);
