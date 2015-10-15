@@ -41,8 +41,6 @@ public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
     // this is for the chooser dropped down spinner
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        // use dynamically created textview, but could reference custom layout
-
         TextView label = (TextView) View.inflate(mContext,R.layout.row_spinner,null);
         label.setText(getItem(position).getUnit());
         return label;
