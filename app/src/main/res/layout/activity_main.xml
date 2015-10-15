@@ -16,7 +16,6 @@
         android:orientation="horizontal"
         android:id="@+id/grid_layout"
         tools:context=".MainActivity">
-
     </GridLayout>
 
     <Button

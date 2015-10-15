@@ -36,9 +36,6 @@ public class ConverterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView testDisplay = (TextView) findViewById(R.id.test_display);
-        testDisplay.setText("Dimension is: " + dim);
-
         from_spinner = (Spinner) findViewById(R.id.from_spinner);
         to_spinner = (Spinner) findViewById(R.id.to_spinner);
 
