@@ -17,7 +17,10 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ConverterActivity extends AppCompatActivity {
@@ -90,7 +93,7 @@ public class ConverterActivity extends AppCompatActivity {
                     Unit tUnit = (Unit) to_spinner.getSelectedItem();
                     double to_factor = tUnit.getFactor();
 
-                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                    resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
                 }
             }
         });
@@ -109,7 +112,7 @@ public class ConverterActivity extends AppCompatActivity {
                     Unit tUnit = (Unit) to_spinner.getSelectedItem();
                     double to_factor = tUnit.getFactor();
 
-                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                    resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
                 }
             }
 
@@ -132,7 +135,7 @@ public class ConverterActivity extends AppCompatActivity {
                     Unit tUnit = tUnitAdapter.getItem(position);
                     double to_factor = tUnit.getFactor();
 
-                    resultValue.setText(String.valueOf(enterValue * from_factor / to_factor));
+                    resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
                 }
             }
 
@@ -168,5 +171,12 @@ public class ConverterActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    // print numbers without trailing 0
+    public static String prettyPrint(double d) {
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340);
+        return df.format(d);
     }
 }
