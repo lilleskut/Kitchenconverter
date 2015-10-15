@@ -16,5 +16,6 @@
         <item>mass</item>
         <item>volume</item>
         <item>length</item>
+        <item>temperature</item>
     </string-array>
 </resources>
