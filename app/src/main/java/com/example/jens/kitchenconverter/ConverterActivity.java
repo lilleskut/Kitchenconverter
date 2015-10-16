@@ -28,10 +28,9 @@ public class ConverterActivity extends AppCompatActivity {
 
     private Spinner from_spinner;
     private Spinner to_spinner;
-    private static final int startTemp = 100; // start temperature (in Celsius) for temperature converter
+    private static final int startTemp = 100; // start temperature (in Celsius) for temperature converter onCreate
     SpinnerUnitAdapter fUnitAdapter;
     SpinnerUnitAdapter tUnitAdapter;
-
 
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
