@@ -139,16 +139,23 @@ public class ConverterActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     //float enterValue = Float.valueOf(enterString.getText().toString());
-                    if (!s.toString().isEmpty()) {
-                        double enterValue = Double.valueOf(s.toString());
+                    if (!s.toString().isEmpty() && Rational.validFraction(s.toString()) ) {
+
+                        Rational enterValue = new Rational(s.toString());
+
+
+
 
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        double from_factor = fUnit.getFactor();
+                        Rational from_factor = new Rational(fUnit.getFactor());
+
 
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        double to_factor = tUnit.getFactor();
+                        Rational to_factor = new Rational(tUnit.getFactor());
 
-                        resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
+
+
+                        resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
                 }
             });
