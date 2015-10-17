@@ -71,7 +71,13 @@ public class Rational {
     }
 
     // return fraction string
-    public String toString() { return String.valueOf(numerator) + "/" + String.valueOf(denominator); }
+    public String toString() {
+        if( denominator==1 ) {
+            return String.valueOf(numerator);
+        } else {
+            return String.valueOf(numerator) + "/" + String.valueOf(denominator);
+        }
+    }
 
     // return double value of fraction
     public Double toDouble() { return ((double) numerator)/denominator; }

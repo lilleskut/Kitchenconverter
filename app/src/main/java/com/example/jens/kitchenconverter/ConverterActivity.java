@@ -119,12 +119,13 @@ public class ConverterActivity extends AppCompatActivity {
 
             List<Unit> list = myDbHelper.getUnitsDimension(dim);
 
+            // populate spinner
             fUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
             tUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
             from_spinner.setAdapter(fUnitAdapter);
             to_spinner.setAdapter(tUnitAdapter);
 
-
+            // 1. EditText change listener
             enterString.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -138,13 +139,9 @@ public class ConverterActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    //float enterValue = Float.valueOf(enterString.getText().toString());
-                    if (!s.toString().isEmpty() && Rational.validFraction(s.toString()) ) {
+                    if (!s.toString().isEmpty() && Rational.validFraction(s.toString())) {
 
                         Rational enterValue = new Rational(s.toString());
-
-
-
 
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
                         Rational from_factor = new Rational(fUnit.getFactor());
@@ -153,28 +150,29 @@ public class ConverterActivity extends AppCompatActivity {
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
                         Rational to_factor = new Rational(tUnit.getFactor());
 
-
-
                         resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
                 }
             });
 
+            //2. From spinner listener
             from_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view,
                                            int position, long id) {
-                    if (!enterString.getText().toString().isEmpty()) {
-                        double enterValue = Double.valueOf(enterString.getText().toString());
+                    String s = enterString.getText().toString();
+                    if (!s.isEmpty() && Rational.validFraction(s)) {
+
+                        Rational enterValue = new Rational(s);
 
                         Unit fUnit = fUnitAdapter.getItem(position);
-                        double from_factor = fUnit.getFactor();
+                        Rational from_factor = new Rational(fUnit.getFactor());
 
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        double to_factor = tUnit.getFactor();
+                        Rational to_factor = new Rational(tUnit.getFactor());
 
-                        resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
+                        resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
                 }
 
@@ -183,21 +181,23 @@ public class ConverterActivity extends AppCompatActivity {
                 }
             });
 
+            //3. To spinner listener
             to_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view,
                                            int position, long id) {
-                    if (!enterString.getText().toString().isEmpty()) {
-                        double enterValue = Double.valueOf(enterString.getText().toString());
+                    String s = enterString.getText().toString();
+                    if (!s.isEmpty() && Rational.validFraction(s)) {
+                        Rational enterValue = new Rational(s);
 
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        double from_factor = fUnit.getFactor();
+                        Rational from_factor = new Rational(fUnit.getFactor());
 
                         Unit tUnit = tUnitAdapter.getItem(position);
-                        double to_factor = tUnit.getFactor();
+                        Rational to_factor = new Rational(tUnit.getFactor());
 
-                        resultValue.setText(prettyPrint(enterValue * from_factor / to_factor));
+                        resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
                 }
 
