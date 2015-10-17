@@ -5,12 +5,12 @@ import java.math.BigInteger;
 /*
     rational class
  */
-public class Rational {
+public class MyRational {
 
     private int numerator;
     private int denominator;
 
-    public Rational(int num, int den) {
+    public MyRational(int num, int den) {
         this.numerator = num/gcdThing(num,den);
         this.denominator = den/gcdThing(num,den);
     };
@@ -19,7 +19,7 @@ public class Rational {
 
     public int getDenominator() { return denominator; }
 
-    public Rational(Double d) {
+    public MyRational(Double d) {
         String s = String.valueOf(d);
         int digitsDec = s.length() -1 -s.indexOf('.');
 
@@ -35,7 +35,7 @@ public class Rational {
     }
 
     // assume that string is decimal (1.5) or simple fraction (3/2) or mixed fraction (1 1/2)
-    public Rational(String s) {
+    public MyRational(String s) {
         int num =1;
         int den =1;
 
@@ -83,19 +83,19 @@ public class Rational {
     public Double toDouble() { return ((double) numerator)/denominator; }
 
     // reciprocal
-    public Rational reciprocal () {
-        return new Rational(denominator,numerator);
+    public MyRational reciprocal () {
+        return new MyRational(denominator,numerator);
     }
 
     // multiply
-    public Rational multiply (Rational rat2) {
+    public MyRational multiply (MyRational rat2) {
         int num = numerator * rat2.getNumerator();
         int den = denominator * rat2.getDenominator();
-        return new Rational(num,den);
+        return new MyRational(num,den);
     }
 
     // divide
-    public Rational divide (Rational rat2) {
+    public MyRational divide (MyRational rat2) {
         return multiply(rat2.reciprocal());
     }
 

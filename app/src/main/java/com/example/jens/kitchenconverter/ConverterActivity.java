@@ -139,16 +139,16 @@ public class ConverterActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (!s.toString().isEmpty() && Rational.validFraction(s.toString())) {
+                    if (!s.toString().isEmpty() && MyRational.validFraction(s.toString())) {
 
-                        Rational enterValue = new Rational(s.toString());
+                        MyRational enterValue = new MyRational(s.toString());
 
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        Rational from_factor = new Rational(fUnit.getFactor());
+                        MyRational from_factor = new MyRational(fUnit.getFactor());
 
 
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        Rational to_factor = new Rational(tUnit.getFactor());
+                        MyRational to_factor = new MyRational(tUnit.getFactor());
 
                         resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
@@ -162,15 +162,15 @@ public class ConverterActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view,
                                            int position, long id) {
                     String s = enterString.getText().toString();
-                    if (!s.isEmpty() && Rational.validFraction(s)) {
+                    if (!s.isEmpty() && MyRational.validFraction(s)) {
 
-                        Rational enterValue = new Rational(s);
+                        MyRational enterValue = new MyRational(s);
 
                         Unit fUnit = fUnitAdapter.getItem(position);
-                        Rational from_factor = new Rational(fUnit.getFactor());
+                        MyRational from_factor = new MyRational(fUnit.getFactor());
 
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        Rational to_factor = new Rational(tUnit.getFactor());
+                        MyRational to_factor = new MyRational(tUnit.getFactor());
 
                         resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
@@ -188,14 +188,14 @@ public class ConverterActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view,
                                            int position, long id) {
                     String s = enterString.getText().toString();
-                    if (!s.isEmpty() && Rational.validFraction(s)) {
-                        Rational enterValue = new Rational(s);
+                    if (!s.isEmpty() && MyRational.validFraction(s)) {
+                        MyRational enterValue = new MyRational(s);
 
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        Rational from_factor = new Rational(fUnit.getFactor());
+                        MyRational from_factor = new MyRational(fUnit.getFactor());
 
                         Unit tUnit = tUnitAdapter.getItem(position);
-                        Rational to_factor = new Rational(tUnit.getFactor());
+                        MyRational to_factor = new MyRational(tUnit.getFactor());
 
                         resultValue.setText(enterValue.multiply(from_factor).divide(to_factor).toString());
                     }
