@@ -11,6 +11,8 @@
     <string name="modify">Modify</string>
     <string name="delete">Delete</string>
     <string name="filter">Filter</string>
+    <string name="decimals">decimals</string>
+    <string name="fractions">fractions</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>
