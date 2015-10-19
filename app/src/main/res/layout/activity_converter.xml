@@ -56,12 +56,18 @@
             android:dropDownWidth="wrap_content"
             android:spinnerMode="dialog"/>
     </TableRow>
-</TableLayout>
-    <ToggleButton
-        android:id="@+id/toggle_button"
+    <TableRow
+        android:id="@+id/tableRow3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textOn="@string/fractions"
-        android:textOff="@string/decimals"
-        android:checked="true"/>
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:id="@+id/toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="@string/fractions"
+            android:textOff="@string/decimals"
+            android:checked="true"/>
+    </TableRow>
+</TableLayout>
+
 </LinearLayout>

@@ -1,24 +1,25 @@
 package com.example.jens.kitchenconverter;
 
-import java.math.BigInteger;
+import android.util.Log;
 
-/*
-    rational class
- */
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+
 public class MyRational {
 
     private int numerator;
-    private int denominator;
+    private int denominator = 0;
 
+    // constructors
     public MyRational(int num, int den) {
-        this.numerator = num/gcdThing(num,den);
-        this.denominator = den/gcdThing(num,den);
+        if (den != 0) {
+            this.numerator = num / gcdThing(num, den);
+            this.denominator = den / gcdThing(num, den);
+        }
     };
-
-    public int getNumerator() { return numerator; }
-
-    public int getDenominator() { return denominator; }
-
     public MyRational(Double d) {
         String s = String.valueOf(d);
         int digitsDec = s.length() -1 -s.indexOf('.');
@@ -33,11 +34,9 @@ public class MyRational {
         this.numerator = num/gcdThing(num,den);
         this.denominator = den/gcdThing(num,den);
     }
-
-    // assume that string is decimal (1.5) or simple fraction (3/2) or mixed fraction (1 1/2)
-    public MyRational(String s) {
-        int num =1;
-        int den =1;
+    public MyRational(String s) { // assume that string is decimal (1.5) or simple fraction (3/2) or mixed fraction (1 1/2)
+        int num=0;
+        int den=0;
 
         if(!s.contains("/")) { // decimal number
             Double d = Double.valueOf(s);
@@ -57,46 +56,58 @@ public class MyRational {
                 case 2: // true fraction
                     num = Integer.valueOf(numbers[0]);
                     den = Integer.valueOf(numbers[1]);
-                    this.numerator = num/gcdThing(num,den);
-                    this.denominator = den/gcdThing(num,den);
-                break;
+                    break;
                 case 3: // mixed fraction
                     num = Integer.valueOf(numbers[1]) + Integer.valueOf(numbers[0]) * Integer.valueOf(numbers[2]);
                     den = Integer.valueOf(numbers[2]);
-                break;
+                    break;
             }
         }
-        this.numerator = num/gcdThing(num,den);
-        this.denominator = den/gcdThing(num,den);
+        if (den!=0) {
+            this.numerator = num / gcdThing(num, den);
+            this.denominator = den / gcdThing(num, den);
+        }
     }
 
-    // return fraction string
-    public String toString() {
+    // getters
+    public int getNumerator() { return numerator; }
+    public int getDenominator() { return denominator; }
+
+    // output Strings
+    public String toFractionString() { // return fraction string
         if( denominator==1 ) {
             return String.valueOf(numerator);
         } else {
             return String.valueOf(numerator) + "/" + String.valueOf(denominator);
         }
     }
+    public String toDecimalsString() {
+        Double value = ((double) numerator) / denominator;
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340);
+        return df.format(value);
+    }
 
-    // return double value of fraction
-    public Double toDouble() { return ((double) numerator)/denominator; }
 
-    // reciprocal
+    // rational arithmetics
     public MyRational reciprocal () {
         return new MyRational(denominator,numerator);
     }
-
-    // multiply
     public MyRational multiply (MyRational rat2) {
         int num = numerator * rat2.getNumerator();
         int den = denominator * rat2.getDenominator();
         return new MyRational(num,den);
     }
-
-    // divide
     public MyRational divide (MyRational rat2) {
         return multiply(rat2.reciprocal());
+    }
+
+    public boolean isSet() {
+        if( denominator == 0 ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     //validate string (allow fractions, mixed fractions and decimals)
