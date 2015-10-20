@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -68,6 +70,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
         to_spinner.setAdapter(tUnitAdapter);
 
 
+        // initialize from/to_factor
+        Unit fUnit = (Unit) from_spinner.getSelectedItem();
+        Unit tUnit = (Unit) to_spinner.getSelectedItem();
+        from_factor.setRationalFromDouble(fUnit.getFactor());
+        to_factor.setRationalFromDouble(tUnit.getFactor());
+
         // 1. EditText change listener
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,14 +96,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
                     enterRational.setRationalFromString(s.toString());
 
                     if (enterRational.isSet()) {
-                        // get from_factor
-                        Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        from_factor.setRationalFromDouble(fUnit.getFactor());
-
-                        // get to_factor
-                        Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        to_factor.setRationalFromDouble(tUnit.getFactor());
-
                         // calculate result
                         result = enterRational.multiply(from_factor).divide(to_factor);
 
@@ -107,6 +107,62 @@ public class GeneralConverterActivity extends AppCompatActivity {
                         }
                     }
                 }
+            }
+        });
+
+        //2. From spinner listener
+        from_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+                String s = editText.getText().toString();
+                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+
+                    from_factor.setRationalFromDouble(fUnitAdapter.getItem(position).getFactor());
+
+                    // calculate result
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+
+                    // display depending on fractions/decimal-toggle
+                    if (toggle.isChecked()) { // fractions
+                        resultView.setText(result.toFractionString());
+                    } else { // decimals
+                        resultView.setText(result.toDecimalsString());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapter) {
+            }
+        });
+
+        //3. To spinner listener
+        to_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+                String s = editText.getText().toString();
+                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+
+                    to_factor.setRationalFromDouble(tUnitAdapter.getItem(position).getFactor());
+
+                    // calculate result
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+
+                    // display depending on fractions/decimal-toggle
+                    if (toggle.isChecked()) { // fractions
+                        resultView.setText(result.toFractionString());
+                    } else { // decimals
+                        resultView.setText(result.toDecimalsString());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapter) {
             }
         });
         myDbHelper.close();
