@@ -27,6 +27,7 @@ public class ConverterActivity extends AppCompatActivity {
 
     private Spinner from_spinner;
     private Spinner to_spinner;
+
     private MyRational enterRational;
 
     private static final int startTemp = 100; // start temperature (in Celsius) for temperature converter onCreate
