@@ -16,6 +16,12 @@
         android:orientation="horizontal"
         android:id="@+id/grid_layout"
         tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/general_converter"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="General" />
     </GridLayout>
 
     <Button

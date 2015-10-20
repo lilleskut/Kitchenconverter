@@ -19,11 +19,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 
 public class ConverterActivity extends AppCompatActivity {
@@ -293,13 +290,6 @@ public class ConverterActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }
-
-    // print numbers without trailing 0
-    private static String prettyPrint(double d) {
-        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340);
-        return df.format(d);
     }
 
     // convert celsius to Fahrenheit
