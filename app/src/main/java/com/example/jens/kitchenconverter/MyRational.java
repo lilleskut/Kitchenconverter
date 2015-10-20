@@ -11,9 +11,13 @@ import java.util.Locale;
 public class MyRational {
 
     private int numerator;
-    private int denominator = 0;
+    private int denominator;
 
     // constructors
+    public MyRational() {
+        this.numerator=0;
+        this.denominator=0;
+    }
     public MyRational(int num, int den) {
         if (den != 0) {
             this.numerator = num / gcdThing(num, den);
@@ -72,6 +76,56 @@ public class MyRational {
     // getters
     public int getNumerator() { return numerator; }
     public int getDenominator() { return denominator; }
+
+    // setters
+    public void setRationalFromDouble(Double d) {
+        String s = String.valueOf(d);
+        int digitsDec = s.length() -1 -s.indexOf('.');
+
+        int den =1;
+        for(int i = 0; i < digitsDec; i++) {
+            d *= 10;
+            den *=10;
+        }
+        int num = (int) Math.round(d);
+
+        this.numerator = num/gcdThing(num,den);
+        this.denominator = den/gcdThing(num,den);
+    }
+    public void setRationalFromString(String s) {
+        int num=0;
+        int den=0;
+
+        if(!s.contains("/")) { // decimal number
+            Double d = Double.valueOf(s);
+            int digitsDec = s.length() -1 -s.indexOf('.');
+
+            den =1;
+            for(int i = 0; i < digitsDec; i++) {
+                d *= 10;
+                den *=10;
+            }
+            num = (int) Math.round(d);
+
+        } else { // fraction or mixed fraction
+            String[] numbers = s.split("[ /]");
+
+            switch(numbers.length) {
+                case 2: // true fraction
+                    num = Integer.valueOf(numbers[0]);
+                    den = Integer.valueOf(numbers[1]);
+                    break;
+                case 3: // mixed fraction
+                    num = Integer.valueOf(numbers[1]) + Integer.valueOf(numbers[0]) * Integer.valueOf(numbers[2]);
+                    den = Integer.valueOf(numbers[2]);
+                    break;
+            }
+        }
+        if (den!=0) {
+            this.numerator = num / gcdThing(num, den);
+            this.denominator = den / gcdThing(num, den);
+        }
+    }
 
     // output Strings
     public String toFractionString() { // return fraction string
