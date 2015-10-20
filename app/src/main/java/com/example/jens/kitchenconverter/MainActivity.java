@@ -53,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button d = (Button) findViewById(R.id.general_converter);
+        d.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent i = new Intent(MainActivity.this, GeneralConverterActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
 

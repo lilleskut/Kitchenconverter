@@ -22,6 +22,11 @@
             android:windowSoftInputMode="stateVisible|adjustResize"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".GeneralConverterActivity"
+            android:label="General Converter"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".UnitsActivity"
             android:label="Units"
             android:parentActivityName=".MainActivity" />
