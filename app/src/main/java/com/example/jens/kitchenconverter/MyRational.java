@@ -132,7 +132,11 @@ public class MyRational {
         if( denominator==1 ) {
             return String.valueOf(numerator);
         } else {
-            return String.valueOf(numerator) + "/" + String.valueOf(denominator);
+            if(numerator>denominator) {
+                return String.valueOf(numerator/denominator)+ "+" + String.valueOf(numerator-denominator) + "/"+ denominator;
+            } else {
+                return String.valueOf(numerator) + "/" + String.valueOf(denominator);
+            }
         }
     }
     public String toDecimalsString() {
