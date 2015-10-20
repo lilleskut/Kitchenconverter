@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,6 +30,9 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private MyRational from_factor = new MyRational();
     private MyRational to_factor = new MyRational();
     private MyRational result = new MyRational();
+
+    private Unit fUnit;
+    private Unit tUnit;
 
 
     protected void onCreate (Bundle savedInstanceState) {
@@ -71,8 +75,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
 
         // initialize from/to_factor
-        Unit fUnit = (Unit) from_spinner.getSelectedItem();
-        Unit tUnit = (Unit) to_spinner.getSelectedItem();
+        fUnit = (Unit) from_spinner.getSelectedItem();
+        tUnit = (Unit) to_spinner.getSelectedItem();
         from_factor.setRationalFromDouble(fUnit.getFactor());
         to_factor.setRationalFromDouble(tUnit.getFactor());
 
@@ -119,7 +123,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 String s = editText.getText().toString();
                 if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
 
-                    from_factor.setRationalFromDouble(fUnitAdapter.getItem(position).getFactor());
+                    fUnit = fUnitAdapter.getItem(position);
+                    from_factor.setRationalFromDouble(fUnit.getFactor());
 
                     // calculate result
                     result = enterRational.multiply(from_factor).divide(to_factor);
@@ -147,7 +152,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 String s = editText.getText().toString();
                 if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
 
-                    to_factor.setRationalFromDouble(tUnitAdapter.getItem(position).getFactor());
+                    tUnit = tUnitAdapter.getItem(position);
+                    to_factor.setRationalFromDouble(tUnit.getFactor());
 
                     // calculate result
                     result = enterRational.multiply(from_factor).divide(to_factor);
@@ -165,6 +171,32 @@ public class GeneralConverterActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapter) {
             }
         });
+
+
+        //4. Toggle button listener
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                String s = editText.getText().toString();
+                //if (!s.isEmpty() && MyRational.validFraction(s)) {
+                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+
+                    // calculate result
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+
+                    if (isChecked) { // fractions;
+                        editText.setText(enterRational.toFractionString());
+                        resultView.setText(result.toFractionString());
+
+                    } else { //decimals
+                        editText.setText(String.valueOf(enterRational.toDecimalsString()));
+                        resultView.setText(String.valueOf(result.toDecimalsString()));
+                    }
+                }
+            }
+        });
+
         myDbHelper.close();
     }
 }
