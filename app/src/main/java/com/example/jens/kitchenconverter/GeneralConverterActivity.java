@@ -16,19 +16,21 @@ import java.util.List;
 
 public class GeneralConverterActivity extends AppCompatActivity {
 
-    final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
 
     private Spinner from_spinner;
     private Spinner to_spinner;
     SpinnerUnitAdapter fUnitAdapter;
     SpinnerUnitAdapter tUnitAdapter;
 
-    private MyRational enterRational;
-    private MyRational from_factor;
-    private MyRational to_factor;
+    private MyRational enterRational = new MyRational();
+    private MyRational from_factor = new MyRational();
+    private MyRational to_factor = new MyRational();
+    private MyRational result = new MyRational();
 
 
     protected void onCreate (Bundle savedInstanceState) {
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_converter);
 
@@ -80,23 +82,22 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty()) {
+                if (s.toString().isEmpty() || !MyRational.validFraction(s.toString())) {
                     resultView.setText("");
-                } else if (MyRational.validFraction(s.toString())) {
-
-                    enterRational = new MyRational(s.toString());
+                } else {
+                    enterRational.setRationalFromString(s.toString());
 
                     if (enterRational.isSet()) {
                         // get from_factor
                         Unit fUnit = (Unit) from_spinner.getSelectedItem();
-                        MyRational from_factor = new MyRational(fUnit.getFactor());
+                        from_factor.setRationalFromDouble(fUnit.getFactor());
 
                         // get to_factor
                         Unit tUnit = (Unit) to_spinner.getSelectedItem();
-                        MyRational to_factor = new MyRational(tUnit.getFactor());
+                        to_factor.setRationalFromDouble(tUnit.getFactor());
 
                         // calculate result
-                        MyRational result = enterRational.multiply(from_factor).divide(to_factor);
+                        result = enterRational.multiply(from_factor).divide(to_factor);
 
                         // display depending on fractions/decimal-toggle
                         if (toggle.isChecked()) { // fractions
@@ -108,7 +109,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 }
             }
         });
-
         myDbHelper.close();
     }
 }
