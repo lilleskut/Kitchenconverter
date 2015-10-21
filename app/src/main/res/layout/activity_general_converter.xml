@@ -71,5 +71,12 @@
                 android:textOff="@string/decimals"
                 android:checked="true"/>
         </TableRow>
+        <Spinner
+            android:id="@+id/density"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:dropDownWidth="wrap_content"
+            android:spinnerMode="dialog"/>
     </TableLayout>
 </LinearLayout>
