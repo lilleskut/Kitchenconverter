@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -98,11 +99,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
                     resultView.setText("");
                 } else {
                     enterRational.setRationalFromString(s.toString());
+                    Log.d("swap", "enter= " + enterRational.getNumerator() + "/" + enterRational.getDenominator());
 
                     if (enterRational.isSet()) {
                         // calculate result
                         result = enterRational.multiply(from_factor).divide(to_factor);
-
+                        Log.d("swap", "result= " + result.getNumerator() + "/" + result.getDenominator());
                         // display depending on fractions/decimal-toggle
                         if (toggle.isChecked()) { // fractions
                             resultView.setText(result.toFractionString());
@@ -183,7 +185,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
 
                     // calculate result
-                    result = enterRational.multiply(from_factor).divide(to_factor);
+                    //result = enterRational.multiply(from_factor).divide(to_factor);
 
                     if (isChecked) { // fractions;
                         editText.setText(enterRational.toFractionString());

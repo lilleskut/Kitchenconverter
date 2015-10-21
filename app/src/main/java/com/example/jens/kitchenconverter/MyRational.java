@@ -133,7 +133,7 @@ public class MyRational {
             return String.valueOf(numerator);
         } else {
             if(numerator>denominator) {
-                return String.valueOf(numerator/denominator)+ "+" + String.valueOf(numerator-denominator) + "/"+ denominator;
+                return String.valueOf(numerator/denominator)+ " " + String.valueOf(numerator % denominator) + "/"+ denominator;
             } else {
                 return String.valueOf(numerator) + "/" + String.valueOf(denominator);
             }
