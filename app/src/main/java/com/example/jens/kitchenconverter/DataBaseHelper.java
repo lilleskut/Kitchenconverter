@@ -34,7 +34,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String UNITS_KEY_DIMENSION = "dimension";
     private static final String UNITS_KEY_FACTOR = "factor";
 
+    private static final String TABLE_DENSITIES = "densities";
+    private static final String DENSITIES_KEY_ID = "_id";
+    private static final String DENSITIES_KEY_SUBSTANCE = "substance";
+    private static final String DENSITIES_KEY_DENSITY = "density";
+
     private static final String[] UNITS_COLUMNS = {UNITS_KEY_ID, UNITS_KEY_UNIT, UNITS_KEY_DIMENSION, UNITS_KEY_FACTOR};
+    private static final String[] DENSITIES_COLUMNS = {DENSITIES_KEY_ID, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_DENSITY};
 
     private SQLiteDatabase myDataBase;
 
@@ -237,6 +243,36 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return units;
     }
 
+    public List<Density> getAllDensities() {
+        List<Density> densities = new LinkedList<>();
+
+        // 1. build the query
+        String query = "SELECT * FROM " + TABLE_DENSITIES;
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build unit and add it to list
+        Density density;
+        if(cursor.moveToFirst()) {
+            do {
+                density = new Density(myContext);
+                density.setId(Integer.parseInt(cursor.getString(0)));
+                density.setUnit(cursor.getString(1));
+                density.setDimension(cursor.getString(2));
+                density.setFactor(Double.parseDouble(cursor.getString(3)));
+
+                // add unit to units
+                densities.add(density);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return densities;
+    }
+
     public List<Unit> getUnitsDimension(String dimension) {
         List<Unit> units = new LinkedList<>();
 
@@ -353,3 +389,4 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 }
+
