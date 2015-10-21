@@ -21,6 +21,10 @@ import java.util.List;
 public class GeneralConverterActivity extends AppCompatActivity {
 
 
+    boolean automaticChanged = false;
+    EditText editText;
+    TextView resultView;
+    ToggleButton toggle;
 
     private Spinner from_spinner;
     private Spinner to_spinner;
@@ -36,7 +40,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private Unit tUnit;
 
 
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_converter);
@@ -46,13 +50,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+        // find views
         from_spinner = (Spinner) findViewById(R.id.from_spinner);
         to_spinner = (Spinner) findViewById(R.id.to_spinner);
-
-        final EditText editText = (EditText) findViewById(R.id.enter_value);
-        final TextView resultView = (TextView) findViewById(R.id.result_value);
-        final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle_button);
-
+        editText = (EditText) findViewById(R.id.enter_value);
+        resultView = (TextView) findViewById(R.id.result_value);
+        toggle = (ToggleButton) findViewById(R.id.toggle_button);
 
         // create or open Database
         DataBaseHelper myDbHelper = new DataBaseHelper(this);
@@ -68,12 +71,11 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
         List<Unit> list = myDbHelper.getAllUnits();
 
-        // populate spinner
+        // populate from/to spinner
         fUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
         tUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
         from_spinner.setAdapter(fUnitAdapter);
         to_spinner.setAdapter(tUnitAdapter);
-
 
         // initialize from/to_factor
         fUnit = (Unit) from_spinner.getSelectedItem();
@@ -81,30 +83,38 @@ public class GeneralConverterActivity extends AppCompatActivity {
         from_factor.setRationalFromDouble(fUnit.getFactor());
         to_factor.setRationalFromDouble(tUnit.getFactor());
 
-        // 1. EditText change listener
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // Set listeners
+        editText.addTextChangedListener(textWatcher);
+        from_spinner.setOnItemSelectedListener(onItemSelectedListenerFrom);
+        to_spinner.setOnItemSelectedListener(onItemSelectedListenerTo);
+        toggle.setOnCheckedChangeListener(onCheckedChangeListener);
 
-            }
+        myDbHelper.close();
+    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+        }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (!automaticChanged) {
                 if (s.toString().isEmpty() || !MyRational.validFraction(s.toString())) {
                     resultView.setText("");
+                    enterRational.unSet();
+                    result.unSet();
                 } else {
                     enterRational.setRationalFromString(s.toString());
-                    Log.d("swap", "enter= " + enterRational.getNumerator() + "/" + enterRational.getDenominator());
-
                     if (enterRational.isSet()) {
                         // calculate result
                         result = enterRational.multiply(from_factor).divide(to_factor);
-                        Log.d("swap", "result= " + result.getNumerator() + "/" + result.getDenominator());
                         // display depending on fractions/decimal-toggle
                         if (toggle.isChecked()) { // fractions
                             resultView.setText(result.toFractionString());
@@ -113,92 +123,87 @@ public class GeneralConverterActivity extends AppCompatActivity {
                         }
                     }
                 }
+                Log.d("swap", "enter= " + enterRational.getNumerator() + "/" + enterRational.getDenominator());
+                Log.d("swap", "result= " + result.getNumerator() + "/" + result.getDenominator());
+            } else {
+                automaticChanged = false;
             }
-        });
+        }
+    };
 
-        //2. From spinner listener
-        from_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int position, long id) {
-                String s = editText.getText().toString();
-                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            automaticChanged = true;
+            String s = editText.getText().toString();
+            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
 
-                    fUnit = fUnitAdapter.getItem(position);
-                    from_factor.setRationalFromDouble(fUnit.getFactor());
+                if (isChecked) { // fractions;
+                    editText.setText(enterRational.toFractionString());
+                    resultView.setText(result.toFractionString());
 
-                    // calculate result
-                    result = enterRational.multiply(from_factor).divide(to_factor);
-
-                    // display depending on fractions/decimal-toggle
-                    if (toggle.isChecked()) { // fractions
-                        resultView.setText(result.toFractionString());
-                    } else { // decimals
-                        resultView.setText(result.toDecimalsString());
-                    }
+                } else { //decimals
+                    editText.setText(String.valueOf(enterRational.toDecimalsString()));
+                    resultView.setText(String.valueOf(result.toDecimalsString()));
                 }
             }
+        }
+    };
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapter) {
-            }
-        });
+    AdapterView.OnItemSelectedListener onItemSelectedListenerFrom = new AdapterView.OnItemSelectedListener() {
 
-        //3. To spinner listener
-        to_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view,
+        int position, long id) {
+            String s = editText.getText().toString();
+            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
 
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int position, long id) {
-                String s = editText.getText().toString();
-                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+                fUnit = fUnitAdapter.getItem(position);
+                from_factor.setRationalFromDouble(fUnit.getFactor());
 
-                    tUnit = tUnitAdapter.getItem(position);
-                    to_factor.setRationalFromDouble(tUnit.getFactor());
+                // calculate result
+                result = enterRational.multiply(from_factor).divide(to_factor);
 
-                    // calculate result
-                    result = enterRational.multiply(from_factor).divide(to_factor);
-
-                    // display depending on fractions/decimal-toggle
-                    if (toggle.isChecked()) { // fractions
-                        resultView.setText(result.toFractionString());
-                    } else { // decimals
-                        resultView.setText(result.toDecimalsString());
-                    }
+                // display depending on fractions/decimal-toggle
+                if (toggle.isChecked()) { // fractions
+                    resultView.setText(result.toFractionString());
+                } else { // decimals
+                    resultView.setText(result.toDecimalsString());
                 }
             }
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapter) {
-            }
-        });
+        @Override
+        public void onNothingSelected(AdapterView<?> adapter) {
+        }
+    };
 
+    AdapterView.OnItemSelectedListener onItemSelectedListenerTo = new AdapterView.OnItemSelectedListener() {
 
-        //4. Toggle button listener
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view,
+                                   int position, long id) {
+            String s = editText.getText().toString();
+            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
 
-                String s = editText.getText().toString();
-                //if (!s.isEmpty() && MyRational.validFraction(s)) {
-                if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s.toString())) {
+                tUnit = tUnitAdapter.getItem(position);
+                to_factor.setRationalFromDouble(tUnit.getFactor());
 
-                    // calculate result
-                    //result = enterRational.multiply(from_factor).divide(to_factor);
+                // calculate result
+                result = enterRational.multiply(from_factor).divide(to_factor);
 
-                    if (isChecked) { // fractions;
-                        editText.setText(enterRational.toFractionString());
-                        resultView.setText(result.toFractionString());
-
-                    } else { //decimals
-                        editText.setText(String.valueOf(enterRational.toDecimalsString()));
-                        resultView.setText(String.valueOf(result.toDecimalsString()));
-                    }
+                // display depending on fractions/decimal-toggle
+                if (toggle.isChecked()) { // fractions
+                    resultView.setText(result.toFractionString());
+                } else { // decimals
+                    resultView.setText(result.toDecimalsString());
                 }
             }
-        });
+        }
 
-        myDbHelper.close();
-    }
+        @Override
+        public void onNothingSelected(AdapterView<?> adapter) {
+        }
+    };
 }

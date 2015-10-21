@@ -23,7 +23,7 @@ public class MyRational {
             this.numerator = num / gcdThing(num, den);
             this.denominator = den / gcdThing(num, den);
         }
-    };
+    }
     public MyRational(Double d) {
         String s = String.valueOf(d);
         int digitsDec = s.length() -1 -s.indexOf('.');
@@ -126,6 +126,7 @@ public class MyRational {
             this.denominator = den / gcdThing(num, den);
         }
     }
+    public void unSet() { this.denominator=0; }
 
     // output Strings
     public String toFractionString() { // return fraction string
@@ -142,7 +143,7 @@ public class MyRational {
     public String toDecimalsString() {
         Double value = ((double) numerator) / denominator;
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340);
+        df.setMaximumFractionDigits(10);
         return df.format(value);
     }
 
@@ -160,17 +161,11 @@ public class MyRational {
         return multiply(rat2.reciprocal());
     }
 
-    public boolean isSet() {
-        if( denominator == 0 ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    public boolean isSet() { return denominator != 0; }
 
     //validate string (allow fractions, mixed fractions and decimals)
     public static boolean validFraction(String s) {
-        String regex = "\\d{1,5}([.]\\d{1,3}|(\\s\\d{1,5})?[/]\\d{1,3})?";
+        String regex = "\\d{1,5}([.]\\d{1,10}|(\\s\\d{1,5})?[/]\\d{1,10})?";
         return s.matches(regex);
     }
 
