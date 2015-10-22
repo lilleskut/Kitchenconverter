@@ -134,8 +134,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
                         }
                     }
                 }
-                Log.d("swap", "enter= " + enterRational.getNumerator() + "/" + enterRational.getDenominator());
-                Log.d("swap", "result= " + result.getNumerator() + "/" + result.getDenominator());
             } else {
                 automaticChanged = false;
             }
@@ -173,14 +171,17 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 fUnit = fUnitAdapter.getItem(position);
                 from_factor.setRationalFromDouble(fUnit.getFactor());
 
-                // calculate result
-                result = enterRational.multiply(from_factor).divide(to_factor);
-
-                // display depending on fractions/decimal-toggle
-                if (toggle.isChecked()) { // fractions
-                    resultView.setText(result.toFractionString());
-                } else { // decimals
-                    resultView.setText(result.toDecimalsString());
+                if(isConvertable(fUnit,tUnit)) { // calculate and display result
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+                    // display depending on fractions/decimal-toggle
+                    if (toggle.isChecked()) { // fractions
+                        resultView.setText(result.toFractionString());
+                    } else { // decimals
+                        resultView.setText(result.toDecimalsString());
+                    }
+                } else {
+                    resultView.setText("I don't know how to convert these");
+                    result.unSet();
                 }
             }
         }
@@ -201,14 +202,16 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 tUnit = tUnitAdapter.getItem(position);
                 to_factor.setRationalFromDouble(tUnit.getFactor());
 
-                // calculate result
-                result = enterRational.multiply(from_factor).divide(to_factor);
-
-                // display depending on fractions/decimal-toggle
-                if (toggle.isChecked()) { // fractions
-                    resultView.setText(result.toFractionString());
-                } else { // decimals
-                    resultView.setText(result.toDecimalsString());
+                if(isConvertable(fUnit,tUnit)) { // calculate and display result
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+                    if (toggle.isChecked()) { // fractions
+                        resultView.setText(result.toFractionString());
+                    } else { // decimals
+                        resultView.setText(result.toDecimalsString());
+                    }
+                } else {
+                    resultView.setText("I don't know how to convert these");
+                    result.unSet();
                 }
             }
         }
@@ -245,4 +248,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> adapter) {
         }
     };
+
+
+    private static boolean isConvertable(Unit a, Unit b) {
+        if (a.getDimension().equals(b.getDimension())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
