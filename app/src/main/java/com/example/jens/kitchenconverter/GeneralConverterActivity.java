@@ -28,8 +28,10 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
     private Spinner from_spinner;
     private Spinner to_spinner;
+    private Spinner density_spinner;
     SpinnerUnitAdapter fUnitAdapter;
     SpinnerUnitAdapter tUnitAdapter;
+    SpinnerDensityAdapter densityAdapter;
 
     private MyRational enterRational = new MyRational();
     private MyRational from_factor = new MyRational();
@@ -38,6 +40,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
     private Unit fUnit;
     private Unit tUnit;
+    private Density density;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.enter_value);
         resultView = (TextView) findViewById(R.id.result_value);
         toggle = (ToggleButton) findViewById(R.id.toggle_button);
+        density_spinner = (Spinner) findViewById(R.id.density_spinner);
 
         // create or open Database
         DataBaseHelper myDbHelper = new DataBaseHelper(this);
@@ -70,12 +74,15 @@ public class GeneralConverterActivity extends AppCompatActivity {
             throw sqle;
         }
         List<Unit> list = myDbHelper.getAllUnits();
+        List<Density> densities = myDbHelper.getAllDensities();
 
         // populate from/to spinner
         fUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
         tUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
+        densityAdapter = new SpinnerDensityAdapter(this, android.R.layout.simple_spinner_item, densities);
         from_spinner.setAdapter(fUnitAdapter);
         to_spinner.setAdapter(tUnitAdapter);
+        density_spinner.setAdapter(densityAdapter);
 
         // initialize from/to_factor
         fUnit = (Unit) from_spinner.getSelectedItem();

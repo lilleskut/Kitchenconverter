@@ -259,9 +259,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 density = new Density(myContext);
                 density.setId(Integer.parseInt(cursor.getString(0)));
-                density.setUnit(cursor.getString(1));
-                density.setDimension(cursor.getString(2));
-                density.setFactor(Double.parseDouble(cursor.getString(3)));
+                density.setSubstance(cursor.getString(1));
+                density.setDensity(Double.parseDouble(cursor.getString(2)));
 
                 // add unit to units
                 densities.add(density);
