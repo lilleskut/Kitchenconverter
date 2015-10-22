@@ -36,6 +36,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private MyRational enterRational = new MyRational();
     private MyRational from_factor = new MyRational();
     private MyRational to_factor = new MyRational();
+    private MyRational density_factor = new MyRational();
     private MyRational result = new MyRational();
 
     private Unit fUnit;
@@ -84,16 +85,19 @@ public class GeneralConverterActivity extends AppCompatActivity {
         to_spinner.setAdapter(tUnitAdapter);
         density_spinner.setAdapter(densityAdapter);
 
-        // initialize from/to_factor
+        // initialize from/to/desnity_factor
         fUnit = (Unit) from_spinner.getSelectedItem();
         tUnit = (Unit) to_spinner.getSelectedItem();
+        density = (Density) density_spinner.getSelectedItem();
         from_factor.setRationalFromDouble(fUnit.getFactor());
         to_factor.setRationalFromDouble(tUnit.getFactor());
+        density_factor.setRationalFromDouble(density.getDensity());
 
         // Set listeners
         editText.addTextChangedListener(textWatcher);
         from_spinner.setOnItemSelectedListener(onItemSelectedListenerFrom);
         to_spinner.setOnItemSelectedListener(onItemSelectedListenerTo);
+        density_spinner.setOnItemSelectedListener(onItemSelectedListenerDensity);
         toggle.setOnCheckedChangeListener(onCheckedChangeListener);
 
         myDbHelper.close();
@@ -196,6 +200,34 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
                 tUnit = tUnitAdapter.getItem(position);
                 to_factor.setRationalFromDouble(tUnit.getFactor());
+
+                // calculate result
+                result = enterRational.multiply(from_factor).divide(to_factor);
+
+                // display depending on fractions/decimal-toggle
+                if (toggle.isChecked()) { // fractions
+                    resultView.setText(result.toFractionString());
+                } else { // decimals
+                    resultView.setText(result.toDecimalsString());
+                }
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapter) {
+        }
+    };
+
+    AdapterView.OnItemSelectedListener onItemSelectedListenerDensity = new AdapterView.OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view,
+                                   int position, long id) {
+            String s = editText.getText().toString();
+            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
+
+                density = densityAdapter.getItem(position);
+                density_factor.setRationalFromDouble(density.getDensity());
 
                 // calculate result
                 result = enterRational.multiply(from_factor).divide(to_factor);
