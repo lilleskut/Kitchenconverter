@@ -176,6 +176,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // add density to densities table
+    public void addDensity (Density density) {
+        // for logging
+        Log.d("addDensityt",density.toString());
+
+        // 1. Get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 2. create Contentvalues to add "key" column/value
+        ContentValues values = new ContentValues();
+        values.put(DENSITIES_KEY_SUBSTANCE, density.getSubstance()); // get substance name
+        values.put(DENSITIES_KEY_DENSITY, density.getDensity()); // get density
+
+        // 3. insert
+        db.insert(TABLE_DENSITIES,
+                null,// nullColumnHack
+                values);
+
+        // 4. close
+        db.close();
+    }
+
     // read unit from units table
 
     public Unit getUnit(int id) {
@@ -338,6 +360,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    // update single density
+
+    public int updateDensity(Density density) {
+
+        Log.d("updateDensity",density.toString());
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 2. Create ContentValues to add key "column"/value
+        ContentValues values = new ContentValues();
+        values.put(DENSITIES_KEY_SUBSTANCE,density.getSubstance());
+        values.put(DENSITIES_KEY_DENSITY,density.getDensity());
+
+        // 3. updating row
+        int i = db.update(TABLE_DENSITIES,
+                values,
+                DENSITIES_KEY_ID + " = ?",
+                new String[] {String.valueOf(density.getId()) });
+
+        // 4. close
+        db.close();
+
+        return i;
+    }
+
 
     // delete single unit
 
@@ -354,6 +401,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         Log.d("deleteUnit", unit.toString());
+    }
+
+    //delete Density
+    public void deleteDensity(Density density) {
+        // 1. get reference to writeable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 2. delete
+        db.delete(TABLE_DENSITIES,
+                DENSITIES_KEY_ID+" = ?",
+                new String[] { String.valueOf(density.getId()) });
+
+        // 3. close
+        db.close();
+
+        Log.d("deleteDensity", density.toString());
     }
 
     // convert list of units to string

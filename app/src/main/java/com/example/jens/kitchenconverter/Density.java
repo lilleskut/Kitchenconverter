@@ -35,6 +35,7 @@ public class Density {
         }
         this.density = f; }
 
+    public int getId() { return id; }
     public String getSubstance() { return substance; }
 
     public Double getDensity() { return density; }

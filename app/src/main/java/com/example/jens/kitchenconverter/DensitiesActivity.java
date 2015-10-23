@@ -139,7 +139,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final Density density = mDensityAdapter.getItem(position);
 
-
         final Dialog d = new Dialog(context);
         d.setContentView(R.layout.edit_density_dialog);
         d.setTitle("Edit or delete density");
