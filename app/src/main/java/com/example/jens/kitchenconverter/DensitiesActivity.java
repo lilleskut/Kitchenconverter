@@ -109,7 +109,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 final EditText editDensity = (EditText) d.findViewById(R.id.editTextDensity);
 
                 Button addBtn = (Button) d.findViewById(R.id.button1);
-                // set click listener for add button in add_dialog
+                // set click listener for add button in add_unit_dialog
                 addBtn.setOnClickListener(new View.OnClickListener() {
                                               public void onClick(View v) {
 

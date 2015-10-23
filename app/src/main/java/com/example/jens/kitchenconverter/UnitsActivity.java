@@ -101,7 +101,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 break;
              case 98: // filter
                 final Dialog fd = new Dialog(context);
-                fd.setContentView(R.layout.filter_dialog);
+                fd.setContentView(R.layout.filter_units_dialog);
                 fd.setTitle("Filter");
                 fd.setCancelable(true);
 
@@ -133,7 +133,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
             case 99: // add
                 final Dialog d = new Dialog(context);
-                d.setContentView(R.layout.add_dialog);
+                d.setContentView(R.layout.add_unit_dialog);
                 d.setTitle("Add unit");
                 d.setCancelable(true);
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
@@ -150,7 +150,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
 
                 Button addBtn = (Button) d.findViewById(R.id.button1);
-                // set click listener for add button in add_dialog
+                // set click listener for add button in add_unit_dialog
                 addBtn.setOnClickListener(new View.OnClickListener() {
                                               public void onClick(View v) {
 
@@ -187,7 +187,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
         final Dialog d = new Dialog(context);
-        d.setContentView(R.layout.edit_dialog);
+        d.setContentView(R.layout.edit_unit_dialog);
         d.setTitle("Edit or delete unit");
         d.setCancelable(true);
 

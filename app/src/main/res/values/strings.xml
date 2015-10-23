@@ -13,6 +13,8 @@
     <string name="filter">Filter</string>
     <string name="decimals">decimals</string>
     <string name="fractions">fractions</string>
+    <string name="substance">Substance</string>
+    <string name="density">Density</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>
