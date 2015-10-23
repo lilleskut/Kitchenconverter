@@ -43,6 +43,20 @@ public class MainActivity extends AppCompatActivity {
             gridLayout.addView(b,j);
         }
 
+        // add temperature converter button
+        Button tempBtn = new Button(getApplicationContext());
+        tempBtn.setText("temperature");
+        tempBtn.setId(dimensions.length);
+
+        tempBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent i = new Intent(MainActivity.this, ConverterActivity.class);
+                i.putExtra("dimension","temperature");
+                startActivity(i);
+            }
+        });
+        gridLayout.addView(tempBtn,dimensions.length);
+
         // Button part
 
         Button c = (Button) findViewById(R.id.unitsBtn);
