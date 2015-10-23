@@ -6,13 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
@@ -124,14 +124,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 } else {
                     enterRational.setRationalFromString(s.toString());
                     if (enterRational.isSet()) {
-                        // calculate result
-                        result = enterRational.multiply(from_factor).divide(to_factor);
-                        // display depending on fractions/decimal-toggle
-                        if (toggle.isChecked()) { // fractions
-                            resultView.setText(result.toFractionString());
-                        } else { // decimals
-                            resultView.setText(result.toDecimalsString());
-                        }
+                        calculateDisplayResult();
                     }
                 }
             } else {
@@ -171,18 +164,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 fUnit = fUnitAdapter.getItem(position);
                 from_factor.setRationalFromDouble(fUnit.getFactor());
 
-                if(isConvertable(fUnit,tUnit)) { // calculate and display result
-                    result = enterRational.multiply(from_factor).divide(to_factor);
-                    // display depending on fractions/decimal-toggle
-                    if (toggle.isChecked()) { // fractions
-                        resultView.setText(result.toFractionString());
-                    } else { // decimals
-                        resultView.setText(result.toDecimalsString());
-                    }
-                } else {
-                    resultView.setText("I don't know how to convert these");
-                    result.unSet();
-                }
+               calculateDisplayResult();
             }
         }
 
@@ -202,17 +184,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 tUnit = tUnitAdapter.getItem(position);
                 to_factor.setRationalFromDouble(tUnit.getFactor());
 
-                if(isConvertable(fUnit,tUnit)) { // calculate and display result
-                    result = enterRational.multiply(from_factor).divide(to_factor);
-                    if (toggle.isChecked()) { // fractions
-                        resultView.setText(result.toFractionString());
-                    } else { // decimals
-                        resultView.setText(result.toDecimalsString());
-                    }
-                } else {
-                    resultView.setText("I don't know how to convert these");
-                    result.unSet();
-                }
+                calculateDisplayResult();
             }
         }
 
@@ -232,15 +204,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 density = densityAdapter.getItem(position);
                 density_factor.setRationalFromDouble(density.getDensity());
 
-                // calculate result
-                result = enterRational.multiply(from_factor).divide(to_factor);
-
-                // display depending on fractions/decimal-toggle
-                if (toggle.isChecked()) { // fractions
-                    resultView.setText(result.toFractionString());
-                } else { // decimals
-                    resultView.setText(result.toDecimalsString());
-                }
+                calculateDisplayResult();
             }
         }
 
@@ -250,11 +214,50 @@ public class GeneralConverterActivity extends AppCompatActivity {
     };
 
 
-    private static boolean isConvertable(Unit a, Unit b) {
+    private static boolean isMassVolume(Unit a, Unit b) {
+        String aDim = a.getDimension();
+        String bDim = b.getDimension();
+       if((aDim.equals("mass") && bDim.equals("volume")) || (bDim.equals("mass") && aDim.equals("volume")) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean hasSameDimension(Unit a, Unit b) {
         if (a.getDimension().equals(b.getDimension())) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void calculateDisplayResult() {
+        if(hasSameDimension(fUnit,tUnit)) { // calculate and display result
+            result = enterRational.multiply(from_factor).divide(to_factor);
+
+        }  else if(isMassVolume(fUnit,tUnit)) { // mass-volume conversion
+
+            if(fUnit.getDimension().equals("mass")) {
+                result = enterRational.multiply(from_factor).divide(to_factor).divide(density_factor);
+            } else {
+                result = enterRational.multiply(from_factor).divide(to_factor).multiply(density_factor);
+            }
+
+        } else { // not convertable
+            result.unSet();
+
+            Toast cannotConvert = Toast.makeText(getApplicationContext(),"Cannot convert these",Toast.LENGTH_SHORT);
+            cannotConvert.show();
+        }
+        if (result.isSet()) {
+            if (toggle.isChecked()) { // fractions
+                resultView.setText(result.toFractionString());
+            } else { // decimals
+                resultView.setText(result.toDecimalsString());
+            }
+        } else {
+            resultView.setText("");
         }
     }
 }
