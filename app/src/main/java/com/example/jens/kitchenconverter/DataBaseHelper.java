@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +24,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
     private static String DB_PATH = "/data/data/com.example.jens.kitchenconverter/databases/";
 
-    private static final String DB_NAME = "kitchenConverter.db";
-
+    private static final String TAG = "DataBaseHelper";
+    private static final String DATABASE_NAME = "kitchenConverter.db";
     private static final int DATABASE_VERSION = 1;
+
+    private String pathToSaveDBFile;
 
     // constants for units table
     private static final String TABLE_UNITS = "units";
@@ -43,7 +46,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String[] DENSITIES_COLUMNS = {DENSITIES_KEY_ID, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_DENSITY};
 
     private SQLiteDatabase myDataBase;
-
     private final Context myContext;
 
     /**
@@ -51,106 +53,95 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
      * @param context
      */
-    public DataBaseHelper(Context context) {
+    public DataBaseHelper(Context context, String filePath) {
 
-        super(context, DB_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.myContext = context;
+        pathToSaveDBFile = new StringBuffer(filePath).append("/").append(DATABASE_NAME).toString();
     }
 
     /**
      * Creates an empty database on the system and rewrites it with your own database.
      * */
-    public void createDataBase() throws IOException {
+    public void prepareDataBase() throws IOException {
 
         boolean dbExist = checkDataBase();
 
-        if(dbExist){
-            //do nothing - database already exist
-        }else{
-
-            //By calling this method and empty database will be created into the default system path
-            //of your application so we are gonna be able to overwrite that database with our database.
-            this.getReadableDatabase();
-
+        if (dbExist) {
+            Log.d(TAG, "Database exists");
+            int currentDBVersion = getVersionId();
+            if (DATABASE_VERSION > currentDBVersion) {
+                Log.d(TAG, "Database version is higher than old");
+                deleteDB();
+                try {
+                    copyDataBase();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        } else {
             try {
-
                 copyDataBase();
-
             } catch (IOException e) {
-
-                throw new Error("Error copying database");
-
+                Log.e(TAG, e.getMessage());
             }
         }
-
     }
 
 
     /**
      * Check if the database already exist to avoid re-copying the file each time you open the application.
-     * @return true if it exists, false if it doesn't
      */
-    private boolean checkDataBase(){
+    private boolean checkDataBase() {
 
-        SQLiteDatabase checkDB = null;
+        boolean checkDB = false;
 
-        try{
-            String myPath = DB_PATH + DB_NAME;
-            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
-        }catch(SQLiteException e){
-
-            //database does't exist yet.
-
+        try {
+            File file = new File(pathToSaveDBFile);
+            checkDB = file.exists();
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
         }
-
-        if(checkDB != null){
-
-            checkDB.close();
-
-        }
-
-        return checkDB != null;
+        return checkDB;
     }
 
-    /**
-     * Copies your database from your local assets-folder to the just created empty database in the
-     * system folder, from where it can be accessed and handled.
-     * This is done by transfering bytestream.
-     * */
+
     private void copyDataBase() throws IOException{
 
-        //Open your local db as the input stream
-        InputStream myInput = myContext.getAssets().open(DB_NAME);
-
-        // Path to the just created empty db
-        String outFileName = DB_PATH + DB_NAME;
-
-        //Open the empty db as the output stream
-        OutputStream myOutput = new FileOutputStream(outFileName);
+        OutputStream os = new FileOutputStream(pathToSaveDBFile);
+        InputStream is = myContext.getAssets().open(DATABASE_NAME);
 
         //transfer bytes from the inputfile to the outputfile
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = myInput.read(buffer))>0){
-            myOutput.write(buffer, 0, length);
+        while ((length = is.read(buffer))>0){
+            os.write(buffer, 0, length);
         }
 
         //Close the streams
-        myOutput.flush();
-        myOutput.close();
-        myInput.close();
+        os.flush();
+        os.close();
+        is.close();
 
     }
 
-    public void openDataBase() throws SQLException {
-
-        //Open the database
-        String myPath = DB_PATH + DB_NAME;
-        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
+    public void deleteDB() {
+        File file = new File(pathToSaveDBFile);
+        if(file.exists()) {
+            file.delete();
+            Log.d(TAG,"Database deleted");
+        }
     }
 
+    private int getVersionId() {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        String query = "SELECT version_id FROM dbVersion";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        int v =  cursor.getInt(0);
+        db.close();
+        return v;
+    }
 
     // add unit to units table
 
@@ -159,7 +150,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.d("addUnit",unit.toString());
 
         // 1. Get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. create Contentvalues to add "key" column/value
         ContentValues values = new ContentValues();
@@ -182,7 +173,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.d("addDensityt",density.toString());
 
         // 1. Get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. create Contentvalues to add "key" column/value
         ContentValues values = new ContentValues();
@@ -203,7 +194,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Unit getUnit(int id) {
 
         // 1. Get reference to readable DB
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
 
         // 2. Build query
         Cursor cursor =
@@ -242,7 +233,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_UNITS;
 
         // 2. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, null);
 
         // 3. go over each row, build unit and add it to list
@@ -272,7 +263,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_DENSITIES;
 
         // 2. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, null);
 
         // 3. go over each row, build unit and add it to list
@@ -311,7 +302,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
         // 2. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, new String[] { dimension });
 
         // 3. go over each row, build unit and add it to list
@@ -340,7 +331,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d("updateUnit",unit.toString());
         // 1. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
@@ -366,7 +357,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d("updateDensity",density.toString());
         // 1. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
@@ -390,7 +381,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public void deleteUnit(Unit unit) {
         // 1. get reference to writeable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. delete
         db.delete(TABLE_UNITS,
@@ -406,7 +397,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //delete Density
     public void deleteDensity(Density density) {
         // 1. get reference to writeable DB
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. delete
         db.delete(TABLE_DENSITIES,
@@ -443,7 +434,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        Log.d(TAG,"onCreate");
     }
 
     @Override
