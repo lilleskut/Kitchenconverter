@@ -31,6 +31,10 @@
             android:label="Units"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".DensitiesActivity"
+            android:label="Densities"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity" />

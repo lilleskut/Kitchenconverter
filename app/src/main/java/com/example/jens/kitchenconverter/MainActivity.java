@@ -54,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button e = (Button) findViewById(R.id.densitiesBtn);
+        e.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                Intent i = new Intent(MainActivity.this, DensitiesActivity.class);
+                startActivity(i);
+            }
+        });
+
         Button d = (Button) findViewById(R.id.general_converter);
         d.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
