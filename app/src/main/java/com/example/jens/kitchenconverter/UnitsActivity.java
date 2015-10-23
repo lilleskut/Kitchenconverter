@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private static final String TAG = "UnitsActivity";
     private Toolbar toolbar;
     private RadioButton radioButton;
     private RadioButton radioFilterButton;
@@ -44,21 +46,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // create or open Database
-
-        DataBaseHelper myDbHelper = new DataBaseHelper(this);
-
-        try {
-            myDbHelper.createDataBase();
-        } catch (IOException ioe) {
-            throw new Error("Unable to create database");
-        }
-
-        try {
-            myDbHelper.openDataBase();
-        }catch(SQLException sqle){
-            throw sqle;
-        }
+        DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
         // 5. Set this Activity to react to list items being pressed
         mainListView = (ListView) findViewById(R.id.listView);
@@ -163,7 +151,8 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                                   Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
                                                   Unit addunit = new Unit(unitName, unitDimension, unitFactor, context);
-                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+
                                                   myDbHelper.addUnit(addunit);
                                                   mUnitAdapter.updateData(myDbHelper.getAllUnits());
                                                   myDbHelper.close();
@@ -228,7 +217,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         deleteBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
 
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                                              myDbHelper.deleteUnit(unit);
                                              mUnitAdapter.updateData(myDbHelper.getAllUnits());
                                              myDbHelper.close();
@@ -240,7 +229,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         // set click listener for modify button in modify_dialog
         modifyBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                              String unitName = editUnit.getText().toString();
                                              int rgid = radioDimensionGroup.getCheckedRadioButtonId();

@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class DensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private static final String TAG = "DensitiesActivity";
     private Toolbar toolbar;
     final Context context = this;
 
@@ -43,21 +45,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // create or open Database
-
-        DataBaseHelper myDbHelper = new DataBaseHelper(this);
-
-        try {
-            myDbHelper.createDataBase();
-        } catch (IOException ioe) {
-            throw new Error("Unable to create database");
-        }
-
-        try {
-            myDbHelper.openDataBase();
-        }catch(SQLException sqle){
-            throw sqle;
-        }
+        DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
         // 5. Set this Activity to react to list items being pressed
         mainListView = (ListView) findViewById(R.id.listView);
@@ -114,7 +102,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                                   Double densityDensity = Double.valueOf(editDensity.getText().toString());
 
                                                   Density adddensity = new Density(densitySubstance, densityDensity, context);
-                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                                                   myDbHelper.addDensity(adddensity);
                                                   mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                                   myDbHelper.close();
@@ -159,7 +147,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         deleteBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
 
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                                              myDbHelper.deleteDensity(density);
                                              mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                              myDbHelper.close();
@@ -171,7 +159,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         // set click listener for modify button in modify_dialog
         modifyBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context);
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                              String densitySubstance = editSubstance.getText().toString();
 

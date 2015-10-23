@@ -4,17 +4,22 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 
+import java.io.IOException;
+
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
@@ -24,6 +29,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
+        // prepare Database
+
+        DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
+        try {
+            myDbHelper.prepareDataBase();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        myDbHelper.close();
 
         final GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);
         for(int j=0; j < dimensions.length; j++) {

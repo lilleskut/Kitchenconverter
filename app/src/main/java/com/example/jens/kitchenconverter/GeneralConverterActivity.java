@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import java.util.List;
 
 public class GeneralConverterActivity extends AppCompatActivity {
 
+    private final static String TAG = "GeneralConverter";
 
     boolean automaticChanged = false;
     EditText editText;
@@ -63,17 +66,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
         density_spinner = (Spinner) findViewById(R.id.density_spinner);
 
         // create or open Database
-        DataBaseHelper myDbHelper = new DataBaseHelper(this);
-        try {
-            myDbHelper.createDataBase();
-        } catch (IOException ioe) {
-            throw new Error("Unable to create database");
-        }
-        try {
-            myDbHelper.openDataBase();
-        } catch (SQLException sqle) {
-            throw sqle;
-        }
+        DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
+
         List<Unit> list = myDbHelper.getAllUnits();
         List<Density> densities = myDbHelper.getAllDensities();
 
@@ -158,6 +152,10 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,
         int position, long id) {
+            // hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
             String s = editText.getText().toString();
             if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
 
@@ -178,6 +176,10 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,
                                    int position, long id) {
+            // hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
             String s = editText.getText().toString();
             if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
 
@@ -217,19 +219,11 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private static boolean isMassVolume(Unit a, Unit b) {
         String aDim = a.getDimension();
         String bDim = b.getDimension();
-       if((aDim.equals("mass") && bDim.equals("volume")) || (bDim.equals("mass") && aDim.equals("volume")) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return (aDim.equals("mass") && bDim.equals("volume")) || (bDim.equals("mass") && aDim.equals("volume"));
     }
 
     private static boolean hasSameDimension(Unit a, Unit b) {
-        if (a.getDimension().equals(b.getDimension())) {
-            return true;
-        } else {
-            return false;
-        }
+        return a.getDimension().equals(b.getDimension());
     }
 
     private void calculateDisplayResult() {

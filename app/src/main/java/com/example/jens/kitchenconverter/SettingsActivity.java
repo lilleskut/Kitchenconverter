@@ -31,7 +31,7 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.preferences);
 
 
-
+/*
             DataBaseHelper myDbHelper = new DataBaseHelper(getActivity());
 
             try {
@@ -50,19 +50,19 @@ public class SettingsActivity extends PreferenceActivity {
 
             List<Unit> list = myDbHelper.getAllUnits();
             myDbHelper.close();
-
+*/
 
             PreferenceScreen screen = this.getPreferenceScreen();
             PreferenceCategory cat = new PreferenceCategory(screen.getContext());
             cat.setTitle("Units");
             screen.addPreference(cat);
-            for(Unit temp : list) {
+ /*           for(Unit temp : list) {
                 Preference pref = new Preference(screen.getContext());
                 pref.setTitle(temp.getUnit());
                 pref.setSummary(temp.getFactor().toString());
                 cat.addPreference(pref);
             }
-
+*/
 
 
         }

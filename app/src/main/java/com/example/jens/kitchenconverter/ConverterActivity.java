@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ public class ConverterActivity extends AppCompatActivity {
 
     private MyRational enterRational;
 
+    private static final String TAG = "ConverterActivity";
     private static final int startTemp = 100; // start temperature (in Celsius) for temperature converter onCreate
     SpinnerUnitAdapter fUnitAdapter;
     SpinnerUnitAdapter tUnitAdapter;
@@ -106,19 +108,7 @@ public class ConverterActivity extends AppCompatActivity {
 
             // create or open Database
 
-            DataBaseHelper myDbHelper = new DataBaseHelper(this);
-
-            try {
-                myDbHelper.createDataBase();
-            } catch (IOException ioe) {
-                throw new Error("Unable to create database");
-            }
-
-            try {
-                myDbHelper.openDataBase();
-            } catch (SQLException sqle) {
-                throw sqle;
-            }
+            DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
             List<Unit> list = myDbHelper.getUnitsDimension(dim);
 
