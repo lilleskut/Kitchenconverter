@@ -29,7 +29,7 @@
         <activity
             android:name=".UnitsActivity"
             android:label="Units"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.example.jens.kitchenconverter.UnitsActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -38,7 +38,7 @@
         <activity
             android:name=".DensitiesActivity"
             android:label="Densities"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.example.jens.kitchenconverter.DensitiesActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
