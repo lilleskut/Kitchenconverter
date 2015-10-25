@@ -24,14 +24,4 @@
             android:text="General" />
     </GridLayout>
 
-    <Button
-        android:id="@+id/unitsBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Edit Units" />
-    <Button
-        android:id="@+id/densitiesBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Edit Densities" />
 </LinearLayout>

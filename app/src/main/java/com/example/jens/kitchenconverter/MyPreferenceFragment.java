@@ -1,12 +1,11 @@
 package com.example.jens.kitchenconverter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 
-import java.util.List;
+
 
 public class MyPreferenceFragment extends PreferenceFragment {
     @Override
@@ -14,6 +13,12 @@ public class MyPreferenceFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
+        // Preference units_pref = getPreferenceScreen().findPreference("edit_units");
+        // Preference densities_pref = getPreferenceScreen().findPreference("edit_densities");
+
+        // final Intent units_intent= new Intent(getActivity(),UnitsActivity.class);
+
+/*
         if(isAdded()) { //otherwise there can be NPE when using getActivity()
             DataBaseHelper myDbHelper = new DataBaseHelper(getActivity(), getActivity().getFilesDir().getAbsolutePath());
 
@@ -44,5 +49,6 @@ public class MyPreferenceFragment extends PreferenceFragment {
                 densities_cat.addPreference(pref);
             }
         }
+        */
     }
 }

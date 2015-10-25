@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen
+    <Preference
         android:key="edit_units"
         android:title="Edit Units">
-    </PreferenceScreen>
-    <PreferenceScreen
+        <intent android:action="com.example.jens.kitchenconverter.UnitsActivity"/>
+    </Preference>
+    <Preference
         android:key="edit_densities"
         android:title="Edit Densities">
-    </PreferenceScreen>
+        <intent android:action="com.example.jens.kitchenconverter.DensitiesActivity"/>
+    </Preference>
 </PreferenceScreen>
 
 
