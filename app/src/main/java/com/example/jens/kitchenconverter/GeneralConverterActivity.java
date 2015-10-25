@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -64,6 +65,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         resultView = (TextView) findViewById(R.id.result_value);
         toggle = (ToggleButton) findViewById(R.id.toggle_button);
         density_spinner = (Spinner) findViewById(R.id.density_spinner);
+        final Button clear_button = (Button) findViewById(R.id.clear_button);
 
         // create or open Database
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
@@ -93,6 +95,14 @@ public class GeneralConverterActivity extends AppCompatActivity {
         to_spinner.setOnItemSelectedListener(onItemSelectedListenerTo);
         density_spinner.setOnItemSelectedListener(onItemSelectedListenerDensity);
         toggle.setOnCheckedChangeListener(onCheckedChangeListener);
+        clear_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick (View v) {
+                editText.setText("");
+                resultView.setText("");
+                enterRational.unSet();
+                result.unSet();
+            }
+        });
 
         myDbHelper.close();
     }
