@@ -3,11 +3,9 @@ package com.example.jens.kitchenconverter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import java.io.IOException;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -127,17 +127,45 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
                 final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
 
+                DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+
+                ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
+                final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
                 for(int j=0; j < dimensions.length; j++) {
-                    RadioButton rb= new RadioButton(context);
+                    RadioButton rb = new RadioButton(context);
                     rb.setText(dimensions[j]);
                     rb.setId(j);
-                    radioDimensionGroup.addView(rb,j,layoutParams);
+                    radioDimensionGroup.addView(rb, j, layoutParams);
+
+                    List<Unit> list = myDbHelper.getUnitsDimension(dimensions[j]);
+                    SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
+                    unitListArray.add(j,list);
+                    unitAdapterArray.add(sUnitAdapter);
                 }
 
+
+                myDbHelper.close();
+
                 final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
+                final Spinner unitSpinner = (Spinner) d.findViewById(R.id.unit_spinner);
+
+
+
+
+                radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        int pos = radioDimensionGroup.indexOfChild(findViewById(checkedId));
+                        unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
+                    }
+                });
+
+
 
                 Button addBtn = (Button) d.findViewById(R.id.button1);
+
+
                 // set click listener for add button in add_unit_dialog
                 addBtn.setOnClickListener(new View.OnClickListener() {
                                               public void onClick(View v) {

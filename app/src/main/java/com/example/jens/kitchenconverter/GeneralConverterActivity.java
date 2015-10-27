@@ -67,7 +67,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
         density_spinner = (Spinner) findViewById(R.id.density_spinner);
         final Button clear_button = (Button) findViewById(R.id.clear_button);
 
-        // create or open Database
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
         List<Unit> list = myDbHelper.getAllUnits();
@@ -81,7 +80,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         to_spinner.setAdapter(tUnitAdapter);
         density_spinner.setAdapter(densityAdapter);
 
-        // initialize from/to/desnity_factor
+        // initialize from/to/density_factor
         fUnit = (Unit) from_spinner.getSelectedItem();
         tUnit = (Unit) to_spinner.getSelectedItem();
         density = (Density) density_spinner.getSelectedItem();
