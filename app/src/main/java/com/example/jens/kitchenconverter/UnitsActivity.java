@@ -293,9 +293,12 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                              Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
+                                             Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                             Double spinner_factor = selected_unit.getFactor();
+
                                              unit.setUnit(unitName);
                                              unit.setDimension(unitDimension);
-                                             unit.setFactor(unitFactor);
+                                             unit.setFactor(unitFactor*spinner_factor);
 
                                              myDbHelper.updateUnit(unit);
                                              mUnitAdapter.updateData(myDbHelper.getAllUnits());
