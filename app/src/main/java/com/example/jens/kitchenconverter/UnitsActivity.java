@@ -223,7 +223,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.WRAP_CONTENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT);
+        final Spinner unitSpinner = (Spinner) d.findViewById(R.id.unit_spinner);
 
+        DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+        ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
+        final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
         for(int i=0; i < dimensions.length; i++) {
             RadioButton rb= new RadioButton(context);
@@ -231,11 +235,21 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             rb.setId(i);
             if(dimensions[i].equals(savedDimension)) { rb.setChecked(true); }
             radioDimensionGroup.addView(rb,i,layoutParams);
+
+            List<Unit> list = myDbHelper.getUnitsDimension(dimensions[i]);
+            SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
+            unitListArray.add(i, list);
+            unitAdapterArray.add(sUnitAdapter);
+            if(dimensions[i].equals(savedDimension)) { unitSpinner.setAdapter(sUnitAdapter); }
         }
+
+        myDbHelper.close();
+
 
 
         final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
         editFactor.setText(Double.toString(unit.getFactor()));
+
 
         d.show();
 
@@ -244,6 +258,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
         Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
+
+
+        radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
+            }
+        });
+
         // set click listener for delete button in modify_dialog
         deleteBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
