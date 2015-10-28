@@ -20,6 +20,11 @@
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:hint="@string/factor"/>
+    <Spinner
+        android:id="@+id/unit_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Spinner>
     <Button
         android:id="@+id/button_modify"
         android:layout_width="match_parent"
