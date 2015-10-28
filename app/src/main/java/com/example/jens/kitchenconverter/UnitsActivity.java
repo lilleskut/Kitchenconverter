@@ -156,7 +156,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        int pos = radioDimensionGroup.indexOfChild(findViewById(checkedId));
                         unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
                     }
                 });
@@ -178,7 +177,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                                   Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
-                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor, context);
+
+                                                  Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                                  Double spinner_factor = selected_unit.getFactor();
+
+                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, context);
                                                   DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                                   myDbHelper.addUnit(addunit);
