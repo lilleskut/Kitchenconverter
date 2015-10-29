@@ -169,6 +169,112 @@ public class PaketeActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final Paket paket = mPaketAdapter.getItem(position);
+
+
+        final Dialog d = new Dialog(context);
+        d.setContentView(R.layout.edit_paket_dialog);
+        d.setTitle("Edit or delete package");
+        d.setCancelable(true);
+
+        // fill form with stored values
+        final EditText editSubstance = (EditText) d.findViewById(R.id.editTextSubstance);
+        editSubstance.setText(paket.getSubstance());
+
+        String savedDimension=paket.getDimension();
+
+        final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
+        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+        // add radio buttons programmatically
+        LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                RadioGroup.LayoutParams.WRAP_CONTENT,
+                RadioGroup.LayoutParams.WRAP_CONTENT);
+        final Spinner unitSpinner = (Spinner) d.findViewById(R.id.unit_spinner);
+
+        DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+        ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
+        final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
+
+        for(int i=0; i < dimensions.length; i++) {
+            RadioButton rb= new RadioButton(context);
+            rb.setText(dimensions[i]);
+            rb.setId(i);
+            if(dimensions[i].equals(savedDimension)) { rb.setChecked(true); }
+            radioDimensionGroup.addView(rb,i,layoutParams);
+
+            List<Unit> list = myDbHelper.getUnitsDimension(dimensions[i]);
+            SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
+            unitListArray.add(i, list);
+            unitAdapterArray.add(sUnitAdapter);
+            if(dimensions[i].equals(savedDimension)) { unitSpinner.setAdapter(sUnitAdapter); }
+        }
+
+        myDbHelper.close();
+
+
+
+        final EditText editValue = (EditText) d.findViewById(R.id.editTextValue);
+        editValue.setText(Double.toString(paket.getValue()));
+
+
+        d.show();
+
+        // end of displaying old values
+        // start of processing new values
+
+
+        Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
+        Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
+
+
+        radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
+            }
+        });
+
+        // set click listener for delete button in modify_dialog
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+                                         public void onClick(View v) {
+
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+                                             myDbHelper.deletePaket(paket);
+                                             mPaketAdapter.updateData(myDbHelper.getAllPakete());
+                                             myDbHelper.close();
+                                             d.dismiss();
+                                         }
+                                     }
+        );
+
+        // set click listener for modify button in modify_dialog
+        modifyBtn.setOnClickListener(new View.OnClickListener() {
+                                         public void onClick(View v) {
+                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+
+                                             String substanceName = editSubstance.getText().toString();
+                                             int rgid = radioDimensionGroup.getCheckedRadioButtonId();
+
+                                             radioButton = (RadioButton) d.findViewById(rgid);
+                                             String paketDimension = radioButton.getText().toString();
+
+                                             Double paketValue = Double.valueOf(editValue.getText().toString());
+
+                                             Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                             Double spinner_factor = selected_unit.getFactor();
+
+                                             paket.setSubstance(substanceName);
+                                             paket.setDimension(paketDimension);
+                                             paket.setValue(paketValue * spinner_factor);
+
+                                             myDbHelper.updatePaket(paket);
+                                             mPaketAdapter.updateData(myDbHelper.getAllPakete());
+                                             myDbHelper.close();
+                                             d.dismiss();
+                                         }
+                                     }
+        );
+
 
     }
 }

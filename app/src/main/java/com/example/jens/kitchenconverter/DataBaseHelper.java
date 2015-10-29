@@ -26,7 +26,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DataBaseHelper";
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     private String pathToSaveDBFile;
 
@@ -435,6 +435,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    // update single unit
+
+    public int updatePaket(Paket paket) {
+
+        Log.d("updatePaket",paket.toString());
+        // 1. get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. Create ContentValues to add key "column"/value
+        ContentValues values = new ContentValues();
+        values.put(PAKETE_KEY_SUBSTANCE,paket.getSubstance());
+        values.put(PAKETE_KEY_DIMENSION,paket.getDimension());
+        values.put(PAKETE_KEY_VALUE,paket.getValue());
+
+        // 3. updating row
+        int i = db.update(TABLE_PAKETE,
+                values,
+                PAKETE_KEY_ID + " = ?",
+                new String[] {String.valueOf(paket.getId()) });
+
+        // 4. close
+        db.close();
+
+        return i;
+    }
 
     // delete single unit
 
@@ -469,6 +494,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.d("deleteDensity", density.toString());
     }
 
+    // delete single paket
+
+    public void deletePaket(Paket paket) {
+        // 1. get reference to writeable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. delete
+        db.delete(TABLE_PAKETE,
+                PAKETE_KEY_ID+" = ?",
+                new String[] { String.valueOf(paket.getId()) });
+
+        // 3. close
+        db.close();
+
+        Log.d("deletePaket", paket.toString());
+    }
     // convert list of units to string
 
     public String toString(List<Unit> l) {
