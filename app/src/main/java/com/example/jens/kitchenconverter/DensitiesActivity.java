@@ -24,7 +24,6 @@ import java.util.List;
 
 public class DensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "DensitiesActivity";
-    private Toolbar toolbar;
     final Context context = this;
 
     DensityAdapter mDensityAdapter;
@@ -41,7 +40,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_densities);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -75,11 +74,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         switch(id) {
             case R.id.action_settings:
                 Intent i = new Intent(DensitiesActivity.this,SettingsActivity.class);
