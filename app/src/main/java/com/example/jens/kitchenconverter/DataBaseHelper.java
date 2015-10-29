@@ -26,7 +26,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DataBaseHelper";
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private String pathToSaveDBFile;
 
@@ -43,7 +43,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DENSITIES_KEY_DENSITY = "density";
 
     private static final String[] UNITS_COLUMNS = {UNITS_KEY_ID, UNITS_KEY_UNIT, UNITS_KEY_DIMENSION, UNITS_KEY_FACTOR};
-    private static final String[] DENSITIES_COLUMNS = {DENSITIES_KEY_ID, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_SUBSTANCE, DENSITIES_KEY_DENSITY};
 
     private SQLiteDatabase myDataBase;
     private final Context myContext;
@@ -57,7 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.myContext = context;
-        pathToSaveDBFile = new StringBuffer(filePath).append("/").append(DATABASE_NAME).toString();
+        pathToSaveDBFile = filePath + "/" + DATABASE_NAME;
     }
 
     /**
@@ -70,6 +69,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if (dbExist) {
             Log.d(TAG, "Database exists");
             int currentDBVersion = getVersionId();
+            Log.d(TAG,"currentDBVersion="+currentDBVersion);
             if (DATABASE_VERSION > currentDBVersion) {
                 Log.d(TAG, "Database version is higher than old");
                 deleteDB();
