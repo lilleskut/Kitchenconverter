@@ -194,6 +194,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // add unit to units table
+
+    public void addPaket(Paket paket) {
+        // for logging
+        Log.d("addPaket",paket.toString());
+
+        // 1. Get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. create Contentvalues to add "key" column/value
+        ContentValues values = new ContentValues();
+        values.put(PAKETE_KEY_SUBSTANCE,paket.getSubstance()); // get unit name
+        values.put(PAKETE_KEY_DIMENSION,paket.getDimension()); // get dimension name
+        values.put(PAKETE_KEY_VALUE,paket.getValue()); // get factor
+
+        // 3. insert
+        db.insert(TABLE_PAKETE,
+                null,// nullColumnHack
+                values);
+
+        // 4. close
+        db.close();
+    }
+
     // read unit from units table
 
     public Unit getUnit(int id) {

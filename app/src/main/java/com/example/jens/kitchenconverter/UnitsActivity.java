@@ -77,9 +77,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         switch(id) {

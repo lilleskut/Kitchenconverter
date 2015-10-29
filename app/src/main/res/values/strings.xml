@@ -16,6 +16,7 @@
     <string name="substance">Substance</string>
     <string name="density">Density</string>
     <string name="clear">Clear</string>
+    <string name="value">Value</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>
