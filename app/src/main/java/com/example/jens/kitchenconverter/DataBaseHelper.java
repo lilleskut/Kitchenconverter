@@ -42,6 +42,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DENSITIES_KEY_SUBSTANCE = "substance";
     private static final String DENSITIES_KEY_DENSITY = "density";
 
+    private static final String TABLE_PAKETE = "packages";
+    private static final String PAKETE_KEY_ID = "_id";
+    private static final String PAKETE_KEY_SUBSTANCE = "substance";
+    private static final String PAKETE_KEY_DIMENSION = "dimension";
+    private static final String PAKETE_KEY_VALUE = "value";
+
     private static final String[] UNITS_COLUMNS = {UNITS_KEY_ID, UNITS_KEY_UNIT, UNITS_KEY_DIMENSION, UNITS_KEY_FACTOR};
 
     private SQLiteDatabase myDataBase;
@@ -50,7 +56,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     /**
      * Constructor
      * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
-     * @param context
      */
     public DataBaseHelper(Context context, String filePath) {
 
@@ -283,6 +288,36 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return densities;
+    }
+
+    public List<Paket> getAllPakete() {
+        List<Paket> pakete = new LinkedList<>();
+
+        // 1. build the query
+        String query = "SELECT * FROM " + TABLE_PAKETE;
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build unit and add it to list
+        Paket paket;
+        if(cursor.moveToFirst()) {
+            do {
+                paket = new Paket(myContext);
+                paket.setId(Integer.parseInt(cursor.getString(0)));
+                paket.setSubstance(cursor.getString(1));
+                paket.setDimension(cursor.getString(2));
+                paket.setValue(Double.parseDouble(cursor.getString(3)));
+
+                // add unit to units
+                pakete.add(paket);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return pakete;
     }
 
     public List<Unit> getUnitsDimension(String dimension) {

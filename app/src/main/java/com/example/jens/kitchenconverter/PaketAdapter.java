@@ -57,6 +57,7 @@ public class PaketAdapter extends BaseAdapter {
             // create a new "Holder" with subviews
             holder = new ViewHolder();
             holder.substanceTextView = (TextView) convertView.findViewById(R.id.text_substance);
+            holder.dimensionTextView = (TextView) convertView.findViewById(R.id.text_dimension);
             holder.valueTextView = (TextView) convertView.findViewById(R.id.text_value);
 
             // hang onto this holder for future recyclage
@@ -71,13 +72,16 @@ public class PaketAdapter extends BaseAdapter {
         Paket paket = getItem(position);
 
         String substanceTitle;
+        String dimensionTitle;
         String valueTitle;
 
         substanceTitle = paket.getSubstance();
+        dimensionTitle = paket.getDimension();
         valueTitle = paket.getValue().toString();
 
         // Send these Strings to the TextViews for display
         holder.substanceTextView.setText(substanceTitle);
+        holder.dimensionTextView.setText(dimensionTitle);
         holder.valueTextView.setText(valueTitle);
 
         return convertView;
@@ -85,6 +89,7 @@ public class PaketAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         public TextView substanceTextView;
+        public TextView dimensionTextView;
         public TextView valueTextView;
     }
 }

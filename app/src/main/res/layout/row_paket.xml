@@ -14,8 +14,8 @@
         android:id="@+id/text_dimension"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/text_unit"
-        android:layout_toRightOf="@+id/text_unit"
+        android:layout_toEndOf="@+id/text_substance"
+        android:layout_toRightOf="@+id/text_substance"
         android:textSize="@dimen/list_row_font_size"
         android:padding="@dimen/list_row_item_padding"/>
     <TextView
