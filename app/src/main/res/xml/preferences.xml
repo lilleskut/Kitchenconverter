@@ -10,6 +10,11 @@
         android:title="Edit Densities">
         <intent android:action="com.example.jens.kitchenconverter.DensitiesActivity"/>
     </Preference>
+    <Preference
+        android:key="edit_packages"
+        android:title="Edit Packages">
+        <intent android:action="com.example.jens.kitchenconverter.PackagesActivity"/>
+    </Preference>
 </PreferenceScreen>
 
 
