@@ -7,7 +7,7 @@ public class Density {
 
     private int id;
     private String substance; // name of substance
-    private Double density; // factor relative to base unit (water = 1)
+    private Double density; // density in kg/l (water = 1)
 
     private Context ctx;
 

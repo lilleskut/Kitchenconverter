@@ -13,29 +13,27 @@ import java.util.List;
 public class DensityAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<Density> fDensities; // filtered data
+    private List<Density> mDensities;
 
     public DensityAdapter(Context context, LayoutInflater inflater) {
         this.mContext = context;
         this.mInflater = inflater;
-        fDensities = new LinkedList<>();
+        mDensities = new LinkedList<>();
     }
 
     public void updateData(List<Density> densities) {
-        //update the adapter's dataset
-        fDensities = densities;
+        mDensities = densities;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return fDensities.size();
+        return mDensities.size();
     }
 
     @Override
-    // public Object getItem(int position) {
     public Density getItem(int position) {
-        return fDensities.get(position);
+        return mDensities.get(position);
     }
 
     @Override

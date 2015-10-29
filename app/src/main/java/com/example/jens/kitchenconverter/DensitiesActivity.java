@@ -44,16 +44,12 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // read and disply list of densities
         DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
-
-        // 5. Set this Activity to react to list items being pressed
         mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
-        // output as list
         List<Density> list = myDbHelper.getAllDensities();
-
-        // Create a UnitAdapter for the ListView and Set the ListView to use the UnitAdapter
         mDensityAdapter = new DensityAdapter(this, getLayoutInflater());
         mainListView.setAdapter(mDensityAdapter);
 
@@ -65,7 +61,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
@@ -157,9 +152,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                              DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                              String densitySubstance = editSubstance.getText().toString();
-
                                              Double densityDensity = Double.valueOf(editDensity.getText().toString());
-
                                              density.setSubstance(densitySubstance);
                                              density.setDensity(densityDensity);
 
