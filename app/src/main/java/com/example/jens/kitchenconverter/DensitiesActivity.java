@@ -42,7 +42,9 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if( getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // read and disply list of densities
         DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());

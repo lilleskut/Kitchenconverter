@@ -50,8 +50,10 @@ public class ConverterActivity extends AppCompatActivity {
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Convert temperature");
+            if( getSupportActionBar() != null ) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Convert temperature");
+            }
 
             final TextView celsius = (TextView) findViewById(R.id.celsius);
             final TextView fahrenheit = (TextView) findViewById(R.id.fahrenheit);
@@ -95,8 +97,10 @@ public class ConverterActivity extends AppCompatActivity {
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Convert " + dim);
+            if( getSupportActionBar() != null ) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Convert " + dim);
+            }
 
             from_spinner = (Spinner) findViewById(R.id.from_spinner);
             to_spinner = (Spinner) findViewById(R.id.to_spinner);

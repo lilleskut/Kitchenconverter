@@ -30,9 +30,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
     TextView resultView;
     ToggleButton toggle;
 
-    private Spinner from_spinner;
-    private Spinner to_spinner;
-    private Spinner density_spinner;
     SpinnerUnitAdapter fUnitAdapter;
     SpinnerUnitAdapter tUnitAdapter;
     SpinnerDensityAdapter densityAdapter;
@@ -49,22 +46,24 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_converter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if( getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
         // find views
-        from_spinner = (Spinner) findViewById(R.id.from_spinner);
-        to_spinner = (Spinner) findViewById(R.id.to_spinner);
+        Spinner from_spinner = (Spinner) findViewById(R.id.from_spinner);
+        Spinner to_spinner = (Spinner) findViewById(R.id.to_spinner);
         editText = (EditText) findViewById(R.id.enter_value);
         resultView = (TextView) findViewById(R.id.result_value);
         toggle = (ToggleButton) findViewById(R.id.toggle_button);
-        density_spinner = (Spinner) findViewById(R.id.density_spinner);
+        Spinner density_spinner = (Spinner) findViewById(R.id.density_spinner);
         final Button clear_button = (Button) findViewById(R.id.clear_button);
 
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
@@ -161,9 +160,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,
         int position, long id) {
-            // hide keyboard
-            InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
             String s = editText.getText().toString();
             if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {

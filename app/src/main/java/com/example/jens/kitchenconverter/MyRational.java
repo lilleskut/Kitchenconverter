@@ -1,7 +1,5 @@
 package com.example.jens.kitchenconverter;
 
-import android.util.Log;
-
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -143,7 +141,7 @@ public class MyRational {
     public String toDecimalsString() {
         Double value = ((double) numerator) / denominator;
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(10);
+        df.setMaximumFractionDigits(3);
         return df.format(value);
     }
 

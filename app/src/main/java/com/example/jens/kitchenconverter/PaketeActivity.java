@@ -24,7 +24,6 @@ import java.util.List;
 
 public class PaketeActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "PaketeActivity";
-    private Toolbar toolbar;
     private RadioButton radioButton;
     private RadioButton radioFilterButton;
     final Context context = this;
@@ -43,9 +42,11 @@ public class PaketeActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pakete);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if( getSupportActionBar() != null ) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
