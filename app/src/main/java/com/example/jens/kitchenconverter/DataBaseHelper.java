@@ -39,12 +39,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DENSITIES_KEY_SUBSTANCE = "substance";
     private static final String DENSITIES_KEY_DENSITY = "density";
 
-    private static final String TABLE_PAKETE = "packages";
-    private static final String PAKETE_KEY_ID = "_id";
-    private static final String PAKETE_KEY_SUBSTANCE = "substance";
-    private static final String PAKETE_KEY_DIMENSION = "dimension";
-    private static final String PAKETE_KEY_VALUE = "value";
-
     private SQLiteDatabase myDataBase;
     private final Context myContext;
 
@@ -169,27 +163,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // 4. close
         db.close();
     }
-    public void addPaket(Paket paket) {
-        // for logging
-        Log.d("addPaket",paket.toString());
-
-        // 1. Get reference to writable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-
-        // 2. create Contentvalues to add "key" column/value
-        ContentValues values = new ContentValues();
-        values.put(PAKETE_KEY_SUBSTANCE,paket.getSubstance()); // get unit name
-        values.put(PAKETE_KEY_DIMENSION, paket.getDimension()); // get dimension name
-        values.put(PAKETE_KEY_VALUE, paket.getValue()); // get factor
-
-        // 3. insert
-        db.insert(TABLE_PAKETE,
-                null,// nullColumnHack
-                values);
-
-        // 4. close
-        db.close();
-    }
 
     // update elements
     public int updateUnit(Unit unit) {
@@ -237,29 +210,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         return i;
     }
-    public int updatePaket(Paket paket) {
-
-        Log.d("updatePaket",paket.toString());
-        // 1. get reference to writable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-
-        // 2. Create ContentValues to add key "column"/value
-        ContentValues values = new ContentValues();
-        values.put(PAKETE_KEY_SUBSTANCE,paket.getSubstance());
-        values.put(PAKETE_KEY_DIMENSION,paket.getDimension());
-        values.put(PAKETE_KEY_VALUE,paket.getValue());
-
-        // 3. updating row
-        int i = db.update(TABLE_PAKETE,
-                values,
-                PAKETE_KEY_ID + " = ?",
-                new String[] {String.valueOf(paket.getId()) });
-
-        // 4. close
-        db.close();
-
-        return i;
-    }
 
     // delete elements
     public void deleteUnit(Unit unit) {
@@ -289,20 +239,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         Log.d("deleteDensity", density.toString());
-    }
-    public void deletePaket(Paket paket) {
-        // 1. get reference to writeable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-
-        // 2. delete
-        db.delete(TABLE_PAKETE,
-                PAKETE_KEY_ID+" = ?",
-                new String[] { String.valueOf(paket.getId()) });
-
-        // 3. close
-        db.close();
-
-        Log.d("deletePaket", paket.toString());
     }
 
     // get lists of elements
@@ -401,35 +337,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return densities;
-    }
-    public List<Paket> getAllPakete() {
-        List<Paket> pakete = new LinkedList<>();
-
-        // 1. build the query
-        String query = "SELECT * FROM " + TABLE_PAKETE;
-
-        // 2. get reference to writable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
-        Cursor cursor = db.rawQuery(query, null);
-
-        // 3. go over each row, build unit and add it to list
-        Paket paket;
-        if(cursor.moveToFirst()) {
-            do {
-                paket = new Paket(myContext);
-                paket.setId(Integer.parseInt(cursor.getString(0)));
-                paket.setSubstance(cursor.getString(1));
-                paket.setDimension(cursor.getString(2));
-                paket.setValue(Double.parseDouble(cursor.getString(3)));
-
-                // add unit to units
-                pakete.add(paket);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-
-        return pakete;
     }
 
 

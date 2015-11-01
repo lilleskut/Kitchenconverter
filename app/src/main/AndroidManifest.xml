@@ -45,15 +45,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PaketeActivity"
-            android:label="Packages"
-            android:parentActivityName=".SettingsActivity">
-            <intent-filter>
-                <action android:name="com.example.jens.kitchenconverter.PaketeActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity" />
