@@ -15,14 +15,12 @@ import java.util.List;
 
 public class UnitAdapter extends BaseAdapter implements Filterable {
 
-    private Context mContext;
     private LayoutInflater mInflater;
     private List<Unit> oUnits; // original data
     private List<Unit> fUnits; // filtered data
     private UnitFilter mFilter = new UnitFilter();
 
-    public UnitAdapter(Context context, LayoutInflater inflater) {
-        this.mContext = context;
+    public UnitAdapter(LayoutInflater inflater) {
         this.mInflater = inflater;
         oUnits = new LinkedList<>();
         fUnits = new LinkedList<>();

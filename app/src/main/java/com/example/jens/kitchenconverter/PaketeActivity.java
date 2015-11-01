@@ -58,7 +58,7 @@ public class PaketeActivity extends AppCompatActivity implements AdapterView.OnI
         List<Paket> list = myDbHelper.getAllPakete();
 
         // Create a UnitAdapter for the ListView and Set the ListView to use the UnitAdapter
-        mPaketAdapter = new PaketAdapter(this, getLayoutInflater());
+        mPaketAdapter = new PaketAdapter(getLayoutInflater());
         mainListView.setAdapter(mPaketAdapter);
 
         mPaketAdapter.updateData(list);
@@ -68,7 +68,7 @@ public class PaketeActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 
         getMenuInflater().inflate(R.menu.menu_main, menu);

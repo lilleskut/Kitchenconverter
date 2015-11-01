@@ -13,12 +13,10 @@ import java.util.List;
 
 public class PaketAdapter extends BaseAdapter {
 
-    private Context mContext;
     private LayoutInflater mInflater;
     private List<Paket> mPakete;
 
-    public PaketAdapter(Context context, LayoutInflater inflater) {
-        this.mContext = context;
+    public PaketAdapter(LayoutInflater inflater) {
         this.mInflater = inflater;
         mPakete = new LinkedList<>();
     }

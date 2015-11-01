@@ -17,6 +17,8 @@
     <string name="density">Density</string>
     <string name="clear">Clear</string>
     <string name="value">Value</string>
+    <string name="general">General</string>
+    <string name="all">All</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

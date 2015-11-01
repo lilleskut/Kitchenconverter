@@ -11,12 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DensityAdapter extends BaseAdapter {
-    private Context mContext;
     private LayoutInflater mInflater;
     private List<Density> mDensities;
 
-    public DensityAdapter(Context context, LayoutInflater inflater) {
-        this.mContext = context;
+    public DensityAdapter(LayoutInflater inflater) {
         this.mInflater = inflater;
         mDensities = new LinkedList<>();
     }

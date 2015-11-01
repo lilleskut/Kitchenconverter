@@ -57,7 +57,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         List<Unit> list = myDbHelper.getAllUnits();
 
         // Create a UnitAdapter for the ListView and Set the ListView to use the UnitAdapter
-        mUnitAdapter = new UnitAdapter(this, getLayoutInflater());
+        mUnitAdapter = new UnitAdapter(getLayoutInflater());
         mainListView.setAdapter(mUnitAdapter);
 
         mUnitAdapter.updateData(list);
@@ -67,8 +67,8 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, 98,Menu.NONE,R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, 98,Menu.NONE,R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 
         getMenuInflater().inflate(R.menu.menu_main, menu);

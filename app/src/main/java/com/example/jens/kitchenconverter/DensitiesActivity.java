@@ -3,11 +3,9 @@ package com.example.jens.kitchenconverter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import java.io.IOException;
 import java.util.List;
 
 public class DensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -52,7 +48,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         mainListView.setOnItemClickListener(this);
 
         List<Density> list = myDbHelper.getAllDensities();
-        mDensityAdapter = new DensityAdapter(this, getLayoutInflater());
+        mDensityAdapter = new DensityAdapter(getLayoutInflater());
         mainListView.setAdapter(mDensityAdapter);
 
         mDensityAdapter.updateData(list);
@@ -62,7 +58,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
