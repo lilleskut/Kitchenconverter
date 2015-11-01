@@ -33,6 +33,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String UNITS_KEY_UNIT = "unit";
     private static final String UNITS_KEY_DIMENSION = "dimension";
     private static final String UNITS_KEY_FACTOR = "factor";
+    private static final String UNITS_KEY_BASE = "base";
 
     private static final String TABLE_DENSITIES = "densities";
     private static final String DENSITIES_KEY_ID = "_id";

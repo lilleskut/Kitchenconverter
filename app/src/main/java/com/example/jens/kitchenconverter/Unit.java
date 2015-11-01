@@ -10,18 +10,20 @@ public class Unit {
     private String unit; // name of unit, e.g. "m", "cm"
     private String dimension; // "length", "mass",...
     private Double factor; // factor relative to base unit
+    private boolean base; // unit is base unit of its dimension
 
     private Context ctx;
 
 
     public Unit(Context context){ this.ctx = context; }
 
-    public Unit(String unit, String dimension, Double factor, Context context) {
+    public Unit(String unit, String dimension, Double factor, Context context, Boolean base) {
         super();
         this.ctx = context;
         setUnit(unit);
         setDimension(dimension);
         setFactor(factor);
+        setBase(base);
     }
 
     public void setId(int i) { this.id = i; }
@@ -53,6 +55,10 @@ public class Unit {
         }
         this.factor = f; }
 
+    public void setBase(Boolean b) {
+        this.base = b;
+    }
+
     public int getId() { return id; }
 
     public String getUnit() { return unit; }
@@ -60,6 +66,8 @@ public class Unit {
     public String getDimension() { return dimension; }
 
     public Double getFactor() { return factor; }
+
+    public Boolean getBase() { return base; }
 
 
 
