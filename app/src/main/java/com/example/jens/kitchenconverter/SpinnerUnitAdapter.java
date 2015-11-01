@@ -33,6 +33,7 @@ public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
         TextView label = new TextView(mContext);
         label.setTextColor(Color.BLACK);
         label.setTextSize(mContext.getResources().getDimension(R.dimen.list_row_font_size));
+        label.setGravity(Gravity.CENTER);
         label.setText(getItem(position).getUnit());
 
         return label;
