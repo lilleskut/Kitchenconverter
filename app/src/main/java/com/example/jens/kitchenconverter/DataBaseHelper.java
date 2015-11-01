@@ -135,6 +135,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(UNITS_KEY_UNIT,unit.getUnit()); // get unit name
         values.put(UNITS_KEY_DIMENSION,unit.getDimension()); // get dimension name
         values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
+        values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0 );
 
         // 3. insert
         db.insert(TABLE_UNITS,
@@ -214,18 +215,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // delete elements
     public void deleteUnit(Unit unit) {
-        // 1. get reference to writeable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        if( !unit.getBase()) { // do not delete base units
 
-        // 2. delete
-        db.delete(TABLE_UNITS,
-                UNITS_KEY_ID+" = ?",
-                new String[] { String.valueOf(unit.getId()) });
+            SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
-        // 3. close
-        db.close();
+            db.delete(TABLE_UNITS,
+                    UNITS_KEY_ID + " = ?",
+                    new String[]{String.valueOf(unit.getId())});
 
-        Log.d("deleteUnit", unit.toString());
+            db.close();
+
+            Log.d("deleteUnit", unit.toString());
+        }
     }
     public void deleteDensity(Density density) {
         // 1. get reference to writeable DB
@@ -258,10 +259,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 unit = new Unit(myContext);
-                unit.setId(Integer.parseInt(cursor.getString(0)));
-                unit.setUnit(cursor.getString(1));
-                unit.setDimension(cursor.getString(2));
-                unit.setFactor(Double.parseDouble(cursor.getString(3)));
+                unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
+                unit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
+                unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
+                unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
 
                 // add unit to units
                 units.add(unit);
@@ -281,9 +283,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
         }
 
-        // 1. build the query, avoid SQL injection
-        // String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION + " = ?'" + dimension + "'";
-        //String query = "SELECT * FROM ? WHERE ? = ?";
+
         String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION +" = ?";
 
 
@@ -297,10 +297,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 unit = new Unit(myContext);
-                unit.setId(Integer.parseInt(cursor.getString(0)));
-                unit.setUnit(cursor.getString(1));
-                unit.setDimension(cursor.getString(2));
-                unit.setFactor(Double.parseDouble(cursor.getString(3)));
+                unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
+                unit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
+                unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
+                unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
 
                 // add unit to units
                 units.add(unit);
