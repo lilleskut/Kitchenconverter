@@ -23,7 +23,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DataBaseHelper";
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private String pathToSaveDBFile;
 
