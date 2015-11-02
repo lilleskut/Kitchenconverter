@@ -19,6 +19,8 @@
     <string name="value">Value</string>
     <string name="general">General</string>
     <string name="all">All</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

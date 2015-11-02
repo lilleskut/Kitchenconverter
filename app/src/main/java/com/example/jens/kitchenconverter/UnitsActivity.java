@@ -2,8 +2,10 @@ package com.example.jens.kitchenconverter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +52,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
+        final DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
         mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
@@ -56,8 +60,33 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Unit unit = mUnitAdapter.getItem(position);
 
-                Log.v("long clicked", "pos: " + position);
+                if( !unit.getBase() ) { //only do something if long clicked on not base unit
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+                    builder.setTitle("Confirm new base unit");
+                    builder.setMessage("Are you sure to make " + unit.getUnit() + " your new base unit for dimension " + unit.getDimension() + "?");
+
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            myDbHelper.updateBaseUnit(unit);
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
                 return true;
             }
         });
@@ -312,4 +341,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
     }
+
+
 }

@@ -22,6 +22,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     //The Android's default system path of your application database.
 
     private static final String TAG = "DataBaseHelper";
+    private static final Double zeroThreshold = 0.000000001;
     private static final String DATABASE_NAME = "kitchenConverter.db";
     private static final int DATABASE_VERSION = 2;
 
@@ -136,7 +137,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         values.put(UNITS_KEY_UNIT,unit.getUnit()); // get unit name
         values.put(UNITS_KEY_DIMENSION,unit.getDimension()); // get dimension name
         values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
-        values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0 );
+        values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
 
         // 3. insert
         db.insert(TABLE_UNITS,
@@ -212,6 +213,67 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return i;
+    }
+
+    // get current base unit
+    private Unit getBaseUnit(String dimension) {
+
+        String[] dimensions = myContext.getResources().getStringArray(R.array.dimensions_array);
+
+        if(!Arrays.asList(dimensions).contains(dimension)){
+            throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
+        }
+
+        String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION +" = ? AND " + UNITS_KEY_BASE + "= 1 LIMIT 1";
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, new String[]{dimension});
+
+        Unit baseUnit = new Unit(myContext);
+
+        if(cursor.moveToFirst()) {
+                baseUnit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
+                baseUnit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                baseUnit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
+                baseUnit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
+                baseUnit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
+        }
+
+        cursor.close();
+
+
+        return baseUnit;
+    }
+
+    // make "unit" the new base unit
+    // update all factors for this dimension
+    public void updateBaseUnit(Unit unit) {
+
+        Double factor = unit.getFactor();
+        String dimension = unit.getDimension();
+        Unit oldBaseUnit = getBaseUnit(dimension);
+
+        oldBaseUnit.setBase(false);
+        updateUnit(oldBaseUnit);
+
+        if ( factor>= zeroThreshold || factor <= -zeroThreshold ) { // avoid division by 0
+            Double multiplier = 1/factor;
+
+            SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+            String query = "UPDATE " + TABLE_UNITS + " SET " + UNITS_KEY_FACTOR + " = " + UNITS_KEY_FACTOR + "* ? WHERE "+UNITS_KEY_DIMENSION
+                    + "=?";
+
+            Cursor cursor = db.rawQuery(query, new String[]{ String.valueOf(multiplier), dimension });
+            cursor.moveToFirst();
+            cursor.close();
+            db.close();
+        }
+
+        unit.setBase(true);
+        unit.setFactor(1.0);
+        updateUnit(unit);
+
     }
 
     // delete elements
