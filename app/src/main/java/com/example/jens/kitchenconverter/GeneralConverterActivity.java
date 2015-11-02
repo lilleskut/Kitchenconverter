@@ -22,14 +22,14 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
     private final static String TAG = "GeneralConverter";
 
-    boolean automaticChanged = false;
-    EditText editText;
-    TextView resultView;
-    ToggleButton toggle;
+    private boolean automaticChanged = false;
+    private EditText editText;
+    private TextView resultView;
+    private ToggleButton toggle;
 
-    SpinnerUnitAdapter fUnitAdapter;
-    SpinnerUnitAdapter tUnitAdapter;
-    SpinnerDensityAdapter densityAdapter;
+    private SpinnerUnitAdapter fUnitAdapter;
+    private SpinnerUnitAdapter tUnitAdapter;
+    private SpinnerDensityAdapter densityAdapter;
 
     private MyRational enterRational = new MyRational();
     private MyRational from_factor = new MyRational();

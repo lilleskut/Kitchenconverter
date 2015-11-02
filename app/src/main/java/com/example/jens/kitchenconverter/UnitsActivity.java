@@ -127,7 +127,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             case 99: // add
                 final Dialog d = new Dialog(context);
                 d.setContentView(R.layout.add_unit_dialog);
-                d.setTitle("Add unit");
+                d.setTitle(R.string.addUnit);
                 d.setCancelable(true);
 
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
@@ -246,15 +246,19 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         myDbHelper.close();
 
-
-
         final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
         editFactor.setText(Double.toString(unit.getFactor()));
 
-        d.show();
-
         Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
         Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
+
+        if( unit.getBase() ) { // don't show delete button if base unit
+            deleteBtn.setVisibility(View.INVISIBLE);
+        }
+
+        d.show();
+
+
 
 
 

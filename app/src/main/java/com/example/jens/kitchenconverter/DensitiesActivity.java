@@ -20,10 +20,9 @@ import java.util.List;
 
 public class DensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "DensitiesActivity";
-    final Context context = this;
+    private final Context context = this;
 
-    DensityAdapter mDensityAdapter;
-    ListView mainListView;
+    private DensityAdapter mDensityAdapter;
 
 
     LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
@@ -44,7 +43,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
         // read and disply list of densities
         DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
-        mainListView = (ListView) findViewById(R.id.listView);
+        ListView mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
         List<Density> list = myDbHelper.getAllDensities();

@@ -16,7 +16,7 @@ public class MyRational {
         this.numerator=0;
         this.denominator=0;
     }
-    public MyRational(int num, int den) {
+    private MyRational(int num, int den) {
         if (den != 0) {
             this.numerator = num / gcdThing(num, den);
             this.denominator = den / gcdThing(num, den);
@@ -72,8 +72,8 @@ public class MyRational {
     }
 
     // getters
-    public int getNumerator() { return numerator; }
-    public int getDenominator() { return denominator; }
+    private int getNumerator() { return numerator; }
+    private int getDenominator() { return denominator; }
 
     // setters
     public void setRationalFromDouble(Double d) {
@@ -147,7 +147,7 @@ public class MyRational {
 
 
     // rational arithmetics
-    public MyRational reciprocal () {
+    private MyRational reciprocal () {
         return new MyRational(denominator,numerator);
     }
     public MyRational multiply (MyRational rat2) {
@@ -168,7 +168,7 @@ public class MyRational {
     }
 
     // GCD
-    public  int gcdThing(int a, int b) {
+    private  int gcdThing(int a, int b) {
         BigInteger b1 = BigInteger.valueOf(a);
         BigInteger b2 = BigInteger.valueOf(b);
         BigInteger gcd = b1.gcd(b2);

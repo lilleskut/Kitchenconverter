@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DataBaseHelper extends SQLiteOpenHelper {
+class DataBaseHelper extends SQLiteOpenHelper {
 
     //The Android's default system path of your application database.
 
@@ -30,15 +30,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // constants for units table
     private static final String TABLE_UNITS = "units";
     private static final String UNITS_KEY_ID = "_id";
-    private static final String UNITS_KEY_UNIT = "unit";
-    private static final String UNITS_KEY_DIMENSION = "dimension";
-    private static final String UNITS_KEY_FACTOR = "factor";
-    private static final String UNITS_KEY_BASE = "base";
+    private static final String UNITS_KEY_UNIT = "UNIT";
+    private static final String UNITS_KEY_DIMENSION = "DIMENSION";
+    private static final String UNITS_KEY_FACTOR = "FACTOR";
+    private static final String UNITS_KEY_BASE = "BASE";
 
     private static final String TABLE_DENSITIES = "densities";
     private static final String DENSITIES_KEY_ID = "_id";
-    private static final String DENSITIES_KEY_SUBSTANCE = "substance";
-    private static final String DENSITIES_KEY_DENSITY = "density";
+    private static final String DENSITIES_KEY_SUBSTANCE = "SUBSTANCE";
+    private static final String DENSITIES_KEY_DENSITY = "DENSITY";
 
     private SQLiteDatabase myDataBase;
     private final Context myContext;

@@ -30,8 +30,8 @@ public class ConverterActivity extends AppCompatActivity {
 
     private static final String TAG = "ConverterActivity";
     private static final int startTemp = 100; // start temperature (in Celsius) for temperature converter onCreate
-    SpinnerUnitAdapter fUnitAdapter;
-    SpinnerUnitAdapter tUnitAdapter;
+    private SpinnerUnitAdapter fUnitAdapter;
+    private SpinnerUnitAdapter tUnitAdapter;
 
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
