@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
-    private List<Unit> mUnits;
-    private Context mContext;
+    private final List<Unit> mUnits;
+    private final Context mContext;
 
     public SpinnerUnitAdapter(Context context, int resource, List<Unit> units) {
         super(context, resource, units);

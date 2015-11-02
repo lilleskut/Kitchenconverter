@@ -9,7 +9,7 @@ public class Density {
     private String substance; // name of substance
     private Double density; // density in kg/l (water = 1)
 
-    private Context ctx;
+    private final Context ctx;
 
     public Density(Context context) { this.ctx=context; }
 

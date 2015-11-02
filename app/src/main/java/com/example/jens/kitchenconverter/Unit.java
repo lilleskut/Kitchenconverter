@@ -12,12 +12,12 @@ public class Unit {
     private Double factor; // factor relative to base unit
     private boolean base; // unit is base unit of its dimension
 
-    private Context ctx;
 
+    private final Context ctx;
 
     public Unit(Context context){ this.ctx = context; }
 
-    public Unit(String unit, String dimension, Double factor, Context context, Boolean base) {
+    public Unit(String unit, String dimension, Double factor, Boolean base, Context context) {
         super();
         this.ctx = context;
         setUnit(unit);

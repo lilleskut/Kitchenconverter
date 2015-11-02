@@ -30,7 +30,7 @@ public class UnitTest {
     public void init() throws Exception {
         System.out.println("Setting up ...");
         when(context.getResources().getStringArray(R.array.dimensions_array)).thenReturn(new String [] {"length", "mass", "volume"});
-        unit = new Unit("dm","length", 0.1,context);
+        unit = new Unit("dm","length", 0.1,false,context);
     }
 
     @After
@@ -65,7 +65,7 @@ public class UnitTest {
     }
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public final ExpectedException thrown = ExpectedException.none();
     @Test
     public void testSetUnitException() {
         thrown.expect(IllegalArgumentException.class);

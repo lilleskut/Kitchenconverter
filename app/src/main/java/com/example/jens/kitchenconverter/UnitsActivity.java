@@ -49,14 +49,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
-        // 5. Set this Activity to react to list items being pressed
         mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
-        // output as list
         List<Unit> list = myDbHelper.getAllUnits();
 
-        // Create a UnitAdapter for the ListView and Set the ListView to use the UnitAdapter
         mUnitAdapter = new UnitAdapter(getLayoutInflater());
         mainListView.setAdapter(mUnitAdapter);
 
@@ -122,6 +119,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 d.setContentView(R.layout.add_unit_dialog);
                 d.setTitle("Add unit");
                 d.setCancelable(true);
+
                 final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
                 final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
 
@@ -141,7 +139,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                     unitListArray.add(j,list);
                     unitAdapterArray.add(sUnitAdapter);
                 }
-
 
                 myDbHelper.close();
 
@@ -166,7 +163,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 // set click listener for add button in add_unit_dialog
                 addBtn.setOnClickListener(new View.OnClickListener() {
                                               public void onClick(View v) {
-
                                                   String unitName = editUnit.getText().toString();
 
                                                   int rgid = radioDimensionGroup.getCheckedRadioButtonId();
@@ -175,11 +171,10 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                                   Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
-
                                                   Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
                                                   Double spinner_factor = selected_unit.getFactor();
 
-                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, context);
+                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
                                                   DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                                   myDbHelper.addUnit(addunit);
@@ -188,8 +183,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                                   d.dismiss();
                                               }
                                           }
-
-
                 );
                 d.show();
                 break;
@@ -248,14 +241,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
         editFactor.setText(Double.toString(unit.getFactor()));
 
-
         d.show();
-
-
-
 
         Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
         Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
+
 
 
         radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

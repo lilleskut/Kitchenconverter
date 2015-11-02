@@ -1,6 +1,5 @@
 package com.example.jens.kitchenconverter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,10 @@ import java.util.List;
 
 public class UnitAdapter extends BaseAdapter implements Filterable {
 
-    private LayoutInflater mInflater;
-    private List<Unit> oUnits; // original data
+    private final LayoutInflater mInflater;
+    private  List<Unit> oUnits; // original data
     private List<Unit> fUnits; // filtered data
-    private UnitFilter mFilter = new UnitFilter();
+    private final UnitFilter mFilter = new UnitFilter();
 
     public UnitAdapter(LayoutInflater inflater) {
         this.mInflater = inflater;
