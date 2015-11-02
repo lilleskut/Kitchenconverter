@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
+
+        mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.v("long clicked", "pos: " + position);
+                return true;
+            }
+        });
 
         List<Unit> list = myDbHelper.getAllUnits();
 
