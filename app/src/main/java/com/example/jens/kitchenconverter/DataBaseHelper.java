@@ -180,6 +180,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         values.put(UNITS_KEY_UNIT,unit.getUnit());
         values.put(UNITS_KEY_DIMENSION,unit.getDimension());
         values.put(UNITS_KEY_FACTOR,unit.getFactor());
+        values.put(UNITS_KEY_BASE,unit.getBase() ? 1 : 0 );
 
         // 3. updating row
         int i = db.update(TABLE_UNITS,

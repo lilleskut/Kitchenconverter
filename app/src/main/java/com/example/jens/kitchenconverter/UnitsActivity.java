@@ -73,6 +73,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                         public void onClick(DialogInterface dialog, int which) {
                             myDbHelper.updateBaseUnit(unit);
+                            mUnitAdapter.updateData(myDbHelper.getAllUnits());
                             dialog.dismiss();
                         }
                     });
