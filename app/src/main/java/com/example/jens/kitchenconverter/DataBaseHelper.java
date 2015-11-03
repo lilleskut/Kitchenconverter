@@ -246,6 +246,9 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return baseUnit;
     }
+    public String getBaseDensity() {
+        return getBaseUnit("mass").getUnit() + " / " + getBaseUnit("volume").getUnit();
+    }
 
     // make "unit" the new base unit
     // update all factors for this dimension

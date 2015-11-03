@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -41,8 +42,17 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        // read and disply list of densities
+        // set header
+        TextView header1 = (TextView) findViewById(R.id.column_header1);
+        TextView header2 = (TextView) findViewById(R.id.column_header2);
+
+        header1.setText(R.string.substance);
         DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+        header2.setText(myDbHelper.getBaseDensity());
+
+
+        // display list of densities
+
         ListView mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
