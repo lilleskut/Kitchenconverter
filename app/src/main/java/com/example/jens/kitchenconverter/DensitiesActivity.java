@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class DensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -89,6 +91,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 d.setCancelable(true);
                 final EditText editSubstance = (EditText) d.findViewById(R.id.editTextSubstance);
                 final EditText editDensity = (EditText) d.findViewById(R.id.editTextDensity);
+                final TextView densityDimension = (TextView) d.findViewById(R.id.density_dimension);
+
+                final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+                densityDimension.setText(myDbHelper.getBaseDensity());
 
                 Button addBtn = (Button) d.findViewById(R.id.button1);
                 // set click listener for add button in add_unit_dialog
@@ -99,16 +105,16 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                                   Double densityDensity = Double.valueOf(editDensity.getText().toString());
 
                                                   Density adddensity = new Density(densitySubstance, densityDensity, context);
-                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+
                                                   myDbHelper.addDensity(adddensity);
                                                   mDensityAdapter.updateData(myDbHelper.getAllDensities());
-                                                  myDbHelper.close();
                                                   d.dismiss();
                                               }
                                           }
 
 
                 );
+                myDbHelper.close();
                 d.show();
                 break;
             default:
@@ -132,6 +138,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
         final EditText editDensity = (EditText) d.findViewById(R.id.editTextDensity);
         editDensity.setText(Double.toString(density.getDensity()));
+        final TextView densityDimension = (TextView) d.findViewById(R.id.density_dimension);
+
+        final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+        densityDimension.setText(myDbHelper.getBaseDensity());
 
         d.show();
 
@@ -144,7 +154,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         deleteBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
 
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                                              myDbHelper.deleteDensity(density);
                                              mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                              myDbHelper.close();
@@ -153,10 +162,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                      }
         );
 
+
         // set click listener for modify button in modify_dialog
         modifyBtn.setOnClickListener(new View.OnClickListener() {
                                          public void onClick(View v) {
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                                              String densitySubstance = editSubstance.getText().toString();
                                              Double densityDensity = Double.valueOf(editDensity.getText().toString());
@@ -171,6 +180,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                      }
         );
 
-
+        myDbHelper.close();
     }
 }

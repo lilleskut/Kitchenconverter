@@ -53,6 +53,16 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
+        // set header
+        TextView header1 = (TextView) findViewById(R.id.column_header1);
+        TextView header2 = (TextView) findViewById(R.id.column_header2);
+        TextView header3 = (TextView) findViewById(R.id.column_header3);
+
+        header1.setText(R.string.unit);
+        header2.setText(R.string.dimension);
+        header3.setText(R.string.factor);
+
         final DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
         mainListView = (ListView) findViewById(R.id.listView);
