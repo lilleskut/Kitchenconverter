@@ -57,7 +57,8 @@ public class Unit {
             throw new IllegalArgumentException("Factor is negative");
         }
 
-        this.factor = f; }
+        this.factor = f;
+    }
 
     public void setBase(Boolean b) {
         this.base = b;

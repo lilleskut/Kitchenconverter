@@ -28,6 +28,7 @@ import java.util.List;
 
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "UnitsActivity";
+    private static final Double zeroThreshold = 0.000000001;
     private RadioButton radioButton;
     private RadioButton radioFilterButton;
     final Context context = this;
@@ -211,15 +212,17 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                                   Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
-                                                  Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
-                                                  Double spinner_factor = selected_unit.getFactor();
+                                                  if (unitFactor > zeroThreshold ) { // don't set units with factor 0
+                                                      Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                                      Double spinner_factor = selected_unit.getFactor();
 
-                                                  Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
-                                                  DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+                                                      Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
+                                                      DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
-                                                  myDbHelper.addUnit(addunit);
-                                                  mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                                  myDbHelper.close();
+                                                      myDbHelper.addUnit(addunit);
+                                                      mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                                      myDbHelper.close();
+                                                  }
                                                   d.dismiss();
                                               }
                                           }
