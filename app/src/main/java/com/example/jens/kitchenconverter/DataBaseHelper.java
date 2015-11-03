@@ -262,10 +262,30 @@ class DataBaseHelper extends SQLiteOpenHelper {
             Double multiplier = 1/factor;
 
             SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-            String query = "UPDATE " + TABLE_UNITS + " SET " + UNITS_KEY_FACTOR + " = " + UNITS_KEY_FACTOR + "* ? WHERE "+UNITS_KEY_DIMENSION
-                    + "=?";
 
-            Cursor cursor = db.rawQuery(query, new String[]{ String.valueOf(multiplier), dimension });
+            // update units table
+            String queryUnits = "UPDATE " + TABLE_UNITS + " SET " + UNITS_KEY_FACTOR + " = " + UNITS_KEY_FACTOR + "* ? WHERE "+UNITS_KEY_DIMENSION
+                    + "=?";
+            Cursor cursor = db.rawQuery(queryUnits, new String[]{ String.valueOf(multiplier), dimension });
+            cursor.moveToFirst();
+            cursor.close();
+
+            // update densities table
+            Double density_multiplier = 1.0;
+
+            switch ( dimension ) {
+                case "mass":
+                    density_multiplier = multiplier;
+                    break;
+                case "volume":
+                    density_multiplier = factor;
+                    break;
+                default:
+                    break;
+            }
+
+            String queryDensities = "UPDATE " + TABLE_DENSITIES + " SET " + DENSITIES_KEY_DENSITY + " = " + DENSITIES_KEY_DENSITY + "* ? WHERE " + DENSITIES_KEY_DENSITY + " NOT NULL";
+            cursor = db.rawQuery(queryDensities, new String[]{ String.valueOf(density_multiplier) });
             cursor.moveToFirst();
             cursor.close();
             db.close();
