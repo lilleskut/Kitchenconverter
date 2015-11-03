@@ -1,5 +1,6 @@
 package com.example.jens.kitchenconverter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,11 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
         holder.dimensionTextView.setText(dimensionTitle);
         holder.factorTextView.setText(factorTitle);
 
+        if(unit.getBase()) {
+            convertView.setBackgroundColor(Color.LTGRAY);
+        } else {
+            convertView.setBackgroundColor(Color.WHITE);
+        }
         return convertView;
     }
 
