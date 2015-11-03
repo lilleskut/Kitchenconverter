@@ -53,6 +53,10 @@ public class Unit {
         if( f == null ) {
             throw new IllegalArgumentException("Factor is null");
         }
+        if ( f < 0 ) {
+            throw new IllegalArgumentException("Factor is negative");
+        }
+
         this.factor = f; }
 
     public void setBase(Boolean b) {
