@@ -2,10 +2,13 @@ package com.example.jens.kitchenconverter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,37 +86,48 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 startActivity(i);
                 break;
             case 99: // add
-                final Dialog d = new Dialog(context);
-                d.setContentView(R.layout.add_density_dialog);
-                d.setTitle("Add density");
-                d.setCancelable(true);
-                final EditText editSubstance = (EditText) d.findViewById(R.id.editTextSubstance);
-                final EditText editDensity = (EditText) d.findViewById(R.id.editTextDensity);
-                final TextView densityDimension = (TextView) d.findViewById(R.id.density_dimension);
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.add_density_prompt, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+
+                // set add_density_prompt.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);
+                final EditText editDensity = (EditText) promptsView.findViewById(R.id.editTextDensity);
+                final TextView densityDimension = (TextView) promptsView.findViewById(R.id.density_dimension);
 
                 final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                 densityDimension.setText(myDbHelper.getBaseDensity());
 
-                Button addBtn = (Button) d.findViewById(R.id.button1);
-                // set click listener for add button in add_unit_dialog
-                addBtn.setOnClickListener(new View.OnClickListener() {
-                                              public void onClick(View v) {
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Add",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        String densitySubstance = editSubstance.getText().toString();
+                                        Double densityDensity = Double.valueOf(editDensity.getText().toString());
+                                        Density adddensity = new Density(densitySubstance, densityDensity, context);
+                                        myDbHelper.addDensity(adddensity);
+                                        mDensityAdapter.updateData(myDbHelper.getAllDensities());
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
 
-                                                  String densitySubstance = editSubstance.getText().toString();
-                                                  Double densityDensity = Double.valueOf(editDensity.getText().toString());
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
 
-                                                  Density adddensity = new Density(densitySubstance, densityDensity, context);
-
-                                                  myDbHelper.addDensity(adddensity);
-                                                  mDensityAdapter.updateData(myDbHelper.getAllDensities());
-                                                  d.dismiss();
-                                              }
-                                          }
-
-
-                );
                 myDbHelper.close();
-                d.show();
+                alertDialog.show();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
