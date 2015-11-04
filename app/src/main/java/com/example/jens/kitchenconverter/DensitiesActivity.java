@@ -147,7 +147,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
-        // set add_density_prompt.xml to alertdialog builder
+        // set edit_density_prompt.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
         final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);

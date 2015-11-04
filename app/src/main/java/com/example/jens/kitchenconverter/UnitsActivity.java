@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,11 +140,11 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                  final List<String> filterList = new ArrayList<>(Arrays.asList(dimensions));
                  filterList.add("All");
 
-                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                 AlertDialog.Builder filterDialogBuilder = new AlertDialog.Builder(
                          context);
 
-                 alertDialogBuilder.setTitle(R.string.filter);
-                 alertDialogBuilder.setSingleChoiceItems(filterList.toArray(new String[filterList.size()]), -1, new DialogInterface.OnClickListener() {
+                 filterDialogBuilder.setTitle(R.string.filter);
+                 filterDialogBuilder.setSingleChoiceItems(filterList.toArray(new String[filterList.size()]), -1, new DialogInterface.OnClickListener() {
                      public void onClick(DialogInterface dialog, int item) {
 
                          String filterString = filterList.get(item);
@@ -156,32 +157,33 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                  });
 
-                 AlertDialog alertDialog = alertDialogBuilder.create();
-
-                 alertDialog.show();
+                 AlertDialog filterDialog = filterDialogBuilder.create();
+                 filterDialog.show();
 
                 break;
 
             case 99: // add
-                final Dialog d = new Dialog(context);
-                d.setContentView(R.layout.add_unit_dialog);
-                d.setTitle(R.string.addUnit);
-                d.setCancelable(true);
 
-                final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
-                final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.add_unit_prompt, null);
 
-                DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+                AlertDialog.Builder addDialogBuilder = new AlertDialog.Builder(
+                        context);
+
+                // set add_density_prompt.xml to alertdialog builder
+                addDialogBuilder.setView(promptsView);
+
+                final EditText editUnit = (EditText) promptsView.findViewById(R.id.editTextUnit);
+                final EditText editFactor = (EditText) promptsView.findViewById(R.id.editTextFactor);
+                final Spinner unitSpinner = (Spinner) promptsView.findViewById(R.id.unit_spinner);
+
+
+                final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
 
                 ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
                 final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
                 for(int j=0; j < dimensions.length; j++) {
-                    RadioButton rb = new RadioButton(context);
-                    rb.setText(dimensions[j]);
-                    rb.setId(j);
-                    radioDimensionGroup.addView(rb, j, layoutParams);
-
                     List<Unit> list = myDbHelper.getUnitsDimension(dimensions[j]);
                     SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
                     unitListArray.add(j,list);
@@ -190,51 +192,49 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 myDbHelper.close();
 
-                final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
-                final Spinner unitSpinner = (Spinner) d.findViewById(R.id.unit_spinner);
 
+                // set dialog message
+                addDialogBuilder
+                        .setCancelable(false)
+                        .setTitle(R.string.addUnit)
+                        .setSingleChoiceItems(dimensions, -1, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                unitSpinner.setAdapter(unitAdapterArray.get(item));
+                            }})
+                        .setPositiveButton(R.string.add,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String unitName = editUnit.getText().toString();
 
+                                        int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                        String unitDimension = dimensions[selectedPosition];
 
+                                        Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
-                radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
-                    }
-                });
+                                        if (unitFactor > zeroThreshold ) { // don't set units with factor 0
+                                            Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                            Double spinner_factor = selected_unit.getFactor();
 
+                                            Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
+                                            DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
+                                            myDbHelper.addUnit(addunit);
+                                            mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                            myDbHelper.close();
+                                        }
 
-                Button addBtn = (Button) d.findViewById(R.id.button1);
+                                }
+                            })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
 
+                        });
 
-                // set click listener for add button in add_unit_dialog
-                addBtn.setOnClickListener(new View.OnClickListener() {
-                                              public void onClick(View v) {
-                                                  String unitName = editUnit.getText().toString();
-
-                                                  int rgid = radioDimensionGroup.getCheckedRadioButtonId();
-                                                  radioButton = (RadioButton) d.findViewById(rgid);
-                                                  String unitDimension = radioButton.getText().toString();
-
-                                                  Double unitFactor = Double.valueOf(editFactor.getText().toString());
-
-                                                  if (unitFactor > zeroThreshold ) { // don't set units with factor 0
-                                                      Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
-                                                      Double spinner_factor = selected_unit.getFactor();
-
-                                                      Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
-                                                      DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
-
-                                                      myDbHelper.addUnit(addunit);
-                                                      mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                                      myDbHelper.close();
-                                                  }
-                                                  d.dismiss();
-                                              }
-                                          }
-                );
-                d.show();
+                // create alert dialog
+                AlertDialog addDialog = addDialogBuilder.create();
+                addDialog.show();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
