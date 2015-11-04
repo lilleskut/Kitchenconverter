@@ -24,6 +24,7 @@
     <string name="addDensity">Add Density</string>
     <string name="editDensity">Edit Density</string>
     <string name="cancel">Cancel</string>
+    <string name="editUnit">Edit unit</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

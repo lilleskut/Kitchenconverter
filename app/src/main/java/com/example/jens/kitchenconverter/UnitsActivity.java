@@ -245,110 +245,107 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final Unit unit = mUnitAdapter.getItem(position);
+        final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.add_unit_prompt, null);
 
-        final Dialog d = new Dialog(context);
-        d.setContentView(R.layout.edit_unit_dialog);
-        d.setTitle("Edit or delete unit");
-        d.setCancelable(true);
+        AlertDialog.Builder editDialogBuilder = new AlertDialog.Builder(
+                context);
 
-        // fill form with stored values
-        final EditText editUnit = (EditText) d.findViewById(R.id.editTextUnit);
+        editDialogBuilder.setView(promptsView);
+
+        final EditText editUnit = (EditText) promptsView.findViewById(R.id.editTextUnit);
         editUnit.setText(unit.getUnit());
 
-        String savedDimension=unit.getDimension();
+        String savedDimension = unit.getDimension();
 
-        final RadioGroup radioDimensionGroup= (RadioGroup) d.findViewById(R.id.radio_group);
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
-        // add radio buttons programmatically
-        LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
-                RadioGroup.LayoutParams.WRAP_CONTENT);
-        final Spinner unitSpinner = (Spinner) d.findViewById(R.id.unit_spinner);
+        final EditText editFactor = (EditText) promptsView.findViewById(R.id.editTextFactor);
+        editFactor.setText(Double.toString(unit.getFactor()));
 
-        DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+        final Spinner unitSpinner = (Spinner) promptsView.findViewById(R.id.unit_spinner);
+
+        final DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+
         ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
         final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
-        for(int i=0; i < dimensions.length; i++) {
-            RadioButton rb= new RadioButton(context);
-            rb.setText(dimensions[i]);
-            rb.setId(i);
-            if(dimensions[i].equals(savedDimension)) { rb.setChecked(true); }
-            radioDimensionGroup.addView(rb,i,layoutParams);
-
-            List<Unit> list = myDbHelper.getUnitsDimension(dimensions[i]);
+        int savedDimensionId = -1;
+        for (int j = 0; j < dimensions.length; j++) {
+            List<Unit> list = myDbHelper.getUnitsDimension(dimensions[j]);
             SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
-            unitListArray.add(i, list);
+            unitListArray.add(j, list);
             unitAdapterArray.add(sUnitAdapter);
-            if(dimensions[i].equals(savedDimension)) { unitSpinner.setAdapter(sUnitAdapter); }
+            if (dimensions[j].equals(savedDimension)) {
+                unitSpinner.setAdapter(sUnitAdapter);
+                savedDimensionId = j;
+            }
+
         }
 
         myDbHelper.close();
 
-        final EditText editFactor = (EditText) d.findViewById(R.id.editTextFactor);
-        editFactor.setText(Double.toString(unit.getFactor()));
 
-        Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
-        Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
+        // set dialog message
+        editDialogBuilder
+                .setCancelable(false)
+                .setTitle(R.string.editUnit)
+                .setSingleChoiceItems(dimensions, savedDimensionId, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        unitSpinner.setAdapter(unitAdapterArray.get(item));
+                    }
+                })
+                .setPositiveButton(R.string.modify,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+
+                                String unitName = editUnit.getText().toString();
+
+                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                String unitDimension = dimensions[selectedPosition];
+
+                                Double unitFactor = Double.valueOf(editFactor.getText().toString());
+                                if (unitFactor > zeroThreshold) { // don't set units with factor 0
+                                    Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                    Double spinner_factor = selected_unit.getFactor();
+
+                                    unit.setUnit(unitName);
+                                    unit.setDimension(unitDimension);
+                                    unit.setFactor(unitFactor * spinner_factor);
+
+                                    myDbHelper.updateUnit(unit);
+                                    mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                    myDbHelper.close();
+                                }
+                            }
+                        })
+                .setNeutralButton(R.string.delete,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+                                myDbHelper.deleteUnit(unit);
+                                mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                myDbHelper.close();
+                            }
+                        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+
+                });
+
+        // create alert dialog
+        AlertDialog editDialog = editDialogBuilder.create();
+        editDialog.show();
+
+
 
         if( unit.getBase() ) { // don't show delete button if base unit
-            deleteBtn.setVisibility(View.INVISIBLE);
+            editDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
         }
 
-        d.show();
-
-
-
-
-
-        radioDimensionGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                unitSpinner.setAdapter(unitAdapterArray.get(checkedId));
-            }
-        });
-
-        // set click listener for delete button in modify_dialog
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-                                         public void onClick(View v) {
-
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
-                                             myDbHelper.deleteUnit(unit);
-                                             mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                             myDbHelper.close();
-                                             d.dismiss();
-                                         }
-                                     }
-        );
-
-        // set click listener for modify button in modify_dialog
-        modifyBtn.setOnClickListener(new View.OnClickListener() {
-                                         public void onClick(View v) {
-                                             DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
-
-                                             String unitName = editUnit.getText().toString();
-                                             int rgid = radioDimensionGroup.getCheckedRadioButtonId();
-
-                                             radioButton = (RadioButton) d.findViewById(rgid);
-                                             String unitDimension = radioButton.getText().toString();
-
-                                             Double unitFactor = Double.valueOf(editFactor.getText().toString());
-
-                                             Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
-                                             Double spinner_factor = selected_unit.getFactor();
-
-                                             unit.setUnit(unitName);
-                                             unit.setDimension(unitDimension);
-                                             unit.setFactor(unitFactor*spinner_factor);
-
-                                             myDbHelper.updateUnit(unit);
-                                             mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                             myDbHelper.close();
-                                             d.dismiss();
-                                         }
-                                     }
-        );
 
 
     }
