@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UnitsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -127,42 +128,38 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
+        final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
         switch(id) {
             case R.id.action_settings:
                 Intent i = new Intent(UnitsActivity.this,SettingsActivity.class);
                 startActivity(i);
                 break;
              case 98: // filter
-                final Dialog fd = new Dialog(context);
-                fd.setContentView(R.layout.filter_units_dialog);
-                fd.setTitle("Filter");
-                fd.setCancelable(true);
 
-                final RadioGroup radioFilterGroup= (RadioGroup) fd.findViewById(R.id.radio_group);
-                for(int j=0; j < dimensions.length; j++) {
-                     RadioButton rb= new RadioButton(context);
-                     rb.setText(dimensions[j]);
-                     rb.setId(j);
-                     radioFilterGroup.addView(rb,j,layoutParams);
-                }
+                 final List<String> filterList = new ArrayList<>(Arrays.asList(dimensions));
+                 filterList.add("All");
 
-                radioFilterGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                     @Override
-                     public void onCheckedChanged(RadioGroup group, int checkedId) {
+                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                         context);
 
-                         int rfid = radioFilterGroup.getCheckedRadioButtonId();
-                         radioFilterButton = (RadioButton) fd.findViewById(rfid);
-                         String filterString = radioFilterButton.getText().toString();
-                         if(filterString.equalsIgnoreCase("all")) {
+                 alertDialogBuilder.setTitle(R.string.filter);
+                 alertDialogBuilder.setSingleChoiceItems(filterList.toArray(new String[filterList.size()]), -1, new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int item) {
+
+                         String filterString = filterList.get(item);
+                         if (filterString.equalsIgnoreCase("all")) {
                              mUnitAdapter.getFilter().filter("");
                          } else {
                              mUnitAdapter.getFilter().filter(filterString);
                          }
-                         fd.dismiss();
-                  }
+                     }
+
                  });
-                 fd.show();
+
+                 AlertDialog alertDialog = alertDialogBuilder.create();
+
+                 alertDialog.show();
+
                 break;
 
             case 99: // add
