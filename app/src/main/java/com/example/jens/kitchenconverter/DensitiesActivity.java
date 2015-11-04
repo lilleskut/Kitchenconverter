@@ -106,9 +106,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 // set dialog message
                 alertDialogBuilder
                         .setCancelable(false)
-                        .setPositiveButton("Add",
+                        .setTitle(R.string.addDensity)
+                        .setPositiveButton(R.string.add,
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
+                                    public void onClick(DialogInterface dialog, int id) {
                                         String densitySubstance = editSubstance.getText().toString();
                                         Double densityDensity = Double.valueOf(editDensity.getText().toString());
                                         Density adddensity = new Density(densitySubstance, densityDensity, context);
@@ -139,59 +140,63 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final Density density = mDensityAdapter.getItem(position);
 
-        final Dialog d = new Dialog(context);
-        d.setContentView(R.layout.edit_density_dialog);
-        d.setTitle("Edit or delete density");
-        d.setCancelable(true);
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
-        // fill form with stored values
-        final EditText editSubstance = (EditText) d.findViewById(R.id.editTextSubstance);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+
+        // set add_density_prompt.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);
+        final EditText editDensity = (EditText) promptsView.findViewById(R.id.editTextDensity);
+        final TextView densityDimension = (TextView) promptsView.findViewById(R.id.density_dimension);
+
         editSubstance.setText(density.getSubstance());
-
-        final EditText editDensity = (EditText) d.findViewById(R.id.editTextDensity);
         editDensity.setText(Double.toString(density.getDensity()));
-        final TextView densityDimension = (TextView) d.findViewById(R.id.density_dimension);
 
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
         densityDimension.setText(myDbHelper.getBaseDensity());
 
-        d.show();
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setTitle(R.string.editDensity)
+                .setPositiveButton(R.string.modify,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                String densitySubstance = editSubstance.getText().toString();
+                                Double densityDensity = Double.valueOf(editDensity.getText().toString());
+                                density.setSubstance(densitySubstance);
+                                density.setDensity(densityDensity);
 
+                                myDbHelper.updateDensity(density);
+                                mDensityAdapter.updateData(myDbHelper.getAllDensities());
+                                myDbHelper.close();
+                            }
+                        })
+                .setNeutralButton(R.string.delete,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
+                                myDbHelper.deleteDensity(density);
+                                mDensityAdapter.updateData(myDbHelper.getAllDensities());
+                                myDbHelper.close();
+                            }
+                        })
+                .setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
-
-        Button deleteBtn = (Button) d.findViewById(R.id.button_delete);
-        Button modifyBtn = (Button) d.findViewById(R.id.button_modify);
-        // set click listener for delete button in modify_dialog
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-                                         public void onClick(View v) {
-
-                                             myDbHelper.deleteDensity(density);
-                                             mDensityAdapter.updateData(myDbHelper.getAllDensities());
-                                             myDbHelper.close();
-                                             d.dismiss();
-                                         }
-                                     }
-        );
-
-
-        // set click listener for modify button in modify_dialog
-        modifyBtn.setOnClickListener(new View.OnClickListener() {
-                                         public void onClick(View v) {
-
-                                             String densitySubstance = editSubstance.getText().toString();
-                                             Double densityDensity = Double.valueOf(editDensity.getText().toString());
-                                             density.setSubstance(densitySubstance);
-                                             density.setDensity(densityDensity);
-
-                                             myDbHelper.updateDensity(density);
-                                             mDensityAdapter.updateData(myDbHelper.getAllDensities());
-                                             myDbHelper.close();
-                                             d.dismiss();
-                                         }
-                                     }
-        );
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
 
         myDbHelper.close();
+        alertDialog.show();
     }
 }

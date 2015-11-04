@@ -21,6 +21,9 @@
     <string name="all">All</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="addDensity">Add Density</string>
+    <string name="editDensity">Edit Density</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>
