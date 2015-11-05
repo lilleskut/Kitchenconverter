@@ -27,6 +27,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private TextView resultView;
     private ToggleButton toggle;
 
+
     private SpinnerUnitAdapter fUnitAdapter;
     private SpinnerUnitAdapter tUnitAdapter;
     private SpinnerDensityAdapter densityAdapter;
@@ -63,12 +64,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
         Spinner density_spinner = (Spinner) findViewById(R.id.density_spinner);
         final Button clear_button = (Button) findViewById(R.id.clear_button);
 
+        // get all units and all densities from DB
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
-
         List<Unit> list = myDbHelper.getAllUnits();
         List<Density> densities = myDbHelper.getAllDensities();
+        myDbHelper.close();
 
-        // populate from/to spinner
+        // populate from/to/density spinner
         fUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
         tUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
         densityAdapter = new SpinnerDensityAdapter(this, android.R.layout.simple_spinner_item, densities);
@@ -89,17 +91,15 @@ public class GeneralConverterActivity extends AppCompatActivity {
         from_spinner.setOnItemSelectedListener(onItemSelectedListenerFrom);
         to_spinner.setOnItemSelectedListener(onItemSelectedListenerTo);
         density_spinner.setOnItemSelectedListener(onItemSelectedListenerDensity);
-        toggle.setOnCheckedChangeListener(onCheckedChangeListener);
+        toggle.setOnCheckedChangeListener(toggleListener);
         clear_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick (View v) {
+            public void onClick(View v) {
                 editText.setText("");
                 resultView.setText("");
                 enterRational.unSet();
                 result.unSet();
             }
         });
-
-        myDbHelper.close();
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -116,15 +116,15 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (!automaticChanged) {
-                if (s.toString().isEmpty() || !MyRational.validFraction(s.toString())) {
-                    resultView.setText("");
-                    enterRational.unSet();
-                    result.unSet();
-                } else {
+                if (inputValid()) {
                     enterRational.setRationalFromString(s.toString());
                     if (enterRational.isSet()) {
                         calculateDisplayResult();
                     }
+                } else {
+                    resultView.setText("");
+                    enterRational.unSet();
+                    result.unSet();
                 }
             } else {
                 automaticChanged = false;
@@ -132,13 +132,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    CompoundButton.OnCheckedChangeListener toggleListener = new CompoundButton.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             automaticChanged = true;
-            String s = editText.getText().toString();
-            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
+            if (inputValid()) {
 
                 if (isChecked) { // fractions;
                     editText.setText(enterRational.toFractionString());
@@ -158,13 +157,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> adapterView, View view,
         int position, long id) {
 
-            String s = editText.getText().toString();
-            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
+            if (inputValid()) {
 
                 fUnit = fUnitAdapter.getItem(position);
                 from_factor.setRationalFromDouble(fUnit.getFactor());
 
-               calculateDisplayResult();
+                calculateDisplayResult();
             }
         }
 
@@ -178,12 +176,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,
                                    int position, long id) {
-            // hide keyboard
-            InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
-            String s = editText.getText().toString();
-            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
+            if (inputValid()) {
 
                 tUnit = tUnitAdapter.getItem(position);
                 to_factor.setRationalFromDouble(tUnit.getFactor());
@@ -202,8 +196,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,
                                    int position, long id) {
-            String s = editText.getText().toString();
-            if (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s)) {
+            if (inputValid()) {
 
                 density = densityAdapter.getItem(position);
                 density_factor.setRationalFromDouble(density.getDensity());
@@ -216,6 +209,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> adapter) {
         }
     };
+
+
+    private boolean inputValid() { // check whether entered value has proper format
+        String s = editText.getText().toString();
+        return (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s));
+    }
 
 
     private static boolean isMassVolume(Unit a, Unit b) {
