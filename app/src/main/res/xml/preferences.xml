@@ -10,6 +10,9 @@
         android:title="Edit Densities">
         <intent android:action="com.example.jens.kitchenconverter.DensitiesActivity"/>
     </Preference>
+    <Preference
+        android:key="revertDatabase"
+        android:title="@string/revert_database"/>
 </PreferenceScreen>
 
 

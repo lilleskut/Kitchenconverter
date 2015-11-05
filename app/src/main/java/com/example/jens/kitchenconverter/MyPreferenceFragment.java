@@ -1,14 +1,54 @@
 package com.example.jens.kitchenconverter;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
+import java.io.IOException;
 
 
 public class MyPreferenceFragment extends PreferenceFragment {
+    private static final String TAG = "MyPreferenceFragment";
     @Override
     public void onCreate(final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        Preference revert = findPreference("revertDatabase");
+        revert.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("Revert databaset");
+                builder.setMessage("Are you sure to revert the units and densities to default values?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        final DataBaseHelper myDbHelper = new DataBaseHelper(getActivity(),getActivity().getFilesDir().getAbsolutePath());
+                        try {
+                            myDbHelper.revertDataBase();
+                        } catch (IOException e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+                return true;
+            }
+        });
     }
 }

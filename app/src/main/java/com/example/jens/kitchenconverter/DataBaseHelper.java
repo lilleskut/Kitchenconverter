@@ -76,6 +76,15 @@ class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
     }
+    public void revertDataBase() throws IOException {
+        Log.d(TAG, "Database is going to be reverted from assets");
+        deleteDB();
+        try {
+            copyDataBase();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
     private boolean checkDataBase() {
 
         boolean checkDB = false;
