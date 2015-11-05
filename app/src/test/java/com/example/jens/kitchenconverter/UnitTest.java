@@ -43,7 +43,7 @@ public class UnitTest {
     public void testInitialization() throws Exception {
         assertNotNull(unit);
 
-        assertEquals("unit name is dm", "dm", unit.getUnit());
+        assertEquals("unit name is dm", "dm", unit.getName());
         assertEquals("unit dimension is length", "length", unit.getDimension());
         assertEquals("unit factor is 0.1",0.1d,unit.getFactor(),0.0001);
 
@@ -59,9 +59,9 @@ public class UnitTest {
 
     @Test
     public void testSetUnit() throws Exception {
-        unit.setUnit("g");
+        unit.setName("g");
 
-        assertEquals("unit name should be g","g",unit.getUnit());
+        assertEquals("unit name should be g","g",unit.getName());
     }
 
     @Rule
@@ -70,7 +70,7 @@ public class UnitTest {
     public void testSetUnitException() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(equalTo("Unit name is null"));
-        unit.setUnit(null);
+        unit.setName(null);
     }
 
     @Test

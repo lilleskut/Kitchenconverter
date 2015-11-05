@@ -80,7 +80,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
         String dimensionTitle;
         String factorTitle;
 
-        unitTitle = unit.getUnit();
+        unitTitle = unit.getName();
         dimensionTitle = unit.getDimension();
         factorTitle = unit.getFactor().toString();
 

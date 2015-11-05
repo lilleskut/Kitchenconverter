@@ -7,34 +7,32 @@ import java.util.Arrays;
 public class Unit {
 
     private int id;
-    private String unit; // name of unit, e.g. "m", "cm"
+    private String name; // name of unit, e.g. "m", "cm"
     private String dimension; // "length", "mass",...
-    private Double factor; // factor relative to base unit
-    private boolean base; // unit is base unit of its dimension
+    private Double factor; // factor relative to base name
+    private boolean base; // name is base name of its dimension
 
 
     private final Context ctx;
 
     public Unit(Context context){ this.ctx = context; }
-
-    public Unit(String unit, String dimension, Double factor, Boolean base, Context context) {
+    public Unit(String name, String dimension, Double factor, Boolean base, Context context) {
         super();
         this.ctx = context;
-        setUnit(unit);
+        setName(name);
         setDimension(dimension);
         setFactor(factor);
         setBase(base);
     }
 
+    // setters
     public void setId(int i) { this.id = i; }
-
-    public void setUnit(String u) {
+    public void setName(String u) {
         if( u == null ) {
             throw new IllegalArgumentException("Unit name is null");
         }
-        this.unit = u;
+        this.name = u;
     }
-
     public void setDimension(String d) {
         if( d == null ) {
             throw new IllegalArgumentException("Dimension is null");
@@ -48,7 +46,6 @@ public class Unit {
 
             this.dimension = d;
     }
-
     public void setFactor(Double f) {
         if( f == null ) {
             throw new IllegalArgumentException("Factor is null");
@@ -59,26 +56,20 @@ public class Unit {
 
         this.factor = f;
     }
-
     public void setBase(Boolean b) {
         this.base = b;
     }
 
+    // getters
     public int getId() { return id; }
-
-    public String getUnit() { return unit; }
-
+    public String getName() { return name; }
     public String getDimension() { return dimension; }
-
     public Double getFactor() { return factor; }
-
     public Boolean getBase() { return base; }
-
-
 
     @Override
     public String toString() {
-        return "Unit [id=" + id + ", name=" + unit + ", dimension=" + dimension + ", factor=" + factor + "]";
+        return "Unit [id=" + id + ", name=" + name + ", dimension=" + dimension + ", factor=" + factor + "]";
     }
 
 

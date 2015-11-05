@@ -76,7 +76,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
                     builder.setTitle("Confirm new base unit");
-                    builder.setMessage("Are you sure to make " + unit.getUnit() + " your new base unit for dimension " + unit.getDimension() + "?");
+                    builder.setMessage("Are you sure to make " + unit.getName() + " your new base unit for dimension " + unit.getDimension() + "?");
 
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
@@ -252,7 +252,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         editDialogBuilder.setView(promptsView);
 
         final EditText editUnit = (EditText) promptsView.findViewById(R.id.editTextUnit);
-        editUnit.setText(unit.getUnit());
+        editUnit.setText(unit.getName());
 
         String savedDimension = unit.getDimension();
 
@@ -306,7 +306,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                     Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
                                     Double spinner_factor = selected_unit.getFactor();
 
-                                    unit.setUnit(unitName);
+                                    unit.setName(unitName);
                                     unit.setDimension(unitDimension);
                                     unit.setFactor(unitFactor * spinner_factor);
 

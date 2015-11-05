@@ -33,7 +33,7 @@ public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
         label.setTextColor(Color.BLACK);
         label.setTextSize(mContext.getResources().getDimension(R.dimen.list_row_font_size));
         label.setGravity(Gravity.CENTER);
-        label.setText(getItem(position).getUnit());
+        label.setText(getItem(position).getName());
 
         return label;
     }
@@ -42,7 +42,7 @@ public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView label = (TextView) View.inflate(mContext,R.layout.row_spinner,null);
-        label.setText(getItem(position).getUnit());
+        label.setText(getItem(position).getName());
         return label;
     }
 }

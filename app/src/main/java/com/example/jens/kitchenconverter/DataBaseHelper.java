@@ -143,7 +143,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 2. create Contentvalues to add "key" column/value
         ContentValues values = new ContentValues();
-        values.put(UNITS_KEY_UNIT,unit.getUnit()); // get unit name
+        values.put(UNITS_KEY_UNIT,unit.getName()); // get unit name
         values.put(UNITS_KEY_DIMENSION,unit.getDimension()); // get dimension name
         values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
         values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
@@ -186,7 +186,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 2. Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(UNITS_KEY_UNIT,unit.getUnit());
+        values.put(UNITS_KEY_UNIT,unit.getName());
         values.put(UNITS_KEY_DIMENSION,unit.getDimension());
         values.put(UNITS_KEY_FACTOR,unit.getFactor());
         values.put(UNITS_KEY_BASE,unit.getBase() ? 1 : 0 );
@@ -244,7 +244,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()) {
                 baseUnit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                baseUnit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                baseUnit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
                 baseUnit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 baseUnit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 baseUnit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
@@ -256,7 +256,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         return baseUnit;
     }
     public String getBaseDensity() {
-        return getBaseUnit("mass").getUnit() + " / " + getBaseUnit("volume").getUnit();
+        return getBaseUnit("mass").getName() + " / " + getBaseUnit("volume").getName();
     }
 
     // make "unit" the new base unit
@@ -356,7 +356,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 unit = new Unit(myContext);
                 unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                unit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
                 unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
@@ -394,7 +394,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 unit = new Unit(myContext);
                 unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                unit.setUnit(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
                 unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
