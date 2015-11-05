@@ -25,7 +25,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
                 builder.setTitle("Revert databaset");
                 builder.setMessage("Are you sure to revert the units and densities to default values?");
 
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         final DataBaseHelper myDbHelper = new DataBaseHelper(getActivity(),getActivity().getFilesDir().getAbsolutePath());
@@ -38,7 +38,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
                     }
                 });
 
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
