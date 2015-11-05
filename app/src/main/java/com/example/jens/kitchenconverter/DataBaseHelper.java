@@ -31,15 +31,21 @@ class DataBaseHelper extends SQLiteOpenHelper {
     // constants for units table
     private static final String TABLE_UNITS = "units";
     private static final String UNITS_KEY_ID = "_id";
-    private static final String UNITS_KEY_UNIT = "UNIT";
+    private static final String UNITS_KEY_NAME = "NAME";
     private static final String UNITS_KEY_DIMENSION = "DIMENSION";
     private static final String UNITS_KEY_FACTOR = "FACTOR";
     private static final String UNITS_KEY_BASE = "BASE";
 
     private static final String TABLE_DENSITIES = "densities";
     private static final String DENSITIES_KEY_ID = "_id";
-    private static final String DENSITIES_KEY_SUBSTANCE = "SUBSTANCE";
+    private static final String DENSITIES_KEY_SUBSTANCEID = "SUBSTANCEID";
     private static final String DENSITIES_KEY_DENSITY = "DENSITY";
+
+    private static final String TABLE_SUBSTANCES = "substances";
+    private static final String SUBSTANCES_KEY_ID = "_id";
+    private static final String SUBSTANCES_KEY_NAME = "NAME";
+
+
 
     private SQLiteDatabase myDataBase;
     private final Context myContext;
@@ -143,7 +149,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 2. create Contentvalues to add "key" column/value
         ContentValues values = new ContentValues();
-        values.put(UNITS_KEY_UNIT,unit.getName()); // get unit name
+        values.put(UNITS_KEY_NAME,unit.getName()); // get unit name
         values.put(UNITS_KEY_DIMENSION,unit.getDimension()); // get dimension name
         values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
         values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
@@ -158,18 +164,37 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
     public void addDensity (Density density) {
         // for logging
-        Log.d("addDensityt",density.toString());
+        Log.d("addDensity",density.toString());
 
         // 1. Get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         // 2. create Contentvalues to add "key" column/value
         ContentValues values = new ContentValues();
-        values.put(DENSITIES_KEY_SUBSTANCE, density.getSubstance()); // get substance name
+        values.put(DENSITIES_KEY_SUBSTANCEID, density.getSubstanceId()); // get substance name
         values.put(DENSITIES_KEY_DENSITY, density.getDensity()); // get density
 
         // 3. insert
         db.insert(TABLE_DENSITIES,
+                null,// nullColumnHack
+                values);
+
+        // 4. close
+        db.close();
+    }
+    public void addSubstance (Substance substance) {
+        // for logging
+        Log.d("addSubstance",substance.toString());
+
+        // 1. Get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. create Contentvalues to add "key" column/value
+        ContentValues values = new ContentValues();
+        values.put(SUBSTANCES_KEY_NAME, substance.getName()); // get substance name
+
+        // 3. insert
+        db.insert(TABLE_SUBSTANCES,
                 null,// nullColumnHack
                 values);
 
@@ -186,7 +211,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 2. Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(UNITS_KEY_UNIT,unit.getName());
+        values.put(UNITS_KEY_NAME,unit.getName());
         values.put(UNITS_KEY_DIMENSION,unit.getDimension());
         values.put(UNITS_KEY_FACTOR,unit.getFactor());
         values.put(UNITS_KEY_BASE,unit.getBase() ? 1 : 0 );
@@ -210,7 +235,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 2. Create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(DENSITIES_KEY_SUBSTANCE,density.getSubstance());
+        values.put(DENSITIES_KEY_SUBSTANCEID,density.getSubstanceId());
         values.put(DENSITIES_KEY_DENSITY,density.getDensity());
 
         // 3. updating row
@@ -218,6 +243,27 @@ class DataBaseHelper extends SQLiteOpenHelper {
                 values,
                 DENSITIES_KEY_ID + " = ?",
                 new String[] {String.valueOf(density.getId()) });
+
+        // 4. close
+        db.close();
+
+        return i;
+    }
+    public int updateSubstance(Substance substance) {
+
+        Log.d("updateSubstance",substance.toString());
+        // 1. get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. Create ContentValues to add key "column"/value
+        ContentValues values = new ContentValues();
+        values.put(SUBSTANCES_KEY_NAME,substance.getName());
+
+        // 3. updating row
+        int i = db.update(TABLE_SUBSTANCES,
+                values,
+                SUBSTANCES_KEY_ID + " = ?",
+                new String[] {String.valueOf(substance.getId()) });
 
         // 4. close
         db.close();
@@ -244,7 +290,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()) {
                 baseUnit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                baseUnit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                baseUnit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_NAME)));
                 baseUnit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 baseUnit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 baseUnit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
@@ -338,6 +384,20 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d("deleteDensity", density.toString());
     }
+    public void deleteSubstance(Substance substance) {
+        // 1. get reference to writeable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        // 2. delete
+        db.delete(TABLE_SUBSTANCES,
+                SUBSTANCES_KEY_ID+" = ?",
+                new String[] { String.valueOf(substance.getId()) });
+
+        // 3. close
+        db.close();
+
+        Log.d("deleteSubstance", substance.toString());
+    }
 
     // get lists of elements
     public List<Unit> getAllUnits() {
@@ -356,7 +416,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 unit = new Unit(myContext);
                 unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_NAME)));
                 unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
@@ -394,7 +454,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 unit = new Unit(myContext);
                 unit.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNITS_KEY_ID))));
-                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_UNIT)));
+                unit.setName(cursor.getString(cursor.getColumnIndex(UNITS_KEY_NAME)));
                 unit.setDimension(cursor.getString(cursor.getColumnIndex(UNITS_KEY_DIMENSION)));
                 unit.setFactor(Double.parseDouble(cursor.getString(cursor.getColumnIndex(UNITS_KEY_FACTOR))));
                 unit.setBase(cursor.getInt(cursor.getColumnIndex(UNITS_KEY_BASE)) != 0);
@@ -423,9 +483,9 @@ class DataBaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 density = new Density(myContext);
-                density.setId(Integer.parseInt(cursor.getString(0)));
-                density.setSubstance(cursor.getString(1));
-                density.setDensity(Double.parseDouble(cursor.getString(2)));
+                density.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_ID))));
+                density.setSubstanceId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_SUBSTANCEID))));
+                density.setDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_DENSITY))));
 
                 // add unit to units
                 densities.add(density);
@@ -435,6 +495,33 @@ class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return densities;
+    }
+    public List<Substance> getAllSubstances() {
+        List<Substance> substances = new LinkedList<>();
+
+        // 1. build the query
+        String query = "SELECT * FROM " + TABLE_SUBSTANCES;
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, null);
+
+        // 3. go over each row, build unit and add it to list
+        Substance substance;
+        if(cursor.moveToFirst()) {
+            do {
+                substance = new Substance(myContext);
+                substance.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_ID))));
+                substance.setName(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
+
+                // add unit to units
+                substances.add(substance);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return substances;
     }
 
 
@@ -450,7 +537,19 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG,"onCreate");
+        if(!db.isReadOnly()) {
+            db.execSQL("PRAGMA foreign_keys=ON");
+        }
+        Log.d(TAG, "onCreate");
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     @Override
