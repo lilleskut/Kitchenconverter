@@ -61,7 +61,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
 
             // create a new "Holder" with subviews
             holder = new ViewHolder();
-            holder.unitTextView = (TextView) convertView.findViewById(R.id.text_unit);
+            holder.nameTextView = (TextView) convertView.findViewById(R.id.text_name);
             holder.dimensionTextView = (TextView) convertView.findViewById(R.id.text_dimension);
             holder.factorTextView = (TextView) convertView.findViewById(R.id.text_factor);
 
@@ -85,7 +85,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
         factorTitle = unit.getFactor().toString();
 
         // Send these Strings to the TextViews for display
-        holder.unitTextView.setText(unitTitle);
+        holder.nameTextView.setText(unitTitle);
         holder.dimensionTextView.setText(dimensionTitle);
         holder.factorTextView.setText(factorTitle);
 
@@ -138,7 +138,7 @@ public class UnitAdapter extends BaseAdapter implements Filterable {
     }
 
     private static class ViewHolder {
-        public TextView unitTextView;
+        public TextView nameTextView;
         public TextView dimensionTextView;
         public TextView factorTextView;
     }
