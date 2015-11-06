@@ -6,23 +6,23 @@ import android.content.Context;
 public class Density {
 
     private int id;
-    private int substanceId; // id of substance
+    private String substance; // substance
     private Double density; // density in kg/l (water = 1)
 
     private final Context ctx;
 
     public Density(Context context) { this.ctx=context; }
-    public Density(int substanceId, Double density, Context context) {
+    public Density(String substance, Double density, Context context) {
         super();
         this.ctx = context;
-        setSubstanceId(substanceId);
+        setSubstance(substance);
         setDensity(density);
     }
 
     // setters
     public void setId(int i) { this.id = i; }
-    public void setSubstanceId(int u) {
-        this.substanceId = u;
+    public void setSubstance(String u) {
+        this.substance = u;
     }
     public void setDensity(Double f) {
         if( f == null ) {
@@ -32,6 +32,6 @@ public class Density {
 
     // getters
     public int getId() { return id; }
-    public int getSubstanceId() { return substanceId; }
+    public String getSubstance() { return substance; }
     public Double getDensity() { return density; }
 }

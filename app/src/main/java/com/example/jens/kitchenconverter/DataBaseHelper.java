@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -162,22 +163,34 @@ class DataBaseHelper extends SQLiteOpenHelper {
         // 4. close
         db.close();
     }
-    public void addDensity (Density density) {
+
+    /*
+    public void addDensity (Density density) { // add density/substance
         // for logging
         Log.d("addDensity",density.toString());
 
         // 1. Get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
+
+        String substance = density.getSubstance(); // insert into TABLE_SUBSTANCES, check if exists already
+        Double densityValue = density.getDensity(); // insert into TABLE_DENSITIES
+
+
         // 2. create Contentvalues to add "key" column/value
-        ContentValues values = new ContentValues();
-        values.put(DENSITIES_KEY_SUBSTANCEID, density.getSubstanceId()); // get substance name
-        values.put(DENSITIES_KEY_DENSITY, density.getDensity()); // get density
+        ContentValues valuesDens = new ContentValues();
+        valuesDens.put(DENSITIES_KEY_SUBSTANCEID, density.getSubstanceId()); // get substance name
+        valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity()); // get density
 
         // 3. insert
         db.insert(TABLE_DENSITIES,
                 null,// nullColumnHack
-                values);
+                valuesDens);
+
+        ContentValues valuesSubs = new ContentValues();
+        db.insert(TABLE_SUBSTANCES,
+                null,
+                valuesSubs);
 
         // 4. close
         db.close();
@@ -200,7 +213,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 4. close
         db.close();
-    }
+    } */
 
     // update elements
     public int updateUnit(Unit unit) {
@@ -227,6 +240,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return i;
     }
+
+    /*
     public int updateDensity(Density density) {
 
         Log.d("updateDensity",density.toString());
@@ -269,7 +284,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return i;
-    }
+    }*/
 
     // get current base unit
     private Unit getBaseUnit(String dimension) {
@@ -307,6 +322,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
     // make "unit" the new base unit
     // update all factors for this dimension
+
     public void updateBaseUnit(Unit unit) {
 
         Double factor = unit.getFactor();
@@ -370,6 +386,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
             Log.d("deleteUnit", unit.toString());
         }
     }
+
+    /*
     public void deleteDensity(Density density) {
         // 1. get reference to writeable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -383,7 +401,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         Log.d("deleteDensity", density.toString());
-    }
+    } */
+    /*
     public void deleteSubstance(Substance substance) {
         // 1. get reference to writeable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -397,7 +416,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         Log.d("deleteSubstance", substance.toString());
-    }
+    } */
 
     // get lists of elements
     public List<Unit> getAllUnits() {
@@ -468,11 +487,18 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return units;
     }
+
+
     public List<Density> getAllDensities() {
         List<Density> densities = new LinkedList<>();
 
         // 1. build the query
-        String query = "SELECT * FROM " + TABLE_DENSITIES;
+
+        String query = "SELECT " + TABLE_DENSITIES + "." + DENSITIES_KEY_ID + ", "
+                                 + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + ", "
+                                 + TABLE_DENSITIES + "." + DENSITIES_KEY_DENSITY
+                                 + " FROM " + TABLE_DENSITIES + " INNER JOIN " + TABLE_SUBSTANCES
+                                 + " ON " + TABLE_DENSITIES + "." + DENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID;
 
         // 2. get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
@@ -484,7 +510,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 density = new Density(myContext);
                 density.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_ID))));
-                density.setSubstanceId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_SUBSTANCEID))));
+                density.setSubstance(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
                 density.setDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_DENSITY))));
 
                 // add unit to units
@@ -496,6 +522,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return densities;
     }
+
+    /*
     public List<Substance> getAllSubstances() {
         List<Substance> substances = new LinkedList<>();
 
@@ -522,7 +550,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return substances;
-    }
+    } */
 
 
     @Override
@@ -544,11 +572,11 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-        if (!db.isReadOnly()) {
-            // Enable foreign key constraints
-            db.execSQL("PRAGMA foreign_keys=ON;");
+    public void onConfigure(SQLiteDatabase database) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            database.setForeignKeyConstraintsEnabled(true);
+        } else {
+            database.execSQL("PRAGMA foreign_keys=ON");
         }
     }
 

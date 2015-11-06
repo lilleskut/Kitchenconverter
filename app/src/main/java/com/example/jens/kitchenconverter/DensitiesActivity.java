@@ -85,6 +85,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 break;
             case 99: // add
                 // get prompts.xml view
+                /*
                 LayoutInflater li = LayoutInflater.from(context);
                 View promptsView = li.inflate(R.layout.add_density_prompt, null);
 
@@ -128,6 +129,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 myDbHelper.close();
                 alertDialog.show();
                 break;
+                */
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -139,6 +141,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         final Density density = mDensityAdapter.getItem(position);
 
         // get prompts.xml view
+        /*
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
@@ -196,5 +199,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
         myDbHelper.close();
         alertDialog.show();
+        */
     }
 }
