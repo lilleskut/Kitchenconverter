@@ -164,37 +164,48 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*
+
     public void addDensity (Density density) { // add density/substance
-        // for logging
+
         Log.d("addDensity",density.toString());
 
-        // 1. Get reference to writable DB
+
+        String substanceName = density.getSubstance();
+
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
 
-        String substance = density.getSubstance(); // insert into TABLE_SUBSTANCES, check if exists already
-        Double densityValue = density.getDensity(); // insert into TABLE_DENSITIES
+        // insert into substances table
+        ContentValues valuesSubs = new ContentValues();
+        valuesSubs.put(SUBSTANCES_KEY_NAME, substanceName);
+        long substanceId = db.insert(TABLE_SUBSTANCES,
+                                    null,
+                                    valuesSubs);
 
-
-        // 2. create Contentvalues to add "key" column/value
+        // insert into densities table
         ContentValues valuesDens = new ContentValues();
-        valuesDens.put(DENSITIES_KEY_SUBSTANCEID, density.getSubstanceId()); // get substance name
-        valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity()); // get density
-
-        // 3. insert
+        valuesDens.put(DENSITIES_KEY_SUBSTANCEID, substanceId);
+        valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity());
         db.insert(TABLE_DENSITIES,
-                null,// nullColumnHack
+                null,
                 valuesDens);
 
-        ContentValues valuesSubs = new ContentValues();
-        db.insert(TABLE_SUBSTANCES,
-                null,
-                valuesSubs);
-
-        // 4. close
         db.close();
     }
+
+    public boolean substanceExists (String sub) { // check whether substance name exists in substances table
+
+        String query = "SELECT 1 FROM " + TABLE_SUBSTANCES + " WHERE " + SUBSTANCES_KEY_NAME + "=? COLLATE NOCASE LIMIT 1";
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        Cursor cursor = db.rawQuery(query, new String[] { sub });
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        db.close();
+        return exists;
+    }
+
+    /*
     public void addSubstance (Substance substance) {
         // for logging
         Log.d("addSubstance",substance.toString());
@@ -213,7 +224,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 4. close
         db.close();
-    } */
+    }
+    */
 
     // update elements
     public int updateUnit(Unit unit) {
@@ -227,7 +239,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         values.put(UNITS_KEY_NAME,unit.getName());
         values.put(UNITS_KEY_DIMENSION,unit.getDimension());
         values.put(UNITS_KEY_FACTOR,unit.getFactor());
-        values.put(UNITS_KEY_BASE,unit.getBase() ? 1 : 0 );
+        values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
 
         // 3. updating row
         int i = db.update(TABLE_UNITS,

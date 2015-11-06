@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 break;
             case 99: // add
                 // get prompts.xml view
-                /*
+
                 LayoutInflater li = LayoutInflater.from(context);
                 View promptsView = li.inflate(R.layout.add_density_prompt, null);
 
@@ -111,9 +112,14 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                     public void onClick(DialogInterface dialog, int id) {
                                         String densitySubstance = editSubstance.getText().toString();
                                         Double densityDensity = Double.valueOf(editDensity.getText().toString());
-                                        Density adddensity = new Density(densitySubstance, densityDensity, context);
-                                        myDbHelper.addDensity(adddensity);
-                                        mDensityAdapter.updateData(myDbHelper.getAllDensities());
+
+                                        if( !myDbHelper.substanceExists(densitySubstance) ) {
+                                            Density adddensity = new Density(densitySubstance, densityDensity, context);
+                                            myDbHelper.addDensity(adddensity);
+                                            mDensityAdapter.updateData(myDbHelper.getAllDensities());
+                                        } else {
+                                            Toast.makeText(getApplicationContext(),"This substance already exists",Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -129,7 +135,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 myDbHelper.close();
                 alertDialog.show();
                 break;
-                */
             default:
                 return super.onOptionsItemSelected(item);
         }
