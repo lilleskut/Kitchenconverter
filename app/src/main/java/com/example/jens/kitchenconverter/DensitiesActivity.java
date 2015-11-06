@@ -110,15 +110,20 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                         .setPositiveButton(R.string.add,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        String densitySubstance = editSubstance.getText().toString();
-                                        Double densityDensity = Double.valueOf(editDensity.getText().toString());
 
-                                        if( !myDbHelper.substanceExists(densitySubstance) ) {
+                                            String densitySubstance = editSubstance.getText().toString();
+                                            Double densityDensity;
+                                        if( editDensity.getText().toString().trim().equals("") ) {
+                                            densityDensity = 0.0;
+                                        } else {
+                                            densityDensity = Double.valueOf(editDensity.getText().toString());
+                                        }
+                                        if (!myDbHelper.substanceExists(densitySubstance)) {
                                             Density adddensity = new Density(densitySubstance, densityDensity, context);
                                             myDbHelper.addDensity(adddensity);
                                             mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                         } else {
-                                            Toast.makeText(getApplicationContext(),"This substance already exists",Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "This substance already exists", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 })
@@ -146,7 +151,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         final Density density = mDensityAdapter.getItem(position);
 
         // get prompts.xml view
-        /*
+
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
@@ -178,7 +183,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                 density.setSubstance(densitySubstance);
                                 density.setDensity(densityDensity);
 
-                                myDbHelper.updateDensity(density);
+                                // myDbHelper.updateDensity(density);
                                 mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                 myDbHelper.close();
                             }
@@ -204,6 +209,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
 
         myDbHelper.close();
         alertDialog.show();
-        */
+
     }
 }

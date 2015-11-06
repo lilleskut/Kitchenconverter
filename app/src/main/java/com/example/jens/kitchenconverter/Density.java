@@ -7,7 +7,7 @@ public class Density {
 
     private int id;
     private String substance; // substance
-    private Double density; // density in kg/l (water = 1)
+    private Double density = null; // density in kg/l (water = 1); null means it is not set
 
     private final Context ctx;
 

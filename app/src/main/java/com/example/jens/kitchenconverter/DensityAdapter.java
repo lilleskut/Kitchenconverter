@@ -68,7 +68,12 @@ public class DensityAdapter extends BaseAdapter {
         String densityTitle;
 
         substanceTitle = density.getSubstance();
-        densityTitle = density.getDensity().toString();
+
+        if ( density.getDensity() == null  ) {
+            densityTitle = "";
+        } else {
+            densityTitle = density.getDensity().toString();
+        }
 
         // Send these Strings to the TextViews for display
         holder.substanceTextView.setText(substanceTitle);
