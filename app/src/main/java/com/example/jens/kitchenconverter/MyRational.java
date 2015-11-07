@@ -77,18 +77,22 @@ public class MyRational {
 
     // setters
     public void setRationalFromDouble(Double d) {
-        String s = String.valueOf(d);
-        int digitsDec = s.length() -1 -s.indexOf('.');
+        if ( d!= null ) {
+            String s = String.valueOf(d);
+            int digitsDec = s.length() - 1 - s.indexOf('.');
 
-        int den =1;
-        for(int i = 0; i < digitsDec; i++) {
-            d *= 10;
-            den *=10;
+            int den = 1;
+            for (int i = 0; i < digitsDec; i++) {
+                d *= 10;
+                den *= 10;
+            }
+            int num = (int) Math.round(d);
+
+            this.numerator = num / gcdThing(num, den);
+            this.denominator = den / gcdThing(num, den);
+        } else {
+            this.unSet();
         }
-        int num = (int) Math.round(d);
-
-        this.numerator = num/gcdThing(num,den);
-        this.denominator = den/gcdThing(num,den);
     }
     public void setRationalFromString(String s) {
         int num=0;
@@ -124,7 +128,7 @@ public class MyRational {
             this.denominator = den / gcdThing(num, den);
         }
     }
-    public void unSet() { this.denominator=0; }
+    public void unSet() { this.numerator=0; this.denominator=0; }
 
     // output Strings
     public String toFractionString() { // return fraction string

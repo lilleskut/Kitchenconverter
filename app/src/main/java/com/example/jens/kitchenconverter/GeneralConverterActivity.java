@@ -139,7 +139,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-            if (inputValid()) {
+            if (inputValid() && result.isSet() ) {
                 automaticChanged = true;
                 String editString;
                 if (isChecked) { // fractions;
@@ -244,10 +244,10 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
         }  else if(isMassVolume(fUnit,tUnit)) { // mass-volume conversion
 
-            if(fUnit.getDimension().equals("mass")) {
-                result = enterRational.multiply(from_factor).divide(to_factor).divide(density_factor);
-            } else {
-                result = enterRational.multiply(from_factor).divide(to_factor).multiply(density_factor);
+            if(fUnit.getDimension().equals("mass") && density_factor.isSet() ) {
+                    result = enterRational.multiply(from_factor).divide(to_factor).divide(density_factor);
+                } else {
+                    result = enterRational.multiply(from_factor).divide(to_factor).multiply(density_factor);
             }
 
         } else { // not convertable
