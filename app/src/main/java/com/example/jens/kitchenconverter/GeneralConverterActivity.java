@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -115,6 +116,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
+
             if (!automaticChanged) {
                 if (inputValid()) {
                     enterRational.setRationalFromString(s.toString());
@@ -136,9 +138,9 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            automaticChanged = true;
-            if (inputValid()) {
 
+            if (inputValid()) {
+                automaticChanged = true;
                 if (isChecked) { // fractions;
                     editText.setText(enterRational.toFractionString());
                     resultView.setText(result.toFractionString());
@@ -213,7 +215,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
     private boolean inputValid() { // check whether entered value has proper format
         String s = editText.getText().toString();
-        return (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s));
+
+        // return (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s));
+        if (s.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 
