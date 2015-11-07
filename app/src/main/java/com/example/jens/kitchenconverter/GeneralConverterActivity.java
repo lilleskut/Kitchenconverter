@@ -141,14 +141,17 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
             if (inputValid()) {
                 automaticChanged = true;
+                String editString;
                 if (isChecked) { // fractions;
-                    editText.setText(enterRational.toFractionString());
+                    editString = enterRational.toFractionString();
                     resultView.setText(result.toFractionString());
 
                 } else { //decimals
-                    editText.setText(String.valueOf(enterRational.toDecimalsString()));
+                    editString = String.valueOf(enterRational.toDecimalsString());
                     resultView.setText(String.valueOf(result.toDecimalsString()));
                 }
+                editText.setText(editString);
+                editText.setSelection(editString.length());
             }
         }
     };
@@ -217,7 +220,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         String s = editText.getText().toString();
 
         // return (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s));
-        if (s.isEmpty()) {
+        if (s.isEmpty() || !MyRational.validFraction(s) ) {
             return false;
         } else {
             return true;
