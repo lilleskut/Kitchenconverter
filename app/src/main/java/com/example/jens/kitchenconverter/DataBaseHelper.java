@@ -25,7 +25,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DataBaseHelper";
     private static final Double zeroThreshold = 0.000000001;
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     private String pathToSaveDBFile;
 
@@ -230,53 +230,41 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return i;
     }
-
-    /*
-    public int updateDensity(Density density) {
+    public void updateDensity(Density density) {
 
         Log.d("updateDensity",density.toString());
-        // 1. get reference to writable DB
+
+        density.getId(); // id in densities table
+
+
+
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
-        // 2. Create ContentValues to add key "column"/value
-        ContentValues values = new ContentValues();
-        values.put(DENSITIES_KEY_SUBSTANCEID,density.getSubstanceId());
-        values.put(DENSITIES_KEY_DENSITY,density.getDensity());
 
-        // 3. updating row
-        int i = db.update(TABLE_DENSITIES,
-                values,
+        ContentValues valuesSubs = new ContentValues();
+        valuesSubs.put(SUBSTANCES_KEY_NAME, density.getSubstance());
+
+        // update substances table
+        long substanceId = db.update(TABLE_SUBSTANCES,
+                valuesSubs,
+                SUBSTANCES_KEY_ID + " = (SELECT " + DENSITIES_KEY_SUBSTANCEID +
+                                        " FROM " + TABLE_DENSITIES +
+                                        " WHERE " + DENSITIES_KEY_ID + "= ? )",
+                new String[] { String.valueOf(density.getId()) });
+
+        // update densities table
+        ContentValues valuesDens = new ContentValues();
+        valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity());
+        db.update(TABLE_DENSITIES,
+                valuesDens,
                 DENSITIES_KEY_ID + " = ?",
-                new String[] {String.valueOf(density.getId()) });
+                new String[] { String.valueOf(density.getId()) });
 
-        // 4. close
         db.close();
 
-        return i;
     }
-    public int updateSubstance(Substance substance) {
 
-        Log.d("updateSubstance",substance.toString());
-        // 1. get reference to writable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-
-        // 2. Create ContentValues to add key "column"/value
-        ContentValues values = new ContentValues();
-        values.put(SUBSTANCES_KEY_NAME,substance.getName());
-
-        // 3. updating row
-        int i = db.update(TABLE_SUBSTANCES,
-                values,
-                SUBSTANCES_KEY_ID + " = ?",
-                new String[] {String.valueOf(substance.getId()) });
-
-        // 4. close
-        db.close();
-
-        return i;
-    }*/
-
-    // get current base unit
+    // get/update base unit, get base density
     private Unit getBaseUnit(String dimension) {
 
         String[] dimensions = myContext.getResources().getStringArray(R.array.dimensions_array);
@@ -306,13 +294,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return baseUnit;
     }
-    public String getBaseDensity() {
-        return getBaseUnit("mass").getName() + " / " + getBaseUnit("volume").getName();
-    }
-
-    // make "unit" the new base unit
-    // update all factors for this dimension
-
     public void updateBaseUnit(Unit unit) {
 
         Double factor = unit.getFactor();
@@ -360,6 +341,11 @@ class DataBaseHelper extends SQLiteOpenHelper {
         updateUnit(unit);
 
     }
+    public String getBaseDensity() {
+        return getBaseUnit("mass").getName() + " / " + getBaseUnit("volume").getName();
+    }
+
+
 
     // delete elements
     public void deleteUnit(Unit unit) {

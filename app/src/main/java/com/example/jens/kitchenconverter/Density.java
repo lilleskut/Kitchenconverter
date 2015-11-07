@@ -25,9 +25,6 @@ public class Density {
         this.substance = u;
     }
     public void setDensity(Double f) {
-        if( f == null ) {
-            throw new IllegalArgumentException("Density is null");
-        }
         this.density = f; }
 
     // getters

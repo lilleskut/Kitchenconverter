@@ -114,7 +114,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                             String densitySubstance = editSubstance.getText().toString();
                                             Double densityDensity;
                                         if( editDensity.getText().toString().trim().equals("") ) {
-                                            densityDensity = 0.0;
+                                            densityDensity = null;
                                         } else {
                                             densityDensity = Double.valueOf(editDensity.getText().toString());
                                         }
@@ -166,7 +166,11 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         final TextView densityDimension = (TextView) promptsView.findViewById(R.id.density_dimension);
 
         editSubstance.setText(density.getSubstance());
-        editDensity.setText(Double.toString(density.getDensity()));
+        if (density.getDensity() == null ) {
+            editDensity.setText("");
+        } else {
+            editDensity.setText(Double.toString(density.getDensity()));
+        }
 
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
         densityDimension.setText(myDbHelper.getBaseDensity());
@@ -179,11 +183,17 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 String densitySubstance = editSubstance.getText().toString();
-                                Double densityDensity = Double.valueOf(editDensity.getText().toString());
+                                Double densityDensity;
+                                if( editDensity.getText().toString().trim().equals("") ) {
+                                    densityDensity = null;
+                                } else {
+                                    densityDensity = Double.valueOf(editDensity.getText().toString());
+                                }
+
                                 density.setSubstance(densitySubstance);
                                 density.setDensity(densityDensity);
 
-                                // myDbHelper.updateDensity(density);
+                                myDbHelper.updateDensity(density);
                                 mDensityAdapter.updateData(myDbHelper.getAllDensities());
                                 myDbHelper.close();
                             }
