@@ -503,9 +503,9 @@ class DataBaseHelper extends SQLiteOpenHelper {
     public List<Density> getAllDensities() {
         List<Density> densities = new LinkedList<>();
 
-        String query = "SELECT " + TABLE_DENSITIES + "." + DENSITIES_KEY_ID + ", "
-                                 + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + ", "
-                                 + TABLE_DENSITIES + "." + DENSITIES_KEY_DENSITY
+        String query = "SELECT " + TABLE_DENSITIES + "." + DENSITIES_KEY_ID + " AS ID, "
+                                 + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " AS SUBSTANCE, "
+                                 + TABLE_DENSITIES + "." + DENSITIES_KEY_DENSITY + " AS DENSITY "
                                  + " FROM " + TABLE_DENSITIES + " INNER JOIN " + TABLE_SUBSTANCES
                                  + " ON " + TABLE_DENSITIES + "." + DENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID;
 
@@ -517,10 +517,10 @@ class DataBaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 density = new Density(myContext);
-                density.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_ID))));
-                density.setSubstance(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
-                if ( cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_DENSITY)) != null ) {
-                    density.setDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex(DENSITIES_KEY_DENSITY))));
+                density.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("ID"))));
+                density.setSubstance(cursor.getString(cursor.getColumnIndex("SUBSTANCE")));
+                if ( cursor.getString(cursor.getColumnIndex("DENSITY")) != null ) {
+                    density.setDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex("DENSITY"))));
                 }
 
                 // add unit to units
