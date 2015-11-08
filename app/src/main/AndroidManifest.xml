@@ -45,6 +45,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".PackageDensitiesActivity"
+            android:label="PackageDensities"
+            android:parentActivityName=".SettingsActivity">
+            <intent-filter>
+                <action android:name="com.example.jens.kitchenconverter.PackageDensitiesActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity" />
