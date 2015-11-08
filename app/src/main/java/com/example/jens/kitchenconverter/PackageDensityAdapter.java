@@ -77,6 +77,7 @@ public class PackageDensityAdapter extends BaseAdapter {
 
         // Send these Strings to the TextViews for display
         holder.substanceTextView.setText(substanceTitle);
+        holder.packageTextView.setText(packageTitle);
         holder.packageDensityTextView.setText(packageDensityTitle);
 
         return convertView;

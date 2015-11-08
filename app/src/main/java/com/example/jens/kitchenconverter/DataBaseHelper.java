@@ -25,7 +25,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DataBaseHelper";
     private static final Double zeroThreshold = 0.000000001;
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private String pathToSaveDBFile;
 
@@ -50,7 +50,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String PACKAGES_KEY_ID = "_id";
     private static final String PACKAGES_KEY_NAME = "NAME";
 
-    private static final String TABLE_PACKAGEDENSITIES = "densities";
+    private static final String TABLE_PACKAGEDENSITIES = "packageDensities";
     private static final String PACKAGEDENSITIES_KEY_ID = "_id";
     private static final String PACKAGEDENSITIES_KEY_SUBSTANCEID = "SUBSTANCEID";
     private static final String PACKAGEDENSITIES_KEY_PACKAGEID = "PACKAGEID";
@@ -466,10 +466,10 @@ class DataBaseHelper extends SQLiteOpenHelper {
     public List<PackageDensity> getAllPackageDensities() {
         List<PackageDensity> packageDensities = new LinkedList<>();
 
-        String query = "SELECT " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_ID + ", "
-                + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + ", "
-                + TABLE_PACKAGES + "." + PACKAGES_KEY_NAME + ", "
-                + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEDENSITY
+        String query = "SELECT " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_ID + " AS ID, "
+                + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " AS SUBSTANCE, "
+                + TABLE_PACKAGES + "." + PACKAGES_KEY_NAME + " AS PACKAGE, "
+                + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEDENSITY + " AS DENSITY "
                 + " FROM " + TABLE_PACKAGEDENSITIES
                 + " INNER JOIN " + TABLE_SUBSTANCES
                 + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID
@@ -483,10 +483,10 @@ class DataBaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()) {
             do {
                 packageDensity = new PackageDensity(myContext);
-                packageDensity.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PACKAGEDENSITIES_KEY_ID))));
-                packageDensity.setSubstance(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
-                packageDensity.setPackageName((cursor.getString(cursor.getColumnIndex(PACKAGES_KEY_NAME))));
-                packageDensity.setPackageDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex(PACKAGEDENSITIES_KEY_PACKAGEDENSITY))));
+                packageDensity.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("ID"))));
+                packageDensity.setSubstance(cursor.getString(cursor.getColumnIndex("SUBSTANCE")));
+                packageDensity.setPackageName(cursor.getString(cursor.getColumnIndex("PACKAGE")));
+                packageDensity.setPackageDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex("DENSITY"))));
 
 
                 // add unit to units
