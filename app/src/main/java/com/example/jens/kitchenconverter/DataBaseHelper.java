@@ -258,9 +258,9 @@ class DataBaseHelper extends SQLiteOpenHelper {
         long substanceId = db.update(TABLE_SUBSTANCES,
                 valuesSubs,
                 SUBSTANCES_KEY_ID + " = (SELECT " + DENSITIES_KEY_SUBSTANCEID +
-                                        " FROM " + TABLE_DENSITIES +
-                                        " WHERE " + DENSITIES_KEY_ID + "= ? )",
-                new String[] { String.valueOf(density.getId()) });
+                        " FROM " + TABLE_DENSITIES +
+                        " WHERE " + DENSITIES_KEY_ID + "= ? )",
+                new String[]{String.valueOf(density.getId())});
 
         // update densities table
         ContentValues valuesDens = new ContentValues();
@@ -313,7 +313,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         oldBaseUnit.setBase(false);
         updateUnit(oldBaseUnit);
 
-        if ( factor>= zeroThreshold || factor <= -zeroThreshold ) { // avoid division by 0
+        if ( factor>= zeroThreshold  ) { // avoid division by 0
             Double multiplier = 1/factor;
 
             SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -339,10 +339,23 @@ class DataBaseHelper extends SQLiteOpenHelper {
                     break;
             }
 
-            String queryDensities = "UPDATE " + TABLE_DENSITIES + " SET " + DENSITIES_KEY_DENSITY + " = " + DENSITIES_KEY_DENSITY + "* ? WHERE " + DENSITIES_KEY_DENSITY + " NOT NULL";
+            String queryDensities = "UPDATE " + TABLE_DENSITIES +
+                                    " SET " + DENSITIES_KEY_DENSITY + " = " + DENSITIES_KEY_DENSITY +
+                                    "* ? WHERE " + DENSITIES_KEY_DENSITY + " NOT NULL";
             cursor = db.rawQuery(queryDensities, new String[]{ String.valueOf(density_multiplier) });
             cursor.moveToFirst();
             cursor.close();
+
+            // update package densities table
+            if ( dimension.equals("mass") ) {
+                String queryPackageDensities = "UPDATE " + TABLE_PACKAGEDENSITIES +
+                        " SET " + PACKAGEDENSITIES_KEY_PACKAGEDENSITY + " = " + PACKAGEDENSITIES_KEY_PACKAGEDENSITY +
+                        "* ? WHERE " + PACKAGEDENSITIES_KEY_PACKAGEDENSITY + " NOT NULL";
+                cursor = db.rawQuery(queryPackageDensities, new String[]{ String.valueOf(density_multiplier) });
+                cursor.moveToFirst();
+                cursor.close();
+            }
+
             db.close();
         }
 
