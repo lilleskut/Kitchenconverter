@@ -27,6 +27,8 @@
     <string name="editUnit">Edit unit</string>
     <string name="revert_database">Revert Database</string>
     <string name="packageName">Package type</string>
+    <string name="editPackageDensity">Edit Packages</string>
+    <string name="addPackageDensity">Add package</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

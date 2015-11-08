@@ -173,8 +173,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
         // 4. close
         db.close();
     }
-
-
     public void addDensity (Density density) { // add density/substance
 
         Log.d("addDensity", density.toString());
@@ -199,6 +197,31 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_DENSITIES,
                 null,
                 valuesDens);
+
+        db.close();
+    }
+
+    public void addPackageDensity (PackageDensity packageDensity) { // add density/substance
+
+        Log.d("addPackageDensity", packageDensity.toString());
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+
+        String packageName = packageDensity.getPackageName();
+        String substanceName = packageDensity.getSubstance();
+
+        int substanceId = getSubstanceId(substanceName);
+        int packageId = getPackageId(packageName);
+
+        // insert into substances table
+        ContentValues values = new ContentValues();
+        values.put(PACKAGEDENSITIES_KEY_SUBSTANCEID, substanceId);
+        values.put(PACKAGEDENSITIES_KEY_PACKAGEID, packageId);
+        values.put(PACKAGEDENSITIES_KEY_PACKAGEDENSITY, packageDensity.getPackageDensity());
+        db.insert(TABLE_PACKAGEDENSITIES,
+                null,
+                values);
 
         db.close();
     }
@@ -406,6 +429,15 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d("deleteDensity", density.toString());
     }
+    public void deletePackageDensity(PackageDensity packageDensity) {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        db.delete(TABLE_PACKAGEDENSITIES,
+                PACKAGEDENSITIES_KEY_ID + " = ?",
+                new String[]{String.valueOf(packageDensity.getId())});
+
+        Log.d("deletePackageDensity", packageDensity.toString());
+    }
 
     // get lists of elements
     public List<Unit> getAllUnits() {
@@ -511,8 +543,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return packageDensities;
     }
-
-
     public List<Density> getAllDensities() {
         List<Density> densities = new LinkedList<>();
 
@@ -544,6 +574,94 @@ class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return densities;
+    }
+
+    public List<Substance> getAllSubstances() {
+        List<Substance> substances = new LinkedList<>();
+
+        String query = "SELECT * FROM " + TABLE_SUBSTANCES;
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, null);
+
+        Substance substance;
+        if(cursor.moveToFirst()) {
+            do {
+                substance = new Substance(myContext);
+                substance.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_ID))));
+                substance.setName(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
+
+                substances.add(substance);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return substances;
+    }
+
+    public List<PackageType> getAllPackageTypes() {
+        List<PackageType> packageTypes = new LinkedList<>();
+
+        String query = "SELECT * FROM " + TABLE_PACKAGES;
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, null);
+
+        PackageType packageType;
+        if(cursor.moveToFirst()) {
+            do {
+                packageType = new PackageType(myContext);
+                packageType.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PACKAGES_KEY_ID))));
+                packageType.setName(cursor.getString(cursor.getColumnIndex(PACKAGES_KEY_NAME)));
+
+
+                packageTypes.add(packageType);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return packageTypes;
+    }
+
+    private int getSubstanceId(String u) {
+        int id = -1;
+        String query = "SELECT " + SUBSTANCES_KEY_ID +
+                       " FROM " + TABLE_SUBSTANCES +
+                       " WHERE " + SUBSTANCES_KEY_NAME +" = ?";
+
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, new String[] { u });
+
+        if ( cursor.getCount() > 0 ) {
+            cursor.moveToFirst();
+            id = cursor.getInt(cursor.getColumnIndex(SUBSTANCES_KEY_ID));
+        }
+        cursor.close();
+
+        return id;
+    }
+
+
+    private int getPackageId(String u) {
+        int id = -1;
+        String query = "SELECT " + PACKAGES_KEY_ID +
+                " FROM " + TABLE_PACKAGES +
+                " WHERE " + PACKAGES_KEY_NAME +" = ?";
+
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, new String[] { u });
+
+        if ( cursor.getCount() > 0 ) {
+            cursor.moveToFirst();
+            id = cursor.getInt(cursor.getColumnIndex(PACKAGES_KEY_ID));
+        }
+        cursor.close();
+
+        return id;
     }
 
 
