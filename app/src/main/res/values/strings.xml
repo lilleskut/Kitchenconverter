@@ -26,6 +26,7 @@
     <string name="cancel">Cancel</string>
     <string name="editUnit">Edit unit</string>
     <string name="revert_database">Revert Database</string>
+    <string name="packageName">Package type</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

@@ -354,6 +354,9 @@ class DataBaseHelper extends SQLiteOpenHelper {
     public String getBaseDensity() {
         return getBaseUnit("mass").getName() + " / " + getBaseUnit("volume").getName();
     }
+    public String getBasePackageDensity() {
+        return getBaseUnit("mass").getName() + " / pack";
+    }
 
 
 
