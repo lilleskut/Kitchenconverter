@@ -29,7 +29,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
     private String pathToSaveDBFile;
 
-    // constants for units table
+    // constants for tables
     private static final String TABLE_UNITS = "units";
     private static final String UNITS_KEY_ID = "_id";
     private static final String UNITS_KEY_NAME = "NAME";
@@ -45,6 +45,16 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_SUBSTANCES = "substances";
     private static final String SUBSTANCES_KEY_ID = "_id";
     private static final String SUBSTANCES_KEY_NAME = "NAME";
+
+    private static final String TABLE_PACKAGES = "packages";
+    private static final String PACKAGES_KEY_ID = "_id";
+    private static final String PACKAGES_KEY_NAME = "NAME";
+
+    private static final String TABLE_PACKAGEDENSITIES = "densities";
+    private static final String PACKAGEDENSITIES_KEY_ID = "_id";
+    private static final String PACKAGEDENSITIES_KEY_SUBSTANCEID = "SUBSTANCEID";
+    private static final String PACKAGEDENSITIES_KEY_PACKAGEID = "PACKAGEID";
+    private static final String PACKAGEDENSITIES_KEY_PACKAGEDENSITY = "PACKAGEDENSITY";
 
 
 
@@ -450,10 +460,45 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return units;
     }
+    public List<PackageDensity> getAllPackageDensities() {
+        List<PackageDensity> packageDensities = new LinkedList<>();
+
+        String query = "SELECT " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_ID + ", "
+                + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + ", "
+                + TABLE_PACKAGES + "." + PACKAGES_KEY_NAME + ", "
+                + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEDENSITY
+                + " FROM " + TABLE_PACKAGEDENSITIES
+                + " INNER JOIN " + TABLE_SUBSTANCES
+                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID
+                + " INNER JOIN " + TABLE_PACKAGES
+                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEID + "=" + TABLE_PACKAGES + "." + PACKAGES_KEY_ID;
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, null);
+
+        PackageDensity packageDensity;
+        if(cursor.moveToFirst()) {
+            do {
+                packageDensity = new PackageDensity(myContext);
+                packageDensity.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PACKAGEDENSITIES_KEY_ID))));
+                packageDensity.setSubstance(cursor.getString(cursor.getColumnIndex(SUBSTANCES_KEY_NAME)));
+                packageDensity.setPackageName((cursor.getString(cursor.getColumnIndex(PACKAGES_KEY_NAME))));
+                packageDensity.setPackageDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex(PACKAGEDENSITIES_KEY_PACKAGEDENSITY))));
+
+
+                // add unit to units
+                packageDensities.add(packageDensity);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return packageDensities;
+    }
+
+
     public List<Density> getAllDensities() {
         List<Density> densities = new LinkedList<>();
-
-        // 1. build the query
 
         String query = "SELECT " + TABLE_DENSITIES + "." + DENSITIES_KEY_ID + ", "
                                  + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + ", "
@@ -461,7 +506,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
                                  + " FROM " + TABLE_DENSITIES + " INNER JOIN " + TABLE_SUBSTANCES
                                  + " ON " + TABLE_DENSITIES + "." + DENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID;
 
-        // 2. get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, null);
 
