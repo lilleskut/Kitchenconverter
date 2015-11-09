@@ -501,8 +501,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_UNITS + " WHERE " + UNITS_KEY_DIMENSION +" = ?";
 
 
-
-        // 2. get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, new String[] { dimension });
 
@@ -639,6 +637,45 @@ class DataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return packageTypes;
+    }
+
+    public List<PackageDensity> geDensitiesSubstance(String substance) {
+        List<PackageDensity> packageDensities = new LinkedList<>();
+
+        String query = "SELECT " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_ID + " AS ID, "
+                + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " AS SUBSTANCE, "
+                + TABLE_PACKAGES + "." + PACKAGES_KEY_NAME + " AS PACKAGE, "
+                + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEDENSITY + " AS DENSITY "
+                + " FROM " + TABLE_PACKAGEDENSITIES
+                + " INNER JOIN " + TABLE_SUBSTANCES
+                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID
+                + " INNER JOIN " + TABLE_PACKAGES
+                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEID + "=" + TABLE_PACKAGES + "." + PACKAGES_KEY_ID
+                + " WHERE " + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " = ?";
+
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
+        Cursor cursor = db.rawQuery(query, new String[] { substance });
+
+        // 3. go over each row, build unit and add it to list
+        PackageDensity packageDensity;
+        if(cursor.moveToFirst()) {
+            do {
+                packageDensity = new PackageDensity(myContext);
+                packageDensity.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("ID"))));
+                packageDensity.setSubstance(cursor.getString(cursor.getColumnIndex("SUBSTANCE")));
+                packageDensity.setPackageName(cursor.getString(cursor.getColumnIndex("PACKAGE")));
+                packageDensity.setPackageDensity(Double.parseDouble(cursor.getString(cursor.getColumnIndex("DENSITY"))));
+
+
+                // add unit to units
+                packageDensities.add(packageDensity);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return packageDensities;
     }
 
     private int getSubstanceId(String u) {
