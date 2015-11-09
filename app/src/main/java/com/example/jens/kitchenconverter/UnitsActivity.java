@@ -254,7 +254,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final EditText editUnit = (EditText) promptsView.findViewById(R.id.editTextUnit);
         editUnit.setText(unit.getName());
 
-        String savedDimension = unit.getDimension();
+        final String savedDimension = unit.getDimension();
 
         final EditText editFactor = (EditText) promptsView.findViewById(R.id.editTextFactor);
         editFactor.setText(Double.toString(unit.getFactor()));
@@ -267,18 +267,27 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
         int savedDimensionId = -1;
+        int baseId = -1;
         for (int j = 0; j < dimensions.length; j++) {
             List<Unit> list = myDbHelper.getUnitsDimension(dimensions[j]);
             SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
             unitListArray.add(j, list);
             unitAdapterArray.add(sUnitAdapter);
+
             if (dimensions[j].equals(savedDimension)) {
                 unitSpinner.setAdapter(sUnitAdapter);
+                for(int i = 0; i< list.size(); i++ ) {
+                    if( list.get(i).getBase() ) {
+                        baseId = i;
+                        break;
+                    }
+                }
+                unitSpinner.setSelection(baseId);
                 savedDimensionId = j;
             }
 
         }
-
+        final int savedBaseId = baseId;
         myDbHelper.close();
 
 
@@ -288,7 +297,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 .setTitle(R.string.editUnit)
                 .setSingleChoiceItems(dimensions, savedDimensionId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
+
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        String unitDimension = dimensions[selectedPosition];
+
                         unitSpinner.setAdapter(unitAdapterArray.get(item));
+                        if ( unitDimension.equals(savedDimension) ) {
+                            unitSpinner.setSelection(savedBaseId);
+                        }
+
                     }
                 })
                 .setPositiveButton(R.string.modify,

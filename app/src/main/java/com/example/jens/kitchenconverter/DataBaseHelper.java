@@ -314,7 +314,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // get/update base unit, get base density
-    private Unit getBaseUnit(String dimension) {
+    public Unit getBaseUnit(String dimension) {
 
         String[] dimensions = myContext.getResources().getStringArray(R.array.dimensions_array);
 
