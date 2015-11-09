@@ -265,11 +265,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
     public void updateDensity(Density density) {
 
-        Log.d("updateDensity",density.toString());
-
-        density.getId(); // id in densities table
-
-
+        Log.d("updateDensity", density.toString());
 
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
@@ -295,6 +291,26 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         db.close();
 
+    }
+
+    public void updatePackageDensity(PackageDensity packageDensity) {
+
+        Log.d("updatePackageDensity",packageDensity.toString());
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+
+        ContentValues values = new ContentValues();
+        values.put(PACKAGEDENSITIES_KEY_SUBSTANCEID, getSubstanceId(packageDensity.getSubstance()));
+        values.put(PACKAGEDENSITIES_KEY_PACKAGEID, getPackageId(packageDensity.getPackageName()));
+        values.put(PACKAGEDENSITIES_KEY_PACKAGEDENSITY, packageDensity.getPackageDensity());
+
+        // update table
+        db.update(TABLE_PACKAGEDENSITIES,
+                values,
+                PACKAGEDENSITIES_KEY_ID + " = ?",
+                new String[] { String.valueOf(packageDensity.getId()) });
+
+        db.close();
     }
 
     // get/update base unit, get base density
@@ -416,10 +432,12 @@ class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
         String substance=density.getSubstance();
-
+        // this is done throug ON DELETE CASCADE
+        /*
         db.delete(TABLE_DENSITIES,
                 DENSITIES_KEY_ID+" = ?",
                 new String[] { String.valueOf(density.getId()) });
+        */
 
         db.delete(TABLE_SUBSTANCES,
                 SUBSTANCES_KEY_NAME+" = ?",
@@ -575,7 +593,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return densities;
     }
-
     public List<Substance> getAllSubstances() {
         List<Substance> substances = new LinkedList<>();
 
@@ -599,7 +616,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return substances;
     }
-
     public List<PackageType> getAllPackageTypes() {
         List<PackageType> packageTypes = new LinkedList<>();
 
@@ -643,8 +659,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
-
-
     private int getPackageId(String u) {
         int id = -1;
         String query = "SELECT " + PACKAGES_KEY_ID +

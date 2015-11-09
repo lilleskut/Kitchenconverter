@@ -161,7 +161,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             case 99: // add
 
                 LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.add_unit_prompt, null);
+                View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
 
                 AlertDialog.Builder addDialogBuilder = new AlertDialog.Builder(
                         context);
@@ -244,7 +244,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
         LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.add_unit_prompt, null);
+        View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
 
         AlertDialog.Builder editDialogBuilder = new AlertDialog.Builder(
                 context);

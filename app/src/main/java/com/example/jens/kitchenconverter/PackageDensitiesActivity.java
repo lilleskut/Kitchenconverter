@@ -24,6 +24,7 @@ import android.widget.ToggleButton;
 import java.util.List;
 
 public class PackageDensitiesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private static final Double zeroThreshold = 0.000000001;
     private static final String TAG = "DensitiesActivity";
     private final Context context = this;
 
@@ -87,12 +88,12 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
                 // get prompts.xml view
 
                 LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.add_packagedensity_prompt, null);
+                View promptsView = li.inflate(R.layout.edit_packagedensity_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
 
-                // set add_packagedensity_prompt.xml to alertdialog builder
+                // set edit_packagedensity_promptt.xml to alertdialog builder
                 alertDialogBuilder.setView(promptsView);
 
                 final Spinner spinnerSubstance = (Spinner) promptsView.findViewById(R.id.substance_spinner);
@@ -102,8 +103,6 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
 
                 final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                 packageDensityDimension.setText(myDbHelper.getBasePackageDensity());
-
-
 
                 // get all substances and all package-types from DB
 
@@ -178,25 +177,81 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
         // set edit_density_prompt.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
-        /*
-        final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);
-        final EditText editDensity = (EditText) promptsView.findViewById(R.id.editTextDensity);
-        final TextView densityDimension = (TextView) promptsView.findViewById(R.id.density_dimension);
 
-        editSubstance.setText(density.getSubstance());
-        if (density.getDensity() == null ) {
-            editDensity.setText("");
-        } else {
-            editDensity.setText(Double.toString(density.getDensity()));
-        }
-        */
+        final Spinner spinnerSubstance = (Spinner) promptsView.findViewById(R.id.substance_spinner);
+
+
+
+        final Spinner spinnerPackage = (Spinner) promptsView.findViewById(R.id.package_spinner);
+
+        final EditText editPackageDensity = (EditText) promptsView.findViewById(R.id.editTextPackageDensity);
+        editPackageDensity.setText(Double.toString(packageDensity.getPackageDensity()));
+
+        final TextView packageDensityDimension = (TextView) promptsView.findViewById(R.id.packagedensity_dimension);
+
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
-        // densityDimension.setText(myDbHelper.getBaseDensity());
+        packageDensityDimension.setText(myDbHelper.getBasePackageDensity());
+
+        // get all substances and all package-types from DB
+
+        List<Substance> substanceList = myDbHelper.getAllSubstances();
+        List<PackageType> packageTypeList = myDbHelper.getAllPackageTypes();
+        myDbHelper.close();
+
+        int substanceId=-1;
+        int packageId=-1;
+
+        // find index of substance/package
+        for(int i = 0; i< substanceList.size(); i++ ) {
+            if( substanceList.get(i).getName().equals(packageDensity.getSubstance()) ) {
+                substanceId = i;
+                break;
+            }
+        }
+        for(int i = 0; i< packageTypeList.size(); i++ ) {
+            if( packageTypeList.get(i).getName().equals(packageDensity.getPackageName()) ) {
+                packageId = i;
+                break;
+            }
+        }
+
+        // populate and set substances/package-types spinner
+        SpinnerSubstanceAdapter substanceAdapter;
+        SpinnerPackageTypeAdapter packageTypeAdapter;
+
+
+        substanceAdapter = new SpinnerSubstanceAdapter(this, android.R.layout.simple_spinner_item, substanceList);
+        packageTypeAdapter = new SpinnerPackageTypeAdapter(this, android.R.layout.simple_spinner_item, packageTypeList);
+        spinnerSubstance.setAdapter(substanceAdapter);
+        spinnerSubstance.setSelection(substanceId);
+        spinnerPackage.setAdapter(packageTypeAdapter);
+        spinnerPackage.setSelection(packageId);
+
 
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
                 .setTitle(R.string.editPackageDensity)
+                .setPositiveButton(R.string.modify,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+                                Double densityDensity = Double.valueOf(editPackageDensity.getText().toString());
+
+                                if ( densityDensity >= zeroThreshold ) {
+                                    Substance selected_substance = (Substance) spinnerSubstance.getSelectedItem();
+                                    PackageType selected_packageType = (PackageType) spinnerPackage.getSelectedItem();
+
+
+                                    packageDensity.setSubstance(selected_substance.getName());
+                                    packageDensity.setPackageName(selected_packageType.getName());
+                                    packageDensity.setPackageDensity(densityDensity);
+                                }
+                                myDbHelper.updatePackageDensity(packageDensity);
+                                mPackageDensityAdapter.updateData(myDbHelper.getAllPackageDensities());
+                                myDbHelper.close();
+                            }
+                        })
                 .setNeutralButton(R.string.delete,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {

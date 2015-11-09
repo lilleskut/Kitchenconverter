@@ -21,7 +21,6 @@
             android:layout_weight="1"
             android:inputType="numberDecimal"
             android:hint="@string/density"/>
-
         <TextView
             android:id="@+id/density_dimension"
             android:layout_width="0dp"

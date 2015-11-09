@@ -88,12 +88,12 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 // get prompts.xml view
 
                 LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.add_density_prompt, null);
+                View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
 
-                // set add_density_prompt.xml to alertdialog builder
+                // set edit_density_prompt.xml to alertdialog builder
                 alertDialogBuilder.setView(promptsView);
 
                 final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);
@@ -151,6 +151,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         final Density density = mDensityAdapter.getItem(position);
 
         // get prompts.xml view
+
 
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.edit_density_prompt, null);
