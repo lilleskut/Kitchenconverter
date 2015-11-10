@@ -1,13 +1,17 @@
 package com.example.jens.kitchenconverter;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -168,14 +172,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
             fUnit = fUnitAdapter.getItem(position);
             from_factor.setRationalFromDouble(fUnit.getFactor());
 
+
             if ( fUnit.getDimension().equals("pack") ) {
-                DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
-                List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
-                if ( packageDensities.size() > 0 ) {
-                    from_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity()); // for >1 need to add select dialog
-                }
-                myDbHelper.close();
+                setPackageDensityFrom();
             }
+
+
+
             if (inputValid()) {
                 calculateDisplayResult();
             }
@@ -293,7 +296,16 @@ public class GeneralConverterActivity extends AppCompatActivity {
     }
 
     private void calculateDisplayResult() {
-
+        //test logging
+        if ( tUnit.getDimension().equals("volume")) {
+            Log.d(TAG,"tUnit.getDimension().equals(volume)");
+        }
+        if ( from_packagedensity_factor.isSet() ) {
+            Log.d(TAG,"from_packagedensity_factor.isSet()");
+        }
+        if ( density_factor.isSet() ) {
+            Log.d(TAG,"density_factor.isSet()");
+        }
         /* cases:
             1. same dimension
             1.1 not "pack"
@@ -344,10 +356,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
             } else if ( isVolumePack(fUnit, tUnit) ) { // case 2.3
                 Log.d("TAG","case 2.3");
                 if ( fUnit.getDimension().equals("volume") && to_packagedensity_factor.isSet() && density_factor.isSet() ) { // volume -> pack
+                    Log.d("TAG","case 2.3a");
                     result = enterRational.multiply(from_factor).divide(to_packagedensity_factor).multiply(density_factor);
-                } else if ( fUnit.getDimension().equals("volume") && to_packagedensity_factor.isSet() && density_factor.isSet() ) { // pack -> volume
-                    result = enterRational.multiply(from_factor).divide(to_packagedensity_factor).divide(density_factor);
+                } else if ( tUnit.getDimension().equals("volume") && from_packagedensity_factor.isSet() && density_factor.isSet() ) { // pack -> volume
+                    Log.d("TAG","case 2.3b");
+                    result = enterRational.multiply(from_packagedensity_factor).divide(to_factor).divide(density_factor);
                 } else {
+                    Log.d("TAG","case 2.3c");
                     cannotConvert();
                 }
             } else { // case 2.4
@@ -356,13 +371,47 @@ public class GeneralConverterActivity extends AppCompatActivity {
             }
         }
         if (result.isSet()) {
+            Log.d(TAG,"result.isSet()");
             if (toggle.isChecked()) { // fractions
                 resultView.setText(result.toFractionString());
             } else { // decimals
                 resultView.setText(result.toDecimalsString());
             }
         } else {
+            Log.d(TAG,"!result.isSet()");
             resultView.setText("");
+        }
+    }
+
+    private void setPackageDensityFrom() {
+        DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
+        List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
+        myDbHelper.close();
+
+        if ( packageDensities.size() == 1 ) {
+            from_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity());
+        } else if ( packageDensities.size() > 1 ) {
+            // open dialog
+            final ArrayAdapter<PackageDensity> packageDensitiesArrayAdapter = new ArrayAdapter<PackageDensity>(this,android.R.layout.select_dialog_multichoice,packageDensities);
+
+            AlertDialog.Builder packDensitySelectDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.MyDialog));
+
+            packDensitySelectDialogBuilder.setTitle("Package type for " + density.getSubstance());
+            packDensitySelectDialogBuilder.setCancelable(false);
+
+            packDensitySelectDialogBuilder.setAdapter(packageDensitiesArrayAdapter,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    from_packagedensity_factor.setRationalFromDouble(packageDensitiesArrayAdapter.getItem(item).getPackageDensity());
+                    Log.d(TAG,"setting" + from_packagedensity_factor.toDecimalsString());
+                }
+
+            });
+
+            AlertDialog packDensitySelectDialog = packDensitySelectDialogBuilder.create();
+            packDensitySelectDialog.show();
+
+        } else {
+            from_packagedensity_factor.unSet();
         }
     }
 }

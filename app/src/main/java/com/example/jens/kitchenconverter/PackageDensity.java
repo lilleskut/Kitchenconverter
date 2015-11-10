@@ -33,4 +33,9 @@ public class PackageDensity {
     public String getSubstance() { return substance; }
     public String getPackageName() { return packageName; }
     public Double getPackageDensity() { return packageDensity; }
+
+    @Override
+    public String toString() {
+        return  substance + " | " + packageName + " | " + packageDensity;
+    }
 }
