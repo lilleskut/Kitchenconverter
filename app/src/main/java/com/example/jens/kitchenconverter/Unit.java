@@ -40,7 +40,7 @@ public class Unit {
 
         String[] dimensions = ctx.getResources().getStringArray(R.array.dimensions_array);
 
-        if(!Arrays.asList(dimensions).contains(d)){
+        if(!Arrays.asList(dimensions).contains(d) && !d.equals("pack")){
             throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
         }
 

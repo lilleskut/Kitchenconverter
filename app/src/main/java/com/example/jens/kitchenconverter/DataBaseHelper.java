@@ -25,7 +25,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DataBaseHelper";
     private static final Double zeroThreshold = 0.000000001;
     private static final String DATABASE_NAME = "kitchenConverter.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     private String pathToSaveDBFile;
 
@@ -461,14 +461,11 @@ class DataBaseHelper extends SQLiteOpenHelper {
     public List<Unit> getAllUnits() {
         List<Unit> units = new LinkedList<>();
 
-        // 1. build the query
         String query = "SELECT * FROM " + TABLE_UNITS;
 
-        // 2. get reference to writable DB
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READONLY);
         Cursor cursor = db.rawQuery(query, null);
 
-        // 3. go over each row, build unit and add it to list
         Unit unit;
         if(cursor.moveToFirst()) {
             do {
@@ -639,19 +636,20 @@ class DataBaseHelper extends SQLiteOpenHelper {
         return packageTypes;
     }
 
-    public List<PackageDensity> geDensitiesSubstance(String substance) {
+    public List<PackageDensity> getDensitiesSubstance(String substance) {
         List<PackageDensity> packageDensities = new LinkedList<>();
+
 
         String query = "SELECT " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_ID + " AS ID, "
                 + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " AS SUBSTANCE, "
                 + TABLE_PACKAGES + "." + PACKAGES_KEY_NAME + " AS PACKAGE, "
                 + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEDENSITY + " AS DENSITY "
                 + " FROM " + TABLE_PACKAGEDENSITIES
-                + " INNER JOIN " + TABLE_SUBSTANCES
+                + " JOIN " + TABLE_SUBSTANCES
                 + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_SUBSTANCEID + "=" + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_ID
+                + " AND " +  TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + "= ? "
                 + " INNER JOIN " + TABLE_PACKAGES
-                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEID + "=" + TABLE_PACKAGES + "." + PACKAGES_KEY_ID
-                + " WHERE " + TABLE_SUBSTANCES + "." + SUBSTANCES_KEY_NAME + " = ?";
+                + " ON " + TABLE_PACKAGEDENSITIES + "." + PACKAGEDENSITIES_KEY_PACKAGEID + "=" + TABLE_PACKAGES + "." + PACKAGES_KEY_ID;
 
 
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile,null,SQLiteDatabase.OPEN_READONLY);
