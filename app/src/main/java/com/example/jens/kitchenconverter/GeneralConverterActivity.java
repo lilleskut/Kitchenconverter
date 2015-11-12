@@ -20,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class GeneralConverterActivity extends AppCompatActivity {
@@ -66,8 +64,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
 
         // find views
-        Spinner from_spinner = (Spinner) findViewById(R.id.from_spinner);
-        Spinner to_spinner = (Spinner) findViewById(R.id.to_spinner);
+        MySpinner from_spinner = (MySpinner) findViewById(R.id.from_spinner);
+        MySpinner to_spinner = (MySpinner) findViewById(R.id.to_spinner);
         editText = (EditText) findViewById(R.id.enter_value);
         resultView = (TextView) findViewById(R.id.result_value);
         toggle = (ToggleButton) findViewById(R.id.toggle_button);
@@ -223,7 +221,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 setPackageDensityTo(view);
             } else if ( !tUnit.isPack() && fUnit.isPack() ) {
                 setPackageDensityFrom(view);
-            } else if ( tUnit.isPack() && fUnit.isPack() ) {
+            } else if ( tUnit.isPack() ) { // implies && fUnit.isPack() == true
                 setPackageDensityFrom(view);
                 setPackageDensityTo(view);
             } else {
