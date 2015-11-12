@@ -67,6 +67,10 @@ public class Unit {
     public Double getFactor() { return factor; }
     public Boolean getBase() { return base; }
 
+    public boolean isPack() {
+        return dimension.equals("pack");
+    }
+
     @Override
     public String toString() {
         return "Unit [id=" + id + ", name=" + name + ", dimension=" + dimension + ", factor=" + factor + "]";

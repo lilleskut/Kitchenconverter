@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class GeneralConverterActivity extends AppCompatActivity {
@@ -166,20 +168,16 @@ public class GeneralConverterActivity extends AppCompatActivity {
     AdapterView.OnItemSelectedListener onItemSelectedListenerFrom = new AdapterView.OnItemSelectedListener() {
 
         @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view,
+        public void onItemSelected(AdapterView<?> adapterView, final View view,
         int position, long id) {
 
             fUnit = fUnitAdapter.getItem(position);
             from_factor.setRationalFromDouble(fUnit.getFactor());
 
 
-            if ( fUnit.getDimension().equals("pack") ) {
-                setPackageDensityFrom();
-            }
-
-
-
-            if (inputValid()) {
+            if ( fUnit.isPack() ) {
+                setPackageDensityFrom(view);
+            } else {
                 calculateDisplayResult();
             }
         }
@@ -192,24 +190,17 @@ public class GeneralConverterActivity extends AppCompatActivity {
     AdapterView.OnItemSelectedListener onItemSelectedListenerTo = new AdapterView.OnItemSelectedListener() {
 
         @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view,
+        public void onItemSelected(AdapterView<?> adapterView, final View view,
                                    int position, long id) {
 
+            tUnit = tUnitAdapter.getItem(position);
+            to_factor.setRationalFromDouble(tUnit.getFactor());
 
 
-                tUnit = tUnitAdapter.getItem(position);
-                to_factor.setRationalFromDouble(tUnit.getFactor());
 
-                if ( tUnit.getDimension().equals("pack") ) {
-                    DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
-                    List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
-                    if ( packageDensities.size() > 0 ) {
-                        to_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity()); // for >1 need to add select dialog
-                    }
-                    myDbHelper.close();
-                }
-
-            if (inputValid()) {
+            if ( tUnit.isPack() ) {
+                setPackageDensityTo(view);
+            } else {
                 calculateDisplayResult();
             }
         }
@@ -225,26 +216,17 @@ public class GeneralConverterActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> adapterView, View view,
                                    int position, long id) {
 
+            density = densityAdapter.getItem(position);
+            density_factor.setRationalFromDouble(density.getDensity());
 
-                density = densityAdapter.getItem(position);
-                density_factor.setRationalFromDouble(density.getDensity());
-                if ( tUnit.getDimension().equals("pack") ) {
-                    DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
-                    List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
-                    if ( packageDensities.size() > 0 ) {
-                        to_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity()); // for >1 need to add select dialog
-                    }
-                    myDbHelper.close();
-                }
-                if ( fUnit.getDimension().equals("pack") ) {
-                    DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
-                    List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
-                    if ( packageDensities.size() > 0 ) {
-                        from_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity()); // for >1 need to add select dialog
-                    }
-                    myDbHelper.close();
-                }
-            if (inputValid()) {
+            if ( tUnit.isPack() && !fUnit.isPack() ) {
+                setPackageDensityTo(view);
+            } else if ( !tUnit.isPack() && fUnit.isPack() ) {
+                setPackageDensityFrom(view);
+            } else if ( tUnit.isPack() && fUnit.isPack() ) {
+                setPackageDensityFrom(view);
+                setPackageDensityTo(view);
+            } else {
                 calculateDisplayResult();
             }
         }
@@ -273,6 +255,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         return (aDim.equals("mass") && bDim.equals("volume")) || (bDim.equals("mass") && aDim.equals("volume"));
     }
 
+
     private static boolean isMassPack(Unit a, Unit b) {
         String aDim = a.getDimension();
         String bDim = b.getDimension();
@@ -296,16 +279,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
     }
 
     private void calculateDisplayResult() {
-        //test logging
-        if ( tUnit.getDimension().equals("volume")) {
-            Log.d(TAG,"tUnit.getDimension().equals(volume)");
-        }
-        if ( from_packagedensity_factor.isSet() ) {
-            Log.d(TAG,"from_packagedensity_factor.isSet()");
-        }
-        if ( density_factor.isSet() ) {
-            Log.d(TAG,"density_factor.isSet()");
-        }
+
         /* cases:
             1. same dimension
             1.1 not "pack"
@@ -317,82 +291,85 @@ public class GeneralConverterActivity extends AppCompatActivity {
             2.3 volume <-> package (convert via densities and packageDensities table)
             2.4 not convertable combinations such as mass<->length (inform user)
         */
+        if (inputValid()) {
+            if (hasSameDimension(fUnit, tUnit)) {
 
-        if(hasSameDimension(fUnit,tUnit) && !fUnit.getDimension().equals("pack") ) {
-
-            if( !fUnit.getDimension().equals("pack") ) {// case 1.1
-                Log.d("TAG","case 1.1");
-                result = enterRational.multiply(from_factor).divide(to_factor);
-            } else { // case 1.2
-                Log.d("TAG","case 1.2");
-                if ( from_packagedensity_factor.isSet() && to_packagedensity_factor.isSet() ) {
-                    result = enterRational.multiply(from_packagedensity_factor).divide(to_packagedensity_factor);
-                } else {
-                    cannotConvert();
-                }
-            }
-
-        }  else { // case 2
-            if(isMassVolume(fUnit,tUnit)) { // case 2.1
-                Log.d("TAG","case 2.1");
-                if (density_factor.isSet()) {
-                    if (fUnit.getDimension().equals("mass")) { // mass -> volume
-                        result = enterRational.multiply(from_factor).divide(to_factor).divide(density_factor);
-                    } else { // volume -> mass
-                        result = enterRational.multiply(from_factor).divide(to_factor).multiply(density_factor);
+                if (!fUnit.isPack() ) {// case 1.1
+                    Log.d("TAG", "case 1.1");
+                    result = enterRational.multiply(from_factor).divide(to_factor);
+                } else { // case 1.2
+                    Log.d("TAG", "case 1.2 from: " + from_packagedensity_factor.toDecimalsString() + ", to: " + to_packagedensity_factor.toDecimalsString());
+                    if (from_packagedensity_factor.isSet() && to_packagedensity_factor.isSet()) {
+                        result = enterRational.multiply(from_packagedensity_factor).divide(to_packagedensity_factor);
+                    } else {
+                        cannotConvert();
                     }
-                } else { // no density defined for this substance
+                }
+            } else { // case 2
+                if (isMassVolume(fUnit, tUnit)) { // case 2.1
+                    Log.d("TAG", "case 2.1");
+                    if (density_factor.isSet()) {
+                        if (fUnit.getDimension().equals("mass")) { // mass -> volume
+                            result = enterRational.multiply(from_factor).divide(to_factor).divide(density_factor);
+                        } else { // volume -> mass
+                            result = enterRational.multiply(from_factor).divide(to_factor).multiply(density_factor);
+                        }
+                    } else { // no density defined for this substance
+                        cannotConvert();
+                    }
+                } else if (isMassPack(fUnit, tUnit)) {// case 2.2
+                    Log.d("TAG", "case 2.2");
+                    if (fUnit.getDimension().equals("mass") && to_packagedensity_factor.isSet()) { // mass -> pack
+                        result = enterRational.multiply(from_factor).divide(to_packagedensity_factor);
+                    } else if (tUnit.getDimension().equals("mass") && from_packagedensity_factor.isSet()) { // pack -> mass
+                        result = enterRational.multiply(from_packagedensity_factor).divide(to_factor);
+                    } else {
+                        cannotConvert();
+                    }
+                } else if (isVolumePack(fUnit, tUnit)) { // case 2.3
+                    Log.d("TAG", "case 2.3");
+                    if (fUnit.getDimension().equals("volume") && to_packagedensity_factor.isSet() && density_factor.isSet()) { // volume -> pack
+                        Log.d("TAG", "case 2.3a");
+                        result = enterRational.multiply(from_factor).divide(to_packagedensity_factor).multiply(density_factor);
+                    } else if (tUnit.getDimension().equals("volume") && from_packagedensity_factor.isSet() && density_factor.isSet()) { // pack -> volume
+                        Log.d("TAG", "case 2.3b");
+                        result = enterRational.multiply(from_packagedensity_factor).divide(to_factor).divide(density_factor);
+                    } else {
+                        Log.d("TAG", "case 2.3c");
+                        cannotConvert();
+                    }
+                } else { // case 2.4
+                    Log.d("TAG", "case 2.4");
                     cannotConvert();
                 }
-            } else if ( isMassPack(fUnit,tUnit) ) {// case 2.2
-                Log.d("TAG","case 2.2");
-                if ( fUnit.getDimension().equals("mass") && to_packagedensity_factor.isSet() ) { // mass -> pack
-                    result = enterRational.multiply(from_factor).divide(to_packagedensity_factor);
-                } else if ( tUnit.getDimension().equals("mass") && from_packagedensity_factor.isSet() ) { // pack -> mass
-                    result = enterRational.multiply(from_packagedensity_factor).divide(to_factor);
-                } else {
-                    cannotConvert();
-                }
-            } else if ( isVolumePack(fUnit, tUnit) ) { // case 2.3
-                Log.d("TAG","case 2.3");
-                if ( fUnit.getDimension().equals("volume") && to_packagedensity_factor.isSet() && density_factor.isSet() ) { // volume -> pack
-                    Log.d("TAG","case 2.3a");
-                    result = enterRational.multiply(from_factor).divide(to_packagedensity_factor).multiply(density_factor);
-                } else if ( tUnit.getDimension().equals("volume") && from_packagedensity_factor.isSet() && density_factor.isSet() ) { // pack -> volume
-                    Log.d("TAG","case 2.3b");
-                    result = enterRational.multiply(from_packagedensity_factor).divide(to_factor).divide(density_factor);
-                } else {
-                    Log.d("TAG","case 2.3c");
-                    cannotConvert();
-                }
-            } else { // case 2.4
-                Log.d("TAG","case 2.4");
-                cannotConvert();
             }
-        }
-        if (result.isSet()) {
-            Log.d(TAG,"result.isSet()");
-            if (toggle.isChecked()) { // fractions
-                resultView.setText(result.toFractionString());
-            } else { // decimals
-                resultView.setText(result.toDecimalsString());
+            if (result.isSet()) {
+                Log.d(TAG, "result.isSet()");
+                if (toggle.isChecked()) { // fractions
+                    resultView.setText(result.toFractionString());
+                } else { // decimals
+                    resultView.setText(result.toDecimalsString());
+                }
+            } else {
+                Log.d(TAG, "!result.isSet()");
+                resultView.setText("");
             }
-        } else {
-            Log.d(TAG,"!result.isSet()");
-            resultView.setText("");
         }
     }
 
-    private void setPackageDensityFrom() {
+    private void setPackageDensityFrom(final View v) {
         DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
         List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
         myDbHelper.close();
 
         if ( packageDensities.size() == 1 ) {
-            from_packagedensity_factor.setRationalFromDouble(packageDensities.get(0).getPackageDensity());
+            fDensity=packageDensities.get(0);
+            from_packagedensity_factor.setRationalFromDouble(fDensity.getPackageDensity());
+            ((TextView) v).setText(fDensity.getPackageName());
+            calculateDisplayResult();
         } else if ( packageDensities.size() > 1 ) {
             // open dialog
-            final ArrayAdapter<PackageDensity> packageDensitiesArrayAdapter = new ArrayAdapter<PackageDensity>(this,android.R.layout.select_dialog_multichoice,packageDensities);
+            final ArrayAdapter<PackageDensity> packageDensitiesArrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_multichoice, packageDensities);
 
             AlertDialog.Builder packDensitySelectDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.MyDialog));
 
@@ -401,8 +378,11 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
             packDensitySelectDialogBuilder.setAdapter(packageDensitiesArrayAdapter,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    from_packagedensity_factor.setRationalFromDouble(packageDensitiesArrayAdapter.getItem(item).getPackageDensity());
+                    fDensity = packageDensitiesArrayAdapter.getItem(item);
+                    from_packagedensity_factor.setRationalFromDouble(fDensity.getPackageDensity());
+                    ((TextView) v).setText(fDensity.getPackageName());
                     Log.d(TAG,"setting" + from_packagedensity_factor.toDecimalsString());
+                    calculateDisplayResult();
                 }
 
             });
@@ -412,6 +392,44 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
         } else {
             from_packagedensity_factor.unSet();
+        }
+    }
+
+    private void setPackageDensityTo(final View v) {
+        DataBaseHelper myDbHelper = new DataBaseHelper(getApplicationContext(),getFilesDir().getAbsolutePath());
+        List<PackageDensity> packageDensities = myDbHelper.getDensitiesSubstance(density.getSubstance());
+        myDbHelper.close();
+
+        if ( packageDensities.size() == 1 ) {
+            tDensity = packageDensities.get(0);
+            to_packagedensity_factor.setRationalFromDouble(tDensity.getPackageDensity());
+            ((TextView) v).setText(tDensity.getPackageName());
+            calculateDisplayResult();
+        } else if ( packageDensities.size() > 1 ) {
+            // open dialog
+            final ArrayAdapter<PackageDensity> packageDensitiesArrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_multichoice, packageDensities);
+
+            AlertDialog.Builder packDensitySelectDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.MyDialog));
+
+            packDensitySelectDialogBuilder.setTitle("Package type for " + density.getSubstance());
+            packDensitySelectDialogBuilder.setCancelable(false);
+
+            packDensitySelectDialogBuilder.setAdapter(packageDensitiesArrayAdapter,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    tDensity = packageDensitiesArrayAdapter.getItem(item);
+                    to_packagedensity_factor.setRationalFromDouble(tDensity.getPackageDensity());
+                    ((TextView) v).setText(tDensity.getPackageName());
+                    Log.d(TAG, "setting" + to_packagedensity_factor.toDecimalsString());
+                    calculateDisplayResult();
+                }
+
+            });
+
+            AlertDialog packDensitySelectDialog = packDensitySelectDialogBuilder.create();
+            packDensitySelectDialog.show();
+
+        } else {
+            to_packagedensity_factor.unSet();
         }
     }
 }
