@@ -31,7 +31,8 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private TextView resultView;
     private ToggleButton toggle;
 
-
+    private MySpinner from_spinner;
+    private MySpinner to_spinner;
     private SpinnerUnitAdapter fUnitAdapter;
     private SpinnerUnitAdapter tUnitAdapter;
     private SpinnerDensityAdapter densityAdapter;
@@ -64,12 +65,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
 
         // find views
-        MySpinner from_spinner = (MySpinner) findViewById(R.id.from_spinner);
-        MySpinner to_spinner = (MySpinner) findViewById(R.id.to_spinner);
+        from_spinner = (MySpinner) findViewById(R.id.from_spinner);
+        to_spinner = (MySpinner) findViewById(R.id.to_spinner);
         editText = (EditText) findViewById(R.id.enter_value);
         resultView = (TextView) findViewById(R.id.result_value);
         toggle = (ToggleButton) findViewById(R.id.toggle_button);
-        Spinner density_spinner = (Spinner) findViewById(R.id.density_spinner);
+        MySpinner density_spinner = (MySpinner) findViewById(R.id.density_spinner);
         final Button clear_button = (Button) findViewById(R.id.clear_button);
 
         // get all units and all densities from DB
@@ -94,8 +95,9 @@ public class GeneralConverterActivity extends AppCompatActivity {
         to_factor.setRationalFromDouble(tUnit.getFactor());
         density_factor.setRationalFromDouble(density.getDensity());
 
-        // Set listeners
+        // Set
         editText.addTextChangedListener(textWatcher);
+        //from_spinner.setOnItemSelectedEvenIfUnchangedListener(onItemSelectedListenerFrom);
         from_spinner.setOnItemSelectedListener(onItemSelectedListenerFrom);
         to_spinner.setOnItemSelectedListener(onItemSelectedListenerTo);
         density_spinner.setOnItemSelectedListener(onItemSelectedListenerDensity);
@@ -108,6 +110,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
                 result.unSet();
             }
         });
+
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -172,7 +175,6 @@ public class GeneralConverterActivity extends AppCompatActivity {
             fUnit = fUnitAdapter.getItem(position);
             from_factor.setRationalFromDouble(fUnit.getFactor());
 
-
             if ( fUnit.isPack() ) {
                 setPackageDensityFrom(view);
             } else {
@@ -218,13 +220,13 @@ public class GeneralConverterActivity extends AppCompatActivity {
             density_factor.setRationalFromDouble(density.getDensity());
 
             if ( tUnit.isPack() && !fUnit.isPack() ) {
-                setPackageDensityTo(view);
+                setPackageDensityTo(to_spinner.getSelectedView());
             } else if ( !tUnit.isPack() && fUnit.isPack() ) {
-                setPackageDensityFrom(view);
+                setPackageDensityFrom(from_spinner.getSelectedView());
             } else if ( tUnit.isPack() ) { // implies && fUnit.isPack() == true
-                setPackageDensityFrom(view);
-                setPackageDensityTo(view);
-            } else {
+                setPackageDensityFrom(from_spinner.getSelectedView());
+                setPackageDensityTo(to_spinner.getSelectedView());
+            } else { // !tUnit.isPack() && !fUnit.isPack()
                 calculateDisplayResult();
             }
         }
@@ -239,11 +241,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         String s = editText.getText().toString();
 
         // return (!s.isEmpty() && enterRational.isSet() && MyRational.validFraction(s));
-        if (s.isEmpty() || !MyRational.validFraction(s) ) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(s.isEmpty() || !MyRational.validFraction(s));
     }
 
 
