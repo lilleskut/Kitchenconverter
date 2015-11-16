@@ -28,10 +28,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
     private DensityAdapter mDensityAdapter;
 
 
-    LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            RadioGroup.LayoutParams.WRAP_CONTENT);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -93,7 +89,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
 
-                // set edit_density_prompt.xml to alertdialog builder
+                // set edit_density_prompt.xml to alert dialog builder
                 alertDialogBuilder.setView(promptsView);
 
                 final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);
@@ -159,7 +155,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
-        // set edit_density_prompt.xml to alertdialog builder
+        // set edit_density_prompt.xml to alert dialog builder
         alertDialogBuilder.setView(promptsView);
 
         final EditText editSubstance = (EditText) promptsView.findViewById(R.id.editTextSubstance);

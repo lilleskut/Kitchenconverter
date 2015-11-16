@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SpinnerSubstanceAdapter extends ArrayAdapter<Substance>{
+class SpinnerSubstanceAdapter extends ArrayAdapter<Substance>{
     private final List<Substance> substances;
     private final Context mContext;
 

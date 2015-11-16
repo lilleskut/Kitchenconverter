@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
+class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
     private final List<Unit> mUnits;
     private final Context mContext;
 

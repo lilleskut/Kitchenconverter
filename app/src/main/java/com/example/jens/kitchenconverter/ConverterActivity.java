@@ -39,7 +39,7 @@ public class ConverterActivity extends AppCompatActivity {
         String dim = getIntent().getStringExtra("dimension");
 
         if(!Arrays.asList(dimensions).contains(dim) && !dim.contains("temperature")){
-            throw new IllegalArgumentException("Dimension is not one of the permittable dimension names");
+            throw new IllegalArgumentException("Dimension is not one of the permitted dimension names");
         }
 
         if(dim.equals("temperature")) {

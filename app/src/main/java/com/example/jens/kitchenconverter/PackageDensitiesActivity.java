@@ -13,13 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.util.List;
 
@@ -99,7 +96,7 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
                 final Spinner spinnerSubstance = (Spinner) promptsView.findViewById(R.id.substance_spinner);
                 final Spinner spinnerPackage = (Spinner) promptsView.findViewById(R.id.package_spinner);
                 final EditText editPackageDensity = (EditText) promptsView.findViewById(R.id.editTextPackageDensity);
-                final TextView packageDensityDimension = (TextView) promptsView.findViewById(R.id.packagedensity_dimension);
+                final TextView packageDensityDimension = (TextView) promptsView.findViewById(R.id.package_density_dimension);
 
                 final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
                 packageDensityDimension.setText(myDbHelper.getBasePackageDensity());
@@ -187,7 +184,7 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
         final EditText editPackageDensity = (EditText) promptsView.findViewById(R.id.editTextPackageDensity);
         editPackageDensity.setText(Double.toString(packageDensity.getPackageDensity()));
 
-        final TextView packageDensityDimension = (TextView) promptsView.findViewById(R.id.packagedensity_dimension);
+        final TextView packageDensityDimension = (TextView) promptsView.findViewById(R.id.package_density_dimension);
 
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
         packageDensityDimension.setText(myDbHelper.getBasePackageDensity());

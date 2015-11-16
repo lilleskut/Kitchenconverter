@@ -9,8 +9,8 @@ import android.widget.TextView;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DensityAdapter extends BaseAdapter {
-    private LayoutInflater mInflater;
+class DensityAdapter extends BaseAdapter {
+    private final LayoutInflater mInflater;
     private List<Density> mDensities;
 
     public DensityAdapter(LayoutInflater inflater) {

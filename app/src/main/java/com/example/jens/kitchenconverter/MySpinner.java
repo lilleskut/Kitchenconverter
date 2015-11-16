@@ -12,8 +12,6 @@ import android.widget.AdapterView;
 
 public class MySpinner extends AppCompatSpinner {
 
-    AdapterView.OnItemSelectedListener listener;
-
     public MySpinner(Context context)
     { super(context); }
 

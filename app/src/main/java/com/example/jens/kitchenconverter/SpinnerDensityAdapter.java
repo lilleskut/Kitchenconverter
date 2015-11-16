@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SpinnerDensityAdapter extends ArrayAdapter<Density>{
+class SpinnerDensityAdapter extends ArrayAdapter<Density>{
     private final List<Density> mDensities;
     private final Context mContext;
 

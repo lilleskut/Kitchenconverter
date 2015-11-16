@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SpinnerPackageTypeAdapter extends ArrayAdapter<PackageType> {
+class SpinnerPackageTypeAdapter extends ArrayAdapter<PackageType> {
     private final List<PackageType> packageTypes;
     private final Context mContext;
 

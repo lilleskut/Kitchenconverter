@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 public class UnitTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) private Context context;
-    Unit unit;
+    private Unit unit;
 
 
     @Before

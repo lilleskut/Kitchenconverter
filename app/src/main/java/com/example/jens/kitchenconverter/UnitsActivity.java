@@ -29,10 +29,10 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final Double zeroThreshold = 0.000000001;
     private RadioButton radioButton;
     private RadioButton radioFilterButton;
-    final Context context = this;
+    private final Context context = this;
 
-    UnitAdapter mUnitAdapter;
-    ListView mainListView;
+    private UnitAdapter mUnitAdapter;
+    private ListView mainListView;
 
 
     LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(

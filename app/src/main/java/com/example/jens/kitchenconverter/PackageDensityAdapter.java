@@ -10,8 +10,8 @@ import android.widget.TextView;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PackageDensityAdapter extends BaseAdapter {
-    private LayoutInflater mInflater;
+class PackageDensityAdapter extends BaseAdapter {
+    private final LayoutInflater mInflater;
     private List<PackageDensity> mPackageDensities;
 
     public PackageDensityAdapter(LayoutInflater inflater) {
@@ -53,7 +53,7 @@ public class PackageDensityAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.substanceTextView = (TextView) convertView.findViewById(R.id.text_substance);
             holder.packageTextView = (TextView) convertView.findViewById(R.id.text_package);
-            holder.packageDensityTextView = (TextView) convertView.findViewById(R.id.text_packagedensity);
+            holder.packageDensityTextView = (TextView) convertView.findViewById(R.id.text_package_density);
 
             // hang onto this holder for future recyclage
             convertView.setTag(holder);

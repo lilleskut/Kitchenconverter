@@ -17,7 +17,7 @@
         android:textSize="@dimen/list_row_font_size"
         android:padding="@dimen/list_row_item_padding"/>
     <TextView
-        android:id="@+id/text_packagedensity"
+        android:id="@+id/text_package_density"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

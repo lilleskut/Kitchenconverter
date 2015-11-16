@@ -37,12 +37,12 @@ public class GeneralConverterActivity extends AppCompatActivity {
     private SpinnerUnitAdapter tUnitAdapter;
     private SpinnerDensityAdapter densityAdapter;
 
-    private MyRational enterRational = new MyRational();
-    private MyRational from_factor = new MyRational();
-    private MyRational to_factor = new MyRational();
-    private MyRational density_factor = new MyRational();
-    private MyRational from_packagedensity_factor = new MyRational();
-    private MyRational to_packagedensity_factor = new MyRational();
+    private final MyRational enterRational = new MyRational();
+    private final MyRational from_factor = new MyRational();
+    private final MyRational to_factor = new MyRational();
+    private final MyRational density_factor = new MyRational();
+    private final MyRational from_packagedensity_factor = new MyRational();
+    private final MyRational to_packagedensity_factor = new MyRational();
     private MyRational result = new MyRational();
 
     private Unit fUnit;
@@ -113,7 +113,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
 
     }
 
-    TextWatcher textWatcher = new TextWatcher() {
+    private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -144,7 +144,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener toggleListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener toggleListener = new CompoundButton.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -166,7 +166,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
     };
 
-    AdapterView.OnItemSelectedListener onItemSelectedListenerFrom = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener onItemSelectedListenerFrom = new AdapterView.OnItemSelectedListener() {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, final View view,
@@ -187,7 +187,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
     };
 
-    AdapterView.OnItemSelectedListener onItemSelectedListenerTo = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener onItemSelectedListenerTo = new AdapterView.OnItemSelectedListener() {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, final View view,
@@ -210,7 +210,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
         }
     };
 
-    AdapterView.OnItemSelectedListener onItemSelectedListenerDensity = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener onItemSelectedListenerDensity = new AdapterView.OnItemSelectedListener() {
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view,

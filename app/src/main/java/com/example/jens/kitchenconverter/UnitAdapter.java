@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UnitAdapter extends BaseAdapter implements Filterable {
+class UnitAdapter extends BaseAdapter implements Filterable {
 
     private final LayoutInflater mInflater;
     private  List<Unit> oUnits; // original data

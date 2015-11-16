@@ -27,7 +27,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "kitchenConverter.db";
     private static final int DATABASE_VERSION = 1;
 
-    private String pathToSaveDBFile;
+    private final String pathToSaveDBFile;
 
     // constants for tables
     private static final String TABLE_UNITS = "units";
@@ -132,7 +132,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         is.close();
 
     }
-    public void deleteDB() {
+    private void deleteDB() {
         File file = new File(pathToSaveDBFile);
         if(file.exists()) {
             file.delete();
@@ -226,7 +226,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public boolean substanceExists (String sub) { // check whether substance name exists in substances table
+    public boolean substanceExists(String sub) { // check whether substance name exists in substances table
 
         String query = "SELECT 1 FROM " + TABLE_SUBSTANCES + " WHERE " + SUBSTANCES_KEY_NAME + "=? COLLATE NOCASE LIMIT 1";
 
@@ -314,7 +314,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // get/update base unit, get base density
-    public Unit getBaseUnit(String dimension) {
+    private Unit getBaseUnit(String dimension) {
 
         String[] dimensions = myContext.getResources().getStringArray(R.array.dimensions_array);
 
