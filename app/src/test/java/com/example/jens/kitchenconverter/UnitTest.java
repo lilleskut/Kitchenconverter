@@ -98,7 +98,7 @@ public class UnitTest {
     public void testSetFactor() throws Exception {
         unit.setFactor(0.001d);
 
-        assertEquals("unit factor should be 0.0001f", 0.001f, unit.getFactor(), 0.0001);
+        assertEquals("unit factor should be 0.001f", 0.001f, unit.getFactor(), 0.0001);
     }
 
     @Test

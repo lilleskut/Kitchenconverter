@@ -22,13 +22,24 @@ public class Density {
     // setters
     public void setId(int i) { this.id = i; }
     public void setSubstance(String u) {
+        if( u == null ) {
+            throw new IllegalArgumentException("Density substance is null");
+        }
         this.substance = u;
     }
     public void setDensity(Double f) {
+        if( f != null && f < 0 ) {
+            throw new IllegalArgumentException("Density is negative");
+        }
         this.density = f; }
 
     // getters
     public int getId() { return id; }
     public String getSubstance() { return substance; }
     public Double getDensity() { return density; }
+
+    @Override
+    public String toString() {
+        return "Density [id=" + id + ", substance=" + substance + ", density=" + density + "]";
+    }
 }
