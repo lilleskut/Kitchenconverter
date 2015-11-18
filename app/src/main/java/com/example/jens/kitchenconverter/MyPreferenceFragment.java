@@ -22,18 +22,14 @@ public class MyPreferenceFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                builder.setTitle("Revert databaset");
+                builder.setTitle("Revert database");
                 builder.setMessage("Are you sure to revert the units and densities to default values?");
 
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         final DataBaseHelper myDbHelper = new DataBaseHelper(getActivity(),getActivity().getFilesDir().getAbsolutePath());
-                        try {
-                            myDbHelper.revertDataBase();
-                        } catch (IOException e) {
-                            Log.e(TAG, e.getMessage());
-                        }
+                        myDbHelper.revertDataBase();
                         dialog.dismiss();
                     }
                 });

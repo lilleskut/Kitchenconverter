@@ -93,7 +93,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
     }
-    public void revertDataBase() throws IOException {
+    public void revertDataBase() {
         Log.d(TAG, "Database is going to be reverted from assets");
         deleteDB();
         try {
@@ -274,7 +274,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         valuesSubs.put(SUBSTANCES_KEY_NAME, density.getSubstance());
 
         // update substances table
-        long substanceId = db.update(TABLE_SUBSTANCES,
+        db.update(TABLE_SUBSTANCES,
                 valuesSubs,
                 SUBSTANCES_KEY_ID + " = (SELECT " + DENSITIES_KEY_SUBSTANCEID +
                         " FROM " + TABLE_DENSITIES +

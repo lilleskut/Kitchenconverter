@@ -28,7 +28,7 @@ class SpinnerUnitAdapter extends ArrayAdapter<Unit> {
     // this is for the passive state of the spinner
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // use dynamically created textview, but could reference custom layout
+        // use dynamically created TextView, but could reference custom layout
         TextView label = new TextView(mContext);
         label.setTextColor(Color.BLACK);
         label.setTextSize(mContext.getResources().getDimension(R.dimen.list_row_font_size));

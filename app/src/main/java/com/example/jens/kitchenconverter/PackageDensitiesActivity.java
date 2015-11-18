@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,8 +83,10 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
             case 99: // add
                 // get prompts.xml view
 
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.edit_packagedensity_prompt, null);
+                // LayoutInflater li = LayoutInflater.from(context);
+                // View promptsView = li.inflate(R.layout.edit_packagedensity_prompt, null);
+
+                View promptsView = View.inflate(context, R.layout.edit_packagedensity_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
@@ -165,8 +166,10 @@ public class PackageDensitiesActivity extends AppCompatActivity implements Adapt
         Log.d(TAG, "abc");
         // get prompts.xml view
 
-        LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.edit_packagedensity_prompt, null);
+        //LayoutInflater li = LayoutInflater.from(context);
+       // View promptsView = li.inflate(R.layout.edit_packagedensity_prompt, null);
+
+        View promptsView = View.inflate(context, R.layout.edit_packagedensity_prompt, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);

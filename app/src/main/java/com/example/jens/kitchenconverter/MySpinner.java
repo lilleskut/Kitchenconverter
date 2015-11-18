@@ -4,8 +4,6 @@ package com.example.jens.kitchenconverter;
 import android.content.Context;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
-import android.widget.AdapterView;
-
 
 
 // allow spinner to trigger events when the same item is selected again

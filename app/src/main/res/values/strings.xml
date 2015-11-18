@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Kitchen Converter</string>
 
-    <string name="converter_screen">You are on the converter screen</string>
     <string name="action_settings">Settings</string>
     <string name="addUnit">Add unit</string>
     <string name="factor">Factor</string>
@@ -16,9 +15,7 @@
     <string name="substance">Substance</string>
     <string name="density">Density</string>
     <string name="clear">Clear</string>
-    <string name="value">Value</string>
     <string name="general">General</string>
-    <string name="all">All</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="addDensity">Add Density</string>

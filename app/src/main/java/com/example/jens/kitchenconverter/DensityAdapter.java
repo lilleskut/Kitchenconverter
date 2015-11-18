@@ -46,7 +46,7 @@ class DensityAdapter extends BaseAdapter {
         if (convertView == null) {
 
             // Inflate the custom row layout from your XML.
-            convertView = mInflater.inflate(R.layout.row_density, null);
+            convertView = mInflater.inflate(R.layout.row_density, parent, false);
 
             // create a new "Holder" with subviews
             holder = new ViewHolder();

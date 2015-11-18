@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +31,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     private final Context context = this;
 
     private UnitAdapter mUnitAdapter;
-    private ListView mainListView;
 
 
     LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
@@ -63,7 +61,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         final DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
 
-        mainListView = (ListView) findViewById(R.id.listView);
+        ListView mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
 
         mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -71,7 +69,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final Unit unit = mUnitAdapter.getItem(position);
 
-                if( !unit.getBase() ) { //only do something if long clicked on not base unit
+                if (!unit.getBase()) { //only do something if long clicked on not base unit
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
@@ -160,13 +158,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
             case 99: // add
 
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
+                //LayoutInflater li = LayoutInflater.from(context);
+                //View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
+
+                View promptsView = View.inflate(context, R.layout.edit_unit_prompt, null);
 
                 AlertDialog.Builder addDialogBuilder = new AlertDialog.Builder(
                         context);
 
-                // set add_density_prompt.xml to alertdialog builder
+                // set edit_unit_prompt.xml to alertdialog builder
                 addDialogBuilder.setView(promptsView);
 
                 final EditText editUnit = (EditText) promptsView.findViewById(R.id.editTextUnit);
@@ -243,9 +243,10 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final Unit unit = mUnitAdapter.getItem(position);
         final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
-        LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
+        //LayoutInflater li = LayoutInflater.from(context);
+        //View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
 
+        View promptsView = View.inflate(context, R.layout.edit_unit_prompt, null);
         AlertDialog.Builder editDialogBuilder = new AlertDialog.Builder(
                 context);
 

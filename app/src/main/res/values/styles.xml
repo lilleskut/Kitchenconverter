@@ -10,5 +10,6 @@
 
     <style name="MyDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@color/ColorLightGrey</item>
     </style>
 </resources>

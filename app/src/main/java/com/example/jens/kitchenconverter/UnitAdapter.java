@@ -27,7 +27,7 @@ class UnitAdapter extends BaseAdapter implements Filterable {
     }
 
     public void updateData(List<Unit> units) {
-        //update the adapter's dataset
+        //update the adapter's data set
         oUnits = units;
         fUnits = units;
         notifyDataSetChanged();
@@ -57,7 +57,7 @@ class UnitAdapter extends BaseAdapter implements Filterable {
         if (convertView == null) {
 
             // Inflate the custom row layout from your XML.
-            convertView = mInflater.inflate(R.layout.row_unit, null);
+            convertView = mInflater.inflate(R.layout.row_unit, parent, false);
 
             // create a new "Holder" with subviews
             holder = new ViewHolder();

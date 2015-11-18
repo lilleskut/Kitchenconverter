@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,8 +80,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
             case 99: // add
                 // get prompts.xml view
 
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.edit_density_prompt, null);
+                // LayoutInflater li = LayoutInflater.from(context);
+                //View promptsView = li.inflate(R.layout.edit_density_prompt, null);
+
+                View promptsView = View.inflate(context, R.layout.edit_density_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
@@ -114,12 +113,12 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                         } else {
                                             densityDensity = Double.valueOf(editDensity.getText().toString());
                                         }
-                                        if (!myDbHelper.substanceExists(densitySubstance)) {
+                                        if (myDbHelper.substanceExists(densitySubstance)) {
+                                            Toast.makeText(getApplicationContext(), "This substance already exists", Toast.LENGTH_LONG).show();
+                                        } else {
                                             Density adddensity = new Density(densitySubstance, densityDensity, context);
                                             myDbHelper.addDensity(adddensity);
                                             mDensityAdapter.updateData(myDbHelper.getAllDensities());
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "This substance already exists", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 })
@@ -149,9 +148,10 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
         // get prompts.xml view
 
 
-        LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.edit_density_prompt, null);
+       //  LayoutInflater li = LayoutInflater.from(context);
+       // View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
+        View promptsView = View.inflate(context, R.layout.edit_density_prompt, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
