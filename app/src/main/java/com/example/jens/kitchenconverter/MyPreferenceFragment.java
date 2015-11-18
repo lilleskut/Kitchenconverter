@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-
-import java.io.IOException;
 
 
 public class MyPreferenceFragment extends PreferenceFragment {

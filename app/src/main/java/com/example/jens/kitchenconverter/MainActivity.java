@@ -32,12 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // prepare Database
 
         DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
-        try {
-            myDbHelper.prepareDataBase();
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
+        myDbHelper.prepareDataBase();
         myDbHelper.close();
 
         final GridLayout gridLayout = (GridLayout) findViewById(R.id.grid_layout);

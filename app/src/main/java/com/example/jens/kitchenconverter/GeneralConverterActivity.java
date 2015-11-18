@@ -367,7 +367,7 @@ public class GeneralConverterActivity extends AppCompatActivity {
             final ArrayAdapter<PackageDensity> packageDensitiesArrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_multichoice, packageDensities);
 
             AlertDialog.Builder packDensitySelectDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this,R.style.MyDialog));
-            //AlertDialog.Builder packDensitySelectDialogBuilder = new AlertDialog.Builder(GeneralConverterActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+
 
             packDensitySelectDialogBuilder.setTitle("Package type for " + density.getSubstance());
             packDensitySelectDialogBuilder.setCancelable(false);

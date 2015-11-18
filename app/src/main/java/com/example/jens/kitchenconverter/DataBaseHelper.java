@@ -68,7 +68,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         this.myContext = context;
         pathToSaveDBFile = filePath + "/" + DATABASE_NAME;
     }
-    public void prepareDataBase() throws IOException {
+    public void prepareDataBase() {
 
         boolean dbExist = checkDataBase();
 
@@ -239,7 +239,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // update elements
-    public int updateUnit(Unit unit) {
+    public void updateUnit(Unit unit) {
 
         Log.d("updateUnit",unit.toString());
         // 1. get reference to writable DB
@@ -260,8 +260,6 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
         // 4. close
         db.close();
-
-        return i;
     }
     public void updateDensity(Density density) {
 
