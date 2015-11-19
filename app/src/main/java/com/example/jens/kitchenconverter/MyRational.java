@@ -16,7 +16,7 @@ public class MyRational {
         this.numerator=0;
         this.denominator=0;
     }
-    private MyRational(int num, int den) {
+    public MyRational(int num, int den) {
         if (den != 0) {
             this.numerator = num / gcdThing(num, den);
             this.denominator = den / gcdThing(num, den);
@@ -161,6 +161,15 @@ public class MyRational {
     }
     public MyRational divide (MyRational rat2) {
         return multiply(rat2.reciprocal());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if ( other == null ) return false;
+        if ( other == this ) return true;
+        if ( !(other instanceof MyRational)) return false;
+        MyRational otherRational = (MyRational) other;
+        return numerator == otherRational.getNumerator() && denominator == otherRational.getDenominator();
     }
 
     public boolean isSet() { return denominator != 0; }
