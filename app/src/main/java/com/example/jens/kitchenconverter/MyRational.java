@@ -151,7 +151,10 @@ public class MyRational {
 
 
     // rational arithmetics
-    private MyRational reciprocal () {
+    private MyRational reciprocal() {
+        if (numerator == 0) {
+            throw new IllegalArgumentException("Denominator is 0");
+        }
         return new MyRational(denominator,numerator);
     }
     public MyRational multiply (MyRational rat2) {
@@ -160,6 +163,9 @@ public class MyRational {
         return new MyRational(num,den);
     }
     public MyRational divide (MyRational rat2) {
+        if ( rat2.equals(new MyRational(0d) ) ) {
+            throw new IllegalArgumentException("Divisor is 0");
+        }
         return multiply(rat2.reciprocal());
     }
 
