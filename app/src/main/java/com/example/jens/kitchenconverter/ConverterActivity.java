@@ -49,7 +49,7 @@ public class ConverterActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             if( getSupportActionBar() != null ) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setTitle("Convert temperature");
+                getSupportActionBar().setTitle(R.string.temperature_converter);
             }
 
             final TextView celsius = (TextView) findViewById(R.id.celsius);

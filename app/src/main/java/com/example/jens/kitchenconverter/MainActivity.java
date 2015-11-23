@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         // add temperature converter button
         Button tempBtn = new Button(getApplicationContext());
-        tempBtn.setText("temperature");
+        tempBtn.setText(R.string.temperature);
         tempBtn.setId(dimensions.length);
 
         tempBtn.setOnClickListener(new View.OnClickListener() {

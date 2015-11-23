@@ -23,7 +23,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".GeneralConverterActivity"
-            android:label="General Converter"
+            android:label="@string/general_converter"
             android:windowSoftInputMode="stateVisible|adjustResize"
             android:parentActivityName=".MainActivity" />
         <activity
@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="Settings"
+            android:label="@string/action_settings"
             android:parentActivityName=".MainActivity" />
 
     </application>

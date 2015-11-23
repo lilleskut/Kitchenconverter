@@ -26,6 +26,9 @@
     <string name="packageName">Package type</string>
     <string name="editPackageDensity">Edit Packages</string>
     <string name="addPackageDensity">Add package</string>
+    <string name="temperature">Temperature</string>
+    <string name="general_converter">General Converter</string>
+    <string name="temperature_converter">Convert temperature</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>
