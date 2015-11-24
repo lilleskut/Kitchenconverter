@@ -59,7 +59,7 @@ public class ConverterActivity extends AppCompatActivity {
 
             String celsiusString = String.valueOf(startTemp)+" \u2103";
             String fahrenheitString = String.valueOf(tempConverter(startTemp))+" \u2109";
-            String kelvinString = String.valueOf(startTemp-273)+" K";
+            String kelvinString = String.valueOf(startTemp+273)+" K";
 
             celsius.setText(celsiusString);
             fahrenheit.setText(fahrenheitString);
