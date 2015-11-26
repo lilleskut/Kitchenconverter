@@ -19,8 +19,8 @@ public class MyPreferenceFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                builder.setTitle("Revert database");
-                builder.setMessage("Are you sure to revert the units and densities to default values?");
+                builder.setTitle(R.string.revert_database);
+                builder.setMessage(R.string.revert_database_question);
 
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 

@@ -28,7 +28,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".UnitsActivity"
-            android:label="Units"
+            android:label="@string/units"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.example.jens.kitchenconverter.UnitsActivity"/>
@@ -37,7 +37,7 @@
         </activity>
         <activity
             android:name=".DensitiesActivity"
-            android:label="Densities"
+            android:label="@string/substances"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.example.jens.kitchenconverter.DensitiesActivity"/>
@@ -46,7 +46,7 @@
         </activity>
         <activity
             android:name=".PackageDensitiesActivity"
-            android:label="PackageDensities"
+            android:label="@string/packages"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.example.jens.kitchenconverter.PackageDensitiesActivity"/>

@@ -2,17 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
         android:key="edit_units"
-        android:title="Edit Units">
+        android:title="@string/edit_units">
         <intent android:action="com.example.jens.kitchenconverter.UnitsActivity"/>
     </Preference>
     <Preference
         android:key="edit_densities"
-        android:title="Edit Densities">
+        android:title="@string/edit_substances">
         <intent android:action="com.example.jens.kitchenconverter.DensitiesActivity"/>
     </Preference>
     <Preference
         android:key="edit_packages"
-        android:title="Edit Packages">
+        android:title="@string/edit_packages">
         <intent android:action="com.example.jens.kitchenconverter.PackageDensitiesActivity"/>
     </Preference>
     <Preference

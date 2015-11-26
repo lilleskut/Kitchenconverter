@@ -85,6 +85,8 @@ public class MainActivityEspressoTest extends TestHelper {
         matchToolbarTitle(titleHome);
     }
 
+
+
     @Test
     public void testTemperatureConverterButton() {
         CharSequence titleHome = InstrumentationRegistry.getTargetContext().getString(R.string.app_name);
@@ -107,4 +109,5 @@ public class MainActivityEspressoTest extends TestHelper {
         onView(withContentDescription("Navigate up")).perform(click());
         matchToolbarTitle(titleHome);
     }
+
 }
