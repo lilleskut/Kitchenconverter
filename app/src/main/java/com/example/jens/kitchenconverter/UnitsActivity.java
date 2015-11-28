@@ -221,7 +221,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                 }
                             })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     dialog.cancel();
                                 }
@@ -243,8 +243,6 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final Unit unit = mUnitAdapter.getItem(position);
         final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
 
-        //LayoutInflater li = LayoutInflater.from(context);
-        //View promptsView = li.inflate(R.layout.edit_unit_prompt, null);
 
         View promptsView = View.inflate(context, R.layout.edit_unit_prompt, null);
         AlertDialog.Builder editDialogBuilder = new AlertDialog.Builder(

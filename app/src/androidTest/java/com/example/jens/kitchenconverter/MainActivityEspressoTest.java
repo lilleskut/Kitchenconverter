@@ -53,11 +53,6 @@ public class MainActivityEspressoTest extends TestHelper {
         onView(isRoot()).perform(pressBack());
         matchToolbarTitle(titleHome);
 
-        // test action bar back button in settings
-        onView(withId(R.id.general_converter)).perform(click());
-        closeSoftKeyboard();
-        onView(withContentDescription("Navigate up")).perform(click());
-        matchToolbarTitle(titleHome);
     }
 
     @Test
