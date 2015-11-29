@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,9 +35,11 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -135,7 +138,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
         // check saved values are properly displayed
         onView(allOf(withId(R.id.editTextUnit), withText("g"))).check(matches(isDisplayed())); // editText says "g"
-        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText says ""
+        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText says "0.001"
         onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("kg")))); // base unit for mass
 
 
@@ -168,9 +171,18 @@ public class UnitsActivityEspressoTest extends TestHelper {
             only unit name should be allowed to change
 
             check that dimension cannot be changed for a base unit
-            check that cannot be deleted
             check that factor cannot be modified (equal to 1
+            check that cannot be deleted
          */
+
+        // check whether kg exists and kgnew not
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitName("kgnew")))));
+
+        onData(withUnitName("kg"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
 
         onData(withUnitName("kg"))
                 .inAdapterView(withId(R.id.listView))
@@ -181,14 +193,32 @@ public class UnitsActivityEspressoTest extends TestHelper {
                 .inAdapterView(withId(R.id.listView))
                 .perform(click());
 
-        // check whether modify unit dialog appears
+        // check whether modify unit dialog appears with correct properties
         onView(withText(R.string.editUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
-        onView(withText(R.string.modify)).inRoot(isDialog()).check(matches(isDisplayed())); // check modify button
         onView(withText("volume")).inRoot(isDialog()).check(doesNotExist()); // check volume radio button does not exist
-        onView(withText(R.string.delete)).inRoot(isDialog()).check(doesNotExist()); // check delete button does not exist
+        onView(withId(R.id.editTextFactor)).check(matches(not(isDisplayed()))); // check factor is not visible
+        onView(withId(R.id.unit_spinner)).check(matches(not(isDisplayed()))); // check spinner is not visible
+
+        onView(withText(R.string.modify)).inRoot(isDialog()).check(matches(isDisplayed())); // check modify button
+        onView(withText(R.string.delete)).inRoot(isDialog()).check(matches(not(isEnabled()))); // check delete button is disabled
         onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
 
+        // check saved values are properly displayed
+        onView(allOf(withId(R.id.editTextUnit), withText("kg"))).check(matches(isDisplayed())); // editText says "kg"
 
+        // modify unit nam "kg" -> "kgnew";
+        onView(withId(R.id.editTextUnit)).perform(replaceText("kgnew"));
+
+        onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
+        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
+
+        // check whether "kg"/"kgnew" does/doesnt exist
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitName("kg")))));
+
+        onData(withUnitName("kgnew"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
     }
 
     @Test

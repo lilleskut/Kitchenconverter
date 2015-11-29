@@ -258,7 +258,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         final EditText editFactor = (EditText) promptsView.findViewById(R.id.editTextFactor);
         editFactor.setText(Double.toString(unit.getFactor()));
 
+
+
+
         final Spinner unitSpinner = (Spinner) promptsView.findViewById(R.id.unit_spinner);
+
+        if( unit.getBase() ) {
+            editFactor.setVisibility(View.GONE);
+            unitSpinner.setVisibility(View.GONE);
+        }
 
         final DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
@@ -293,39 +301,48 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         // set dialog message
         editDialogBuilder
                 .setCancelable(false)
-                .setTitle(R.string.editUnit)
-                .setSingleChoiceItems(dimensions, savedDimensionId, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
+                .setTitle(R.string.editUnit);
+        if(!unit.getBase()) {
+            editDialogBuilder
+                    .setSingleChoiceItems(dimensions, savedDimensionId, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
 
-                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                        String unitDimension = dimensions[selectedPosition];
+                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                            String unitDimension = dimensions[selectedPosition];
 
-                        unitSpinner.setAdapter(unitAdapterArray.get(item));
-                        if ( unitDimension.equals(savedDimension) ) {
-                            unitSpinner.setSelection(savedBaseId);
+                            unitSpinner.setAdapter(unitAdapterArray.get(item));
+                            if (unitDimension.equals(savedDimension)) {
+                                unitSpinner.setSelection(savedBaseId);
+                            }
                         }
-
-                    }
-                })
+                    });
+        }
+        editDialogBuilder
                 .setPositiveButton(R.string.modify,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
                                 String unitName = editUnit.getText().toString();
+                                if ( !unit.getBase() ) {
+                                    int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                    String unitDimension = dimensions[selectedPosition];
 
-                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                                String unitDimension = dimensions[selectedPosition];
+                                    Double unitFactor = Double.valueOf(editFactor.getText().toString());
+                                    if (unitFactor > zeroThreshold) { // don't set units with factor 0
+                                        Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                        Double spinner_factor = selected_unit.getFactor();
 
-                                Double unitFactor = Double.valueOf(editFactor.getText().toString());
-                                if (unitFactor > zeroThreshold) { // don't set units with factor 0
-                                    Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
-                                    Double spinner_factor = selected_unit.getFactor();
+                                        unit.setName(unitName);
+                                        unit.setDimension(unitDimension);
+                                        unit.setFactor(unitFactor * spinner_factor);
 
+                                        myDbHelper.updateUnit(unit);
+                                        mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                        myDbHelper.close();
+                                    }
+                                } else { // for base unit only change name is allowed
                                     unit.setName(unitName);
-                                    unit.setDimension(unitDimension);
-                                    unit.setFactor(unitFactor * spinner_factor);
-
                                     myDbHelper.updateUnit(unit);
                                     mUnitAdapter.updateData(myDbHelper.getAllUnits());
                                     myDbHelper.close();
