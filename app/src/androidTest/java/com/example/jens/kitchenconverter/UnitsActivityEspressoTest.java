@@ -1,6 +1,8 @@
 package com.example.jens.kitchenconverter;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
@@ -15,6 +17,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -53,6 +56,13 @@ public class UnitsActivityEspressoTest extends TestHelper {
     @Rule
     public ActivityTestRule<UnitsActivity> mActivityRule =
             new ActivityTestRule<>(UnitsActivity.class);
+
+    @Before
+    public void setUp() throws Exception { // revert database
+        Context context = InstrumentationRegistry.getTargetContext();
+        final DataBaseHelper myDbHelper = new DataBaseHelper(context,context.getFilesDir().getAbsolutePath());
+        myDbHelper.revertDataBase();
+    }
 
     @Test
     public void testToolbarTitle() {
@@ -104,7 +114,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
     @Test
     public void testModifyUnit() { // change "g/mass" to "dl/volume"
 
-        // check whether "dl" does not exist and whether "kg" exists
+        // check whether "dl" does not exist and whether "g" exists
         onView(withId(R.id.listView))
                 .check(matches(not(withAdaptedData(withUnitName("dl")))));
 
@@ -112,7 +122,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
 
-        // click on "kg" which is to be modified
+        // click on "g" which is to be modified
         onData(withUnitName("g"))
                 .inAdapterView(withId(R.id.listView))
                 .perform(click());
@@ -135,7 +145,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText sa
         onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l")))); // base unit should change from "kg" to "l"
 
-        // modify unit name "g" -> "dl"; and factor "0.001" -> "0.1"
+        // modify unit nam "g" -> "dl"; and factor "0.001" -> "0.1"
         onView(withId(R.id.editTextUnit)).perform(replaceText("dl"));
         onView(withId(R.id.editTextFactor)).perform(replaceText("0.1"));
 
@@ -149,6 +159,41 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onData(withUnitName("dl"))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void testModifyBaseUnit() { // try to modify base unit (kg)
+        /*
+            only unit name should be allowed to change
+
+            check that dimension cannot be changed for a base unit
+            check that cannot be deleted
+            check that factor cannot be modified (equal to 1
+         */
+
+        onData(withUnitName("kg"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        // click on "kg" which is to be modified
+        onData(withUnitName("kg"))
+                .inAdapterView(withId(R.id.listView))
+                .perform(click());
+
+        // check whether modify unit dialog appears
+        onView(withText(R.string.editUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
+        onView(withText(R.string.modify)).inRoot(isDialog()).check(matches(isDisplayed())); // check modify button
+        onView(withText("volume")).inRoot(isDialog()).check(doesNotExist()); // check volume radio button does not exist
+        onView(withText(R.string.delete)).inRoot(isDialog()).check(doesNotExist()); // check delete button does not exist
+        onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
+
+
+    }
+
+    @Test
+    public void testModifyToExistingUnit() { // modified unit name exists already
+        // what to do if modified unit name exists already?
     }
 
 
