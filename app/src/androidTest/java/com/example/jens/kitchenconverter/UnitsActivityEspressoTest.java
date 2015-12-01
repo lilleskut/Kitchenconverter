@@ -30,9 +30,13 @@ import static android.support.test.espresso.Espresso.openActionBarOverflowOrOpti
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
+import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -95,23 +99,52 @@ public class UnitsActivityEspressoTest extends TestHelper {
     @Test
     public void testAddUnit() {
         // check if item "addItem" does not exist yet
-/*        onView(withId(R.id.listView))
+       onView(withId(R.id.listView))
                 .check(matches(not(withAdaptedData(withUnitName("addItem")))));
-*/
+
         // click on "add item" button
         // openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        // openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
         // onData(allOf(instanceOf(MenuItem.class), withTitle("Add"))).perform(click());
-        //onView(withContentDescription(R.string.add)).perform(click());
-        // onView(withText(R.string.add)).perform(click());
-        // onView(withId(99)).perform(click());
+        // onView(hasSibling(withContentDescription(R.string.add))).perform(click());
+        // onView(hasSibling(withText(R.string.add))).perform(click());
+        // onData(withText("Add")).perform(click());
+        onView(withId(99)).perform(click());
 
 
         // check whether add unit dialog appears
-        /* onView(withText(R.string.addUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
+        onView(withText(R.string.addUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
         onView(withText(R.string.add)).inRoot(isDialog()).check(matches(isDisplayed())); // check add button
         onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
-*/
+
+        onView(withText("mass")).inRoot(isDialog()).check(matches(isDisplayed())); // check mass radio button exists
+        onView(withText("volume")).inRoot(isDialog()).check(matches(isDisplayed())); // check volume radio button exists
+        onView(withId(R.id.editTextUnit)).check(matches(isDisplayed())); // check unitname is  visible
+        onView(withId(R.id.editTextFactor)).check(matches(isDisplayed())); // check factor is  visible
+        onView(withId(R.id.unit_spinner)).check(matches(isDisplayed())); // check spinner is  visible
+
+        // fill and submit dialog
+        onView(withText("volume")).inRoot(isDialog()).perform(click());
+        closeSoftKeyboard();
+        onView(withId(R.id.editTextUnit)).perform(replaceText("addItem"));
+
+        closeSoftKeyboard();
+        ///onView(withId(R.id.editTextFactor)).perform(click());
+        onView(withId(R.id.editTextFactor)).perform(replaceText("10"));
+        closeSoftKeyboard();
+
+        onView(withId(R.id.unit_spinner)).perform(click());
+        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
+
+        // onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l"))));
+
+        onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
+
+        // check whether item has been added
+
+        onView(withId(R.id.listView))
+                .check(matches(withAdaptedData(withUnitName("addItem"))));
+
     }
 
     @Test

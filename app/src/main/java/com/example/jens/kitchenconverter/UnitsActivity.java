@@ -108,12 +108,13 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         myDbHelper.close();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menu.add(Menu.NONE, 98,Menu.NONE,R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
+        // menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
