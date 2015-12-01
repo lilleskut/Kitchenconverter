@@ -1,11 +1,9 @@
 package com.example.jens.kitchenconverter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +11,8 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 
 import org.hamcrest.BaseMatcher;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,20 +26,13 @@ import static android.support.test.espresso.Espresso.openActionBarOverflowOrOpti
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
-import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
-import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -51,12 +40,7 @@ import static android.support.test.internal.util.Checks.checkNotNull;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasToString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 
 public class UnitsActivityEspressoTest extends TestHelper {
 
@@ -65,7 +49,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
             new ActivityTestRule<>(UnitsActivity.class);
 
     @Before
-    public void setUp() throws Exception { // revert database
+    public void setUp() throws Exception { // revert database in order to have the same database for each test
         Context context = InstrumentationRegistry.getTargetContext();
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,context.getFilesDir().getAbsolutePath());
         myDbHelper.revertDataBase();
@@ -97,46 +81,37 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
     @Test
-    public void testAddUnit() {
+    public void testAddUnit() { // adds: "additem/volume/10/ml"
         // check if item "addItem" does not exist yet
        onView(withId(R.id.listView))
                 .check(matches(not(withAdaptedData(withUnitName("addItem")))));
 
         // click on "add item" button
-        // openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        // openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
-        // onData(allOf(instanceOf(MenuItem.class), withTitle("Add"))).perform(click());
-        // onView(hasSibling(withContentDescription(R.string.add))).perform(click());
-        // onView(hasSibling(withText(R.string.add))).perform(click());
-        // onData(withText("Add")).perform(click());
         onView(withId(99)).perform(click());
 
-
         // check whether add unit dialog appears
-        onView(withText(R.string.addUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
-        onView(withText(R.string.add)).inRoot(isDialog()).check(matches(isDisplayed())); // check add button
-        onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
+        onView(withText(R.string.addUnit)).inRoot(isDialog()).check(matches(isDisplayed())); //  dialog title
+        onView(withText(R.string.add)).inRoot(isDialog()).check(matches(isDisplayed())); //  add button
+        onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // cancel button
 
-        onView(withText("mass")).inRoot(isDialog()).check(matches(isDisplayed())); // check mass radio button exists
-        onView(withText("volume")).inRoot(isDialog()).check(matches(isDisplayed())); // check volume radio button exists
-        onView(withId(R.id.editTextUnit)).check(matches(isDisplayed())); // check unitname is  visible
-        onView(withId(R.id.editTextFactor)).check(matches(isDisplayed())); // check factor is  visible
-        onView(withId(R.id.unit_spinner)).check(matches(isDisplayed())); // check spinner is  visible
+        onView(withText("mass")).inRoot(isDialog()).check(matches(isDisplayed())); // mass radio button exists
+        onView(withText("volume")).inRoot(isDialog()).check(matches(isDisplayed())); // volume radio button exists
+        onView(withId(R.id.editTextUnit)).check(matches(isDisplayed())); //  unitname editText is  visible
+        onView(withId(R.id.editTextFactor)).check(matches(isDisplayed())); // factor editText is  visible
+        onView(withId(R.id.unit_spinner)).check(matches(isDisplayed())); //  unit spinner is  visible
 
         // fill and submit dialog
         onView(withText("volume")).inRoot(isDialog()).perform(click());
         closeSoftKeyboard();
-        onView(withId(R.id.editTextUnit)).perform(replaceText("addItem"));
 
+        onView(withId(R.id.editTextUnit)).perform(replaceText("addItem"));
         closeSoftKeyboard();
-        ///onView(withId(R.id.editTextFactor)).perform(click());
+
         onView(withId(R.id.editTextFactor)).perform(replaceText("10"));
         closeSoftKeyboard();
 
         onView(withId(R.id.unit_spinner)).perform(click());
         onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
-
-        // onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l"))));
 
         onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
 
@@ -144,6 +119,72 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
         onView(withId(R.id.listView))
                 .check(matches(withAdaptedData(withUnitName("addItem"))));
+
+    }
+
+    @Test
+    public void testAddUnitSameAsExistingUnit() { // try to add: "g/mass/123/kg"
+        // check if item "g" exists and element with factor=123 does not exist
+        onView(withId(R.id.listView))
+                .check(matches(withAdaptedData(withUnitName("g"))));
+
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitFactor(123d)))));
+
+        // click on "add item" button
+        onView(withId(99)).perform(click());
+
+        // fill and submit dialog
+        onView(withText("mass")).inRoot(isDialog()).perform(click());
+        closeSoftKeyboard();
+
+        onView(withId(R.id.editTextUnit)).perform(replaceText("g"));
+        closeSoftKeyboard();
+
+        onView(withId(R.id.editTextFactor)).perform(replaceText("10"));
+        closeSoftKeyboard();
+
+        onView(withId(R.id.unit_spinner)).perform(click());
+        onData(withUnitName("kg")).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
+
+        // check whether item has not been added
+        onView(withId(R.id.listView))
+                .check(matches(withAdaptedData(withUnitName("g"))));
+
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitFactor(123d)))));
+    }
+
+    @Test
+    public void testAddUnitWithFactorZero() { // try to add: "newUnit/volume/0/ml"
+        // check if item "newUnit" does not exist
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitName("newUnit")))));
+
+
+        // click on "add item" button
+        onView(withId(99)).perform(click());
+
+        // fill and submit dialog
+        onView(withText("volume")).inRoot(isDialog()).perform(click());
+        closeSoftKeyboard();
+
+        onView(withId(R.id.editTextUnit)).perform(replaceText("newUnit"));
+        closeSoftKeyboard();
+
+        onView(withId(R.id.editTextFactor)).perform(replaceText("0"));
+        closeSoftKeyboard();
+
+        onView(withId(R.id.unit_spinner)).perform(click());
+        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
+
+        // check whether item has not been added
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitName("newUnit")))));
 
     }
 
@@ -273,6 +314,27 @@ public class UnitsActivityEspressoTest extends TestHelper {
                 .check(matches(not(withAdaptedData(withUnitName("kgl")))));
     }
 
+    // custom matcher for unit factor
+    public static Matcher<Object> withUnitFactor(Double expectedFactor) {
+        checkNotNull(expectedFactor);
+        return withUnitFactor(equalTo(expectedFactor));
+    }
+
+    public static Matcher<Object> withUnitFactor(final Matcher<Double> itemFactorMatcher) {
+        checkNotNull(itemFactorMatcher);
+        return new BoundedMatcher<Object, Unit>(Unit.class) {
+            @Override
+            public boolean matchesSafely(Unit unit) {
+                return itemFactorMatcher.matches(unit.getFactor());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Unit factor: ");
+                itemFactorMatcher.describeTo(description);
+            }
+        };
+    }
 
     // custom matcher for unit name
     public static Matcher<Object> withUnitName(String expectedText) {

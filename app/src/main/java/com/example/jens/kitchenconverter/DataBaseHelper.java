@@ -155,23 +155,26 @@ class DataBaseHelper extends SQLiteOpenHelper {
         // for logging
         Log.d("addUnit",unit.toString());
 
-        // 1. Get reference to writable DB
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        if( unit.getFactor() > 0 ) {
+            // 1. Get reference to writable DB
+            SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
 
-        // 2. create Contentvalues to add "key" column/value
-        ContentValues values = new ContentValues();
-        values.put(UNITS_KEY_NAME,unit.getName()); // get unit name
-        values.put(UNITS_KEY_DIMENSION,unit.getDimension()); // get dimension name
-        values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
-        values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
 
-        // 3. insert
-        db.insert(TABLE_UNITS,
-                null,// nullColumnHack
-                values);
+            // 2. create Contentvalues to add "key" column/value
+            ContentValues values = new ContentValues();
+            values.put(UNITS_KEY_NAME, unit.getName()); // get unit name
+            values.put(UNITS_KEY_DIMENSION, unit.getDimension()); // get dimension name
+            values.put(UNITS_KEY_FACTOR, unit.getFactor()); // get factor
+            values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
 
-        // 4. close
-        db.close();
+            // 3. insert
+            db.insert(TABLE_UNITS,
+                    null,// nullColumnHack
+                    values);
+
+            // 4. close
+            db.close();
+        }
     }
     public void addDensity (Density density) { // add density/substance
 

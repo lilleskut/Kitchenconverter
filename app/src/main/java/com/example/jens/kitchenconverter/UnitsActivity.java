@@ -45,7 +45,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        if( getSupportActionBar() != null ) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -59,7 +59,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         header2.setText(R.string.dimension);
         header3.setText(R.string.factor);
 
-        final DataBaseHelper myDbHelper = new DataBaseHelper(this,getFilesDir().getAbsolutePath());
+        final DataBaseHelper myDbHelper = new DataBaseHelper(this, getFilesDir().getAbsolutePath());
 
         ListView mainListView = (ListView) findViewById(R.id.listView);
         mainListView.setOnItemClickListener(this);
@@ -112,8 +112,8 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, 98,Menu.NONE,R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, 98, Menu.NONE, R.string.filter).setIcon(R.drawable.ic_filter_list_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, 99, Menu.NONE, R.string.add).setIcon(R.drawable.ic_add_white_48dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         // menu.add(Menu.NONE, 99,Menu.NONE,R.string.add).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -125,35 +125,36 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         final String[] dimensions = getResources().getStringArray(R.array.dimensions_array);
-        switch(id) {
+        switch (id) {
             case R.id.action_settings:
-                Intent i = new Intent(UnitsActivity.this,SettingsActivity.class);
+                Intent i = new Intent(UnitsActivity.this, SettingsActivity.class);
                 startActivity(i);
                 break;
-             case 98: // filter
+            case 98: // filter
 
-                 final List<String> filterList = new ArrayList<>(Arrays.asList(dimensions));
-                 filterList.add("All");
+                final List<String> filterList = new ArrayList<>(Arrays.asList(dimensions));
+                filterList.add("All");
 
-                 AlertDialog.Builder filterDialogBuilder = new AlertDialog.Builder(
-                         context);
+                AlertDialog.Builder filterDialogBuilder = new AlertDialog.Builder(
+                        context);
 
-                 filterDialogBuilder.setTitle(R.string.filter);
-                 filterDialogBuilder.setSingleChoiceItems(filterList.toArray(new String[filterList.size()]), -1, new DialogInterface.OnClickListener() {
-                     public void onClick(DialogInterface dialog, int item) {
+                filterDialogBuilder.setTitle(R.string.filter);
+                filterDialogBuilder.setSingleChoiceItems(filterList.toArray(new String[filterList.size()]), -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
 
-                         String filterString = filterList.get(item);
-                         if (filterString.equalsIgnoreCase("all")) {
-                             mUnitAdapter.getFilter().filter("");
-                         } else {
-                             mUnitAdapter.getFilter().filter(filterString);
-                         }
-                     }
+                        String filterString = filterList.get(item);
+                        if (filterString.equalsIgnoreCase("all")) {
+                            mUnitAdapter.getFilter().filter("");
+                        } else {
+                            mUnitAdapter.getFilter().filter(filterString);
+                        }
+                        dialog.dismiss();
+                    }
 
-                 });
+                });
 
-                 AlertDialog filterDialog = filterDialogBuilder.create();
-                 filterDialog.show();
+                AlertDialog filterDialog = filterDialogBuilder.create();
+                filterDialog.show();
 
                 break;
 
@@ -175,15 +176,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                 final Spinner unitSpinner = (Spinner) promptsView.findViewById(R.id.unit_spinner);
 
 
-                final DataBaseHelper myDbHelper = new DataBaseHelper(context,getFilesDir().getAbsolutePath());
+                final DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
                 ArrayList<List<Unit>> unitListArray = new ArrayList<>(); // collection of unit lists; each array elemtn corresponds to one dimension
                 final ArrayList<SpinnerUnitAdapter> unitAdapterArray = new ArrayList<>();
 
-                for(int j=0; j < dimensions.length; j++) {
+                for (int j = 0; j < dimensions.length; j++) {
                     List<Unit> list = myDbHelper.getUnitsDimension(dimensions[j]);
                     SpinnerUnitAdapter sUnitAdapter = new SpinnerUnitAdapter(this, android.R.layout.simple_spinner_item, list);
-                    unitListArray.add(j,list);
+                    unitListArray.add(j, list);
                     unitAdapterArray.add(sUnitAdapter);
                 }
 
@@ -197,35 +198,39 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                         .setSingleChoiceItems(dimensions, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {
                                 unitSpinner.setAdapter(unitAdapterArray.get(item));
-                            }})
+                            }
+                        })
                         .setPositiveButton(R.string.add,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        String unitName = editUnit.getText().toString();
+                                        if( !isEmptyEditText(editFactor) ) {
 
-                                        int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-                                        String unitDimension = dimensions[selectedPosition];
+                                            String unitName = editUnit.getText().toString();
 
-                                        Double unitFactor = Double.valueOf(editFactor.getText().toString());
+                                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                            String unitDimension = dimensions[selectedPosition];
 
-                                        if (unitFactor > zeroThreshold ) { // don't set units with factor 0
-                                            Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
-                                            Double spinner_factor = selected_unit.getFactor();
+                                            Double unitFactor = Double.valueOf(editFactor.getText().toString());
 
-                                            Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
-                                            DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+                                            if (unitFactor > zeroThreshold) { // don't set units with factor 0
+                                                Unit selected_unit = (Unit) unitSpinner.getSelectedItem();
+                                                Double spinner_factor = selected_unit.getFactor();
 
-                                            myDbHelper.addUnit(addunit);
-                                            mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                            myDbHelper.close();
+                                                Unit addunit = new Unit(unitName, unitDimension, unitFactor * spinner_factor, false, context);
+                                                DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
+
+                                                myDbHelper.addUnit(addunit);
+                                                mUnitAdapter.updateData(myDbHelper.getAllUnits());
+                                                myDbHelper.close();
+                                            }
                                         }
 
-                                }
-                            })
+                                    }
+                                })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    dialog.cancel();
-                                }
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
 
                         });
 
@@ -260,11 +265,9 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         editFactor.setText(Double.toString(unit.getFactor()));
 
 
-
-
         final Spinner unitSpinner = (Spinner) promptsView.findViewById(R.id.unit_spinner);
 
-        if( unit.getBase() ) {
+        if (unit.getBase()) {
             editFactor.setVisibility(View.GONE);
             unitSpinner.setVisibility(View.GONE);
         }
@@ -284,8 +287,8 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
             if (dimensions[j].equals(savedDimension)) {
                 unitSpinner.setAdapter(sUnitAdapter);
-                for(int i = 0; i< list.size(); i++ ) {
-                    if( list.get(i).getBase() ) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getBase()) {
                         baseId = i;
                         break;
                     }
@@ -303,7 +306,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         editDialogBuilder
                 .setCancelable(false)
                 .setTitle(R.string.editUnit);
-        if(!unit.getBase()) {
+        if (!unit.getBase()) {
             editDialogBuilder
                     .setSingleChoiceItems(dimensions, savedDimensionId, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
@@ -325,7 +328,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                                 DataBaseHelper myDbHelper = new DataBaseHelper(context, getFilesDir().getAbsolutePath());
 
                                 String unitName = editUnit.getText().toString();
-                                if ( !unit.getBase() ) {
+                                if (!unit.getBase()) {
                                     int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                                     String unitDimension = dimensions[selectedPosition];
 
@@ -371,13 +374,15 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
         editDialog.show();
 
 
-
-        if( unit.getBase() ) { // don't show delete button if base unit
+        if (unit.getBase()) { // don't show delete button if base unit
             editDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
         }
 
 
+    }
 
+    private boolean isEmptyEditText(EditText myeditText) {
+        return myeditText.getText().toString().trim().length() == 0;
     }
 
 
