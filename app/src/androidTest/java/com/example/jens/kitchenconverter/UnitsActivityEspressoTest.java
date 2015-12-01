@@ -81,7 +81,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
     @Test
-    public void testAddUnit() { // adds: "additem/volume/10/ml"
+    public void testAddUnit() { // adds: "additem/volume/321/ml"
         // check if item "addItem" does not exist yet
        onView(withId(R.id.listView))
                 .check(matches(not(withAdaptedData(withUnitName("addItem")))));
@@ -107,7 +107,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onView(withId(R.id.editTextUnit)).perform(replaceText("addItem"));
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextFactor)).perform(replaceText("10"));
+        onView(withId(R.id.editTextFactor)).perform(replaceText("321"));
         closeSoftKeyboard();
 
         onView(withId(R.id.unit_spinner)).perform(click());
@@ -117,13 +117,19 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
         // check whether item has been added
 
-        onView(withId(R.id.listView))
-                .check(matches(withAdaptedData(withUnitName("addItem"))));
+
+        onData(withUnitName("addItem"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        onData(withUnitFactor(0.321d)) // match with 0.321 since 321 ml in base unit are 0.321 l
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
 
     }
 
     @Test
-    public void testAddUnitSameAsExistingUnit() { // try to add: "g/mass/123/kg"
+    public void testAddUnitSameAsExistingUnit() { // try to add: "g/mass/123/kg"; which should not be possible as unitName "g" exists
         // check if item "g" exists and element with factor=123 does not exist
         onView(withId(R.id.listView))
                 .check(matches(withAdaptedData(withUnitName("g"))));
@@ -189,7 +195,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
     @Test
-    public void testModifyUnit() { // change "g/mass" to "dl/volume"
+    public void testModifyUnit() { // change "g/mass/0.001/kg" to "dl/volume/456/ml"
 
         // check whether "dl" does not exist and whether "g" exists
         onView(withId(R.id.listView))
@@ -224,7 +230,10 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
         // modify unit nam "g" -> "dl"; and factor "0.001" -> "0.1"
         onView(withId(R.id.editTextUnit)).perform(replaceText("dl"));
-        onView(withId(R.id.editTextFactor)).perform(replaceText("0.1"));
+        onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
+
+        onView(withId(R.id.unit_spinner)).perform(click());
+        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
         onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
@@ -236,8 +245,11 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onData(withUnitName("dl"))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
-    }
 
+        onData(withUnitFactor(0.456d)) // match with 0.456 since 456 ml = 0.456 l (in base unit "l")
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+    }
 
     @Test
     public void testModifyBaseUnit() { // try to modify base unit (kg)
@@ -301,8 +313,9 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
 
+
     @Test
-    public void testDataItenInAdapter() {
+    public void testDataItemInAdapter() {
         onData(withUnitName("kg"))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
@@ -314,94 +327,6 @@ public class UnitsActivityEspressoTest extends TestHelper {
                 .check(matches(not(withAdaptedData(withUnitName("kgl")))));
     }
 
-    // custom matcher for unit factor
-    public static Matcher<Object> withUnitFactor(Double expectedFactor) {
-        checkNotNull(expectedFactor);
-        return withUnitFactor(equalTo(expectedFactor));
-    }
 
-    public static Matcher<Object> withUnitFactor(final Matcher<Double> itemFactorMatcher) {
-        checkNotNull(itemFactorMatcher);
-        return new BoundedMatcher<Object, Unit>(Unit.class) {
-            @Override
-            public boolean matchesSafely(Unit unit) {
-                return itemFactorMatcher.matches(unit.getFactor());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with Unit factor: ");
-                itemFactorMatcher.describeTo(description);
-            }
-        };
-    }
-
-    // custom matcher for unit name
-    public static Matcher<Object> withUnitName(String expectedText) {
-        checkNotNull(expectedText);
-        return withUnitName(equalTo(expectedText));
-    }
-
-    public static Matcher<Object> withUnitName(final Matcher<String> itemTextMatcher) {
-        checkNotNull(itemTextMatcher);
-        return new BoundedMatcher<Object, Unit>(Unit.class) {
-            @Override
-            public boolean matchesSafely(Unit unit) {
-                return itemTextMatcher.matches(unit.getName());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with Unit name: ");
-                itemTextMatcher.describeTo(description);
-            }
-        };
-    }
-
-
-
-    private static Matcher<View> withAdaptedData(final Matcher<Object> dataMatcher) {
-        return new TypeSafeMatcher<View>() {
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with class name: ");
-                dataMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof AdapterView)) {
-                    return false;
-                }
-                @SuppressWarnings("rawtypes")
-                Adapter adapter = ((AdapterView) view).getAdapter();
-                for (int i = 0; i < adapter.getCount(); i++) {
-                    if (dataMatcher.matches(adapter.getItem(i))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
-
-    public MenuItemTitleMatcher withTitle(String title) {
-        return new MenuItemTitleMatcher(title);
-    }
-
-    class MenuItemTitleMatcher extends BaseMatcher<Object> {
-        private final String title;
-        public MenuItemTitleMatcher(String title) { this.title = title; }
-
-        @Override public boolean matches(Object o) {
-            if (o instanceof MenuItem) {
-                return ((MenuItem) o).getTitle().equals(title);
-            }
-            return false;
-        }
-        @Override public void describeTo(Description description) { }
-    }
 
 }
