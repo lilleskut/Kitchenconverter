@@ -2,6 +2,8 @@ package com.example.jens.kitchenconverter;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
@@ -31,9 +33,11 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -225,13 +229,13 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
         // modify mass->volume; and checks
         onView(withText("volume")).perform(click());
-        onView(allOf(withId(R.id.editTextUnit), withText("g"))).check(matches(isDisplayed())); // editText says "g"
-        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText sa
+        onView(allOf(withId(R.id.editTextUnit), withText("g"))).check(matches(isDisplayed())); // editTextUnit says "g"
+        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editTextFactor says "0.001"
         onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l")))); // base unit should change from "kg" to "l"
 
         // modify unit name "g" -> "dl"; and factor "0.001" -> "0.1"
         onView(withId(R.id.editTextUnit)).perform(replaceText("dl"));
-        ViewActions.closeSoftKeyboard();
+        closeSoftKeyboard();
         onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
 
         closeSoftKeyboard();
@@ -378,9 +382,23 @@ public class UnitsActivityEspressoTest extends TestHelper {
 
     @Test
     public void testBaseUnit() {
-        // change base unit
         // check layout/background
-
+        // change base unit
+        /* onView(backgroundShouldHaveColor(Color.LTGRAY))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+                */
+        // onView(withText("l")).check(matches(backgroundShouldHaveColor(Color.LTGRAY)));
+        //onView(withText("kg")).check(matches(withBgColor(Color.LTGRAY)));
+/*        onView(withId(R.id.listView))
+                .check(matches(withAdaptedData(backgroundShouldHaveColor(Color.LTGRAY))));
+*/
+        //onView(withChild(withText("kg"))).check(matches(withBackgroundColor(Color.LTGRAY)));
+        onView(withChild(withText("l"))).check(matches(withBgColor(Color.LTGRAY)));
+        /*
+        onView(withText("l"))
+                .check(matches(not(withAdaptedData(backgroundShouldHaveColor(Color.LTGRAY)))));
+                 */
     }
 
     @Test
@@ -395,7 +413,6 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onView(withId(R.id.listView))
                 .check(matches(not(withAdaptedData(withUnitName("kgl")))));
     }
-
 
 
 }

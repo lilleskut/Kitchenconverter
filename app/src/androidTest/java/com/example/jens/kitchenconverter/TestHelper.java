@@ -1,16 +1,20 @@
 package com.example.jens.kitchenconverter;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.test.internal.util.Checks;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -130,6 +134,72 @@ public class TestHelper {
         };
     }
 
+    public static Matcher<Object> backgroundShouldHaveColor(int expectedColor) {
+        return viewShouldHaveBackgroundColor(equalTo(expectedColor));
+    }
+    private static Matcher<Object> viewShouldHaveBackgroundColor(final Matcher<Integer> expectedObject) {
+        final int[] color = new int[1];
+        return new BoundedMatcher<Object, View>(View.class) {
+            @Override
+            public boolean matchesSafely(View view) {
+
+                //if(view.getBackground() instanceof ColorDrawable) {
+                    color[0] = ((ColorDrawable) view.getBackground()).getColor();
+                //}
+
+
+                if( expectedObject.matches(color[0])) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            @Override
+            public void describeTo(final Description description) {
+                // Should be improved!
+                description.appendText("Color did not match " + color[0]);
+            }
+        };
+    }
+
+    public static Matcher<View> withBgColor(final int color) {
+        Checks.checkNotNull(color);
+        return new BoundedMatcher<View, LinearLayout>(LinearLayout.class) {
+            @Override
+            public boolean matchesSafely(LinearLayout warning) {
+                return color == ((ColorDrawable) warning.getBackground()).getColor();
+            }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with text color: ");
+            }
+        };
+    }
+
+    public static Matcher<View> withBackgroundColor(final int color) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with class name: ");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view instanceof AdapterView)) {
+                    return false;
+                }
+                @SuppressWarnings("rawtypes")
+                Adapter adapter = ((AdapterView) view).getAdapter();
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    if (color == ((ColorDrawable) view.getBackground()).getColor() ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
 
 
     public static Matcher<View> withAdaptedData(final Matcher<Object> dataMatcher) {
