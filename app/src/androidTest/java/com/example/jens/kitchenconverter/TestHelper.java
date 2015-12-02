@@ -86,6 +86,28 @@ public class TestHelper {
         };
     }
 
+    // custom matcher for unit dimension
+    public static Matcher<Object> withUnitDimension(String expectedDimension) {
+        checkNotNull(expectedDimension);
+        return withUnitDimension(equalTo(expectedDimension));
+    }
+
+    public static Matcher<Object> withUnitDimension(final Matcher<String> itemDimensionMatcher) {
+        checkNotNull(itemDimensionMatcher);
+        return new BoundedMatcher<Object, Unit>(Unit.class) {
+            @Override
+            public boolean matchesSafely(Unit unit) {
+                return itemDimensionMatcher.matches(unit.getDimension());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Unit dimension: ");
+                itemDimensionMatcher.describeTo(description);
+            }
+        };
+    }
+
     // custom matcher for unit name
     public static Matcher<Object> withUnitName(String expectedText) {
         checkNotNull(expectedText);

@@ -3,6 +3,7 @@ package com.example.jens.kitchenconverter;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.view.MenuItem;
@@ -228,9 +229,12 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText sa
         onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l")))); // base unit should change from "kg" to "l"
 
-        // modify unit nam "g" -> "dl"; and factor "0.001" -> "0.1"
+        // modify unit name "g" -> "dl"; and factor "0.001" -> "0.1"
         onView(withId(R.id.editTextUnit)).perform(replaceText("dl"));
+        ViewActions.closeSoftKeyboard();
         onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
+
+        closeSoftKeyboard();
 
         onView(withId(R.id.unit_spinner)).perform(click());
         onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
@@ -312,7 +316,72 @@ public class UnitsActivityEspressoTest extends TestHelper {
         // what to do if modified unit name exists already?
     }
 
+    @Test
+    public void testFilter() {
 
+        // check whether there are "mass" and "volume" elements
+        onData(withUnitDimension("mass"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+        onData(withUnitDimension("volume"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+        // 1. click on "filter" button and then select "mass"
+        onView(withId(98)).perform(click());
+
+        onView(withText("mass")).inRoot(isDialog()).perform(click());
+
+        // check whether only mass elements exist
+        onData(withUnitDimension("mass"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitDimension("volume")))));
+
+        // 2. click on "filter" button and then select "volume"
+        onView(withId(98)).perform(click());
+
+        onView(withText("volume")).inRoot(isDialog()).perform(click());
+
+        // check whether only volume elements exist
+        onData(withUnitDimension("volume"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitDimension("mass")))));
+
+        // 3. click on "filter" button and then select "All"
+        onView(withId(98)).perform(click());
+
+        onView(withText("All")).inRoot(isDialog()).perform(click());
+
+        // check whether mass and volume elements exist
+        onData(withUnitDimension("mass"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+        onData(withUnitDimension("volume"))
+                .inAdapterView(withId(R.id.listView))
+                .atPosition(0)
+                .check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void testBaseUnit() {
+        // change base unit
+        // check layout/background
+
+    }
 
     @Test
     public void testDataItemInAdapter() {
