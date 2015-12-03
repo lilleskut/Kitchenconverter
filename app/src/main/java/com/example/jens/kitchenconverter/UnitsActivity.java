@@ -73,10 +73,10 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                    builder.setTitle("Confirm new base unit");
+                    builder.setTitle(R.string.confirm_base_unit);
                     builder.setMessage("Are you sure to make " + unit.getName() + " your new base unit for dimension " + unit.getDimension() + "?");
 
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
                             myDbHelper.updateBaseUnit(unit);
@@ -85,7 +85,7 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
                         }
                     });
 
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -343,14 +343,13 @@ public class UnitsActivity extends AppCompatActivity implements AdapterView.OnIt
 
                                         myDbHelper.updateUnit(unit);
                                         mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                        myDbHelper.close();
                                     }
                                 } else { // for base unit only change name is allowed
                                     unit.setName(unitName);
                                     myDbHelper.updateUnit(unit);
                                     mUnitAdapter.updateData(myDbHelper.getAllUnits());
-                                    myDbHelper.close();
                                 }
+                                myDbHelper.close();
                             }
                         })
                 .setNeutralButton(R.string.delete,

@@ -36,6 +36,7 @@
     <string name="substances">Substances</string>
     <string name="packages">Packages</string>
     <string name="revert_database_question">Are you sure to revert the units and densities to default values?</string>
+    <string name="confirm_base_unit">Confirm new base unit</string>
 
     <string-array name="dimensions_array">
         <item>mass</item>

@@ -27,6 +27,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -383,36 +384,56 @@ public class UnitsActivityEspressoTest extends TestHelper {
     @Test
     public void testBaseUnit() {
         // check layout/background
-        // change base unit
-        /* onView(backgroundShouldHaveColor(Color.LTGRAY))
+        onView(withChild(allOf(withText("kg"), hasSibling(withText("mass")), hasSibling(withText("1.0"))))).check(matches(withBgColor(Color.LTGRAY)));
+        onView(withChild(allOf(withText("g"), hasSibling(withText("mass")), hasSibling(withText("0.001"))))).check(matches(withBgColor(Color.WHITE)));
+        onView(withChild(allOf(withText("l"), hasSibling(withText("volume")), hasSibling(withText("1.0"))))).check(matches(withBgColor(Color.LTGRAY)));
+        onView(withChild(allOf(withText("ml"), hasSibling(withText("volume")), hasSibling(withText("0.001"))))).check(matches(withBgColor(Color.WHITE)));
+
+        // change base Unit kg -> g
+        onData(withUnitName("g"))
                 .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-                */
-        // onView(withText("l")).check(matches(backgroundShouldHaveColor(Color.LTGRAY)));
-        //onView(withText("kg")).check(matches(withBgColor(Color.LTGRAY)));
-/*        onView(withId(R.id.listView))
-                .check(matches(withAdaptedData(backgroundShouldHaveColor(Color.LTGRAY))));
-*/
-        //onView(withChild(withText("kg"))).check(matches(withBackgroundColor(Color.LTGRAY)));
-        onView(withChild(withText("l"))).check(matches(withBgColor(Color.LTGRAY)));
-        /*
-        onView(withText("l"))
-                .check(matches(not(withAdaptedData(backgroundShouldHaveColor(Color.LTGRAY)))));
-                 */
-    }
+                .perform(longClick());
 
-    @Test
-    public void testDataItemInAdapter() {
-        onData(withUnitName("kg"))
+        // check whether change base unit dialog appears
+        onView(withText(R.string.confirm_base_unit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
+        onView(withText(R.string.yes)).inRoot(isDialog()).check(matches(isDisplayed())); // check yes button
+        onView(withText(R.string.no)).inRoot(isDialog()).check(matches(isDisplayed())); // check no button
+
+        // press yes
+        onView(withText(R.string.yes)).inRoot(isDialog()).perform(click()); // press yes button
+
+        // check whether base unit changed
+
+        onData(allOf(withUnitName("kg"), withUnitDimension("mass"), withUnitFactor(1000.0d)))
                 .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-    }
+                .check(matches(withBgColor(Color.WHITE)));
+        onData(allOf(withUnitName("g"), withUnitDimension("mass"), withUnitFactor(1.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(withBgColor(Color.LTGRAY)));
+        onView(withChild(allOf(withText("g"), hasSibling(withText("mass")), hasSibling(withText("1.0"))))).check(matches(withBgColor(Color.LTGRAY)));
 
-    @Test
-    public void testDataItemNotInAdapter() {
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("kgl")))));
-    }
+        // change base Unit l -> ml
+        onData(withUnitName("ml"))
+                .inAdapterView(withId(R.id.listView))
+                .perform(longClick());
 
+        // check whether change base unit dialog appears
+        onView(withText(R.string.confirm_base_unit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
+        onView(withText(R.string.yes)).inRoot(isDialog()).check(matches(isDisplayed())); // check yes button
+        onView(withText(R.string.no)).inRoot(isDialog()).check(matches(isDisplayed())); // check no button
+
+        // press yes
+        onView(withText(R.string.yes)).inRoot(isDialog()).perform(click()); // press yes button
+
+        // check whether base unit changed
+
+        onData(allOf(withUnitName("l"), withUnitDimension("volume"), withUnitFactor(1000.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(withBgColor(Color.WHITE)));
+        onData(allOf(withUnitName("ml"), withUnitDimension("volume"), withUnitFactor(1.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(withBgColor(Color.LTGRAY)));
+
+    }
 
 }
