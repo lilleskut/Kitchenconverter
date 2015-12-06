@@ -319,8 +319,45 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
     @Test
-    public void testModifyToExistingUnit() { // modified unit name exists already
-        // what to do if modified unit name exists already?
+    public void testModifyToExistingUnit() { // change "g/mass/0.001/kg" to "l/mass/456/kg"
+
+        // check whether "dl" does not exist and whether "g" exists
+        onData(withUnitName("l"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        onData(withUnitName("g"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        // click on "g" which is to be modified
+        onData(withUnitName("g"))
+                .inAdapterView(withId(R.id.listView))
+                .perform(click());
+
+
+        // modify unit name "g" -> "l"; and factor "0.001" -> "456"
+        onView(withId(R.id.editTextUnit)).perform(replaceText("l"));
+        closeSoftKeyboard();
+        onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
+
+        closeSoftKeyboard();
+
+        onView(withId(R.id.unit_spinner)).perform(click());
+
+        onData(withUnitName("kg")).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
+        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
+
+        // check whether "g"/456 does/doesnt exist
+
+        onData(withUnitName("g"))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitFactor(456.0d)))));
     }
 
     @Test

@@ -257,10 +257,15 @@ class DataBaseHelper extends SQLiteOpenHelper {
         values.put(UNITS_KEY_BASE, unit.getBase() ? 1 : 0);
 
         // 3. updating row
-        int i = db.update(TABLE_UNITS,
-                values,
-                UNITS_KEY_ID + " = ?",
-                new String[] {String.valueOf(unit.getId()) });
+        try {
+            int i = db.update(TABLE_UNITS,
+                    values,
+                    UNITS_KEY_ID + " = ?",
+                    new String[] {String.valueOf(unit.getId()) });
+        } catch ( SQLiteConstraintException e ) {
+            e.printStackTrace();
+            Log.d(TAG,"failure to update unit,", e);
+        }
 
         // 4. close
         db.close();
