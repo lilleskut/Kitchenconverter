@@ -134,6 +134,50 @@ public class TestHelper {
         };
     }
 
+    // custom matcher for density name (= substance)
+    public static Matcher<Object> withDensityName(String expectedText) {
+        checkNotNull(expectedText);
+        return withDensityName(equalTo(expectedText));
+    }
+
+    public static Matcher<Object> withDensityName(final Matcher<String> itemTextMatcher) {
+        checkNotNull(itemTextMatcher);
+        return new BoundedMatcher<Object, Density>(Density.class) {
+            @Override
+            public boolean matchesSafely(Density density) {
+                return itemTextMatcher.matches(density.getSubstance());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Density name: ");
+                itemTextMatcher.describeTo(description);
+            }
+        };
+    }
+
+    // custom matcher for density density (= substance)
+    public static Matcher<Object> withDensityDensity(Double expectedDensity) {
+        checkNotNull(expectedDensity);
+        return withDensityDensity(equalTo(expectedDensity));
+    }
+
+    public static Matcher<Object> withDensityDensity(final Matcher<Double> itemDoubleMatcher) {
+        checkNotNull(itemDoubleMatcher);
+        return new BoundedMatcher<Object, Density>(Density.class) {
+            @Override
+            public boolean matchesSafely(Density density) {
+                return itemDoubleMatcher.matches(density.getDensity());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Density density: ");
+                itemDoubleMatcher.describeTo(description);
+            }
+        };
+    }
+
     public static Matcher<Object> backgroundShouldHaveColor(int expectedColor) {
         return viewShouldHaveBackgroundColor(equalTo(expectedColor));
     }

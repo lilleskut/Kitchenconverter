@@ -80,8 +80,6 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
             case 99: // add
                 // get prompts.xml view
 
-                // LayoutInflater li = LayoutInflater.from(context);
-                //View promptsView = li.inflate(R.layout.edit_density_prompt, null);
 
                 View promptsView = View.inflate(context, R.layout.edit_density_prompt, null);
 
@@ -114,7 +112,7 @@ public class DensitiesActivity extends AppCompatActivity implements AdapterView.
                                             densityDensity = Double.valueOf(editDensity.getText().toString());
                                         }
                                         if (myDbHelper.substanceExists(densitySubstance)) {
-                                            Toast.makeText(getApplicationContext(), "This substance already exists", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), R.string.substance_exists, Toast.LENGTH_LONG).show();
                                         } else {
                                             Density adddensity = new Density(densitySubstance, densityDensity, context);
                                             myDbHelper.addDensity(adddensity);

@@ -3,6 +3,7 @@ package com.example.jens.kitchenconverter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -275,20 +276,25 @@ class DataBaseHelper extends SQLiteOpenHelper {
         valuesSubs.put(SUBSTANCES_KEY_NAME, density.getSubstance());
 
         // update substances table
-        db.update(TABLE_SUBSTANCES,
-                valuesSubs,
-                SUBSTANCES_KEY_ID + " = (SELECT " + DENSITIES_KEY_SUBSTANCEID +
-                        " FROM " + TABLE_DENSITIES +
-                        " WHERE " + DENSITIES_KEY_ID + "= ? )",
-                new String[]{String.valueOf(density.getId())});
+        try {
+            db.update(TABLE_SUBSTANCES,
+                    valuesSubs,
+                    SUBSTANCES_KEY_ID + " = (SELECT " + DENSITIES_KEY_SUBSTANCEID +
+                            " FROM " + TABLE_DENSITIES +
+                            " WHERE " + DENSITIES_KEY_ID + "= ? )",
+                    new String[]{String.valueOf(density.getId())});
 
-        // update densities table
-        ContentValues valuesDens = new ContentValues();
-        valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity());
-        db.update(TABLE_DENSITIES,
-                valuesDens,
-                DENSITIES_KEY_ID + " = ?",
-                new String[] { String.valueOf(density.getId()) });
+            // update densities table
+            ContentValues valuesDens = new ContentValues();
+            valuesDens.put(DENSITIES_KEY_DENSITY, density.getDensity());
+            db.update(TABLE_DENSITIES,
+                    valuesDens,
+                    DENSITIES_KEY_ID + " = ?",
+                    new String[]{String.valueOf(density.getId())});
+        } catch ( SQLiteConstraintException e ) {
+            e.printStackTrace();
+            Log.d(TAG,"failure to update density,", e);
+        }
 
         db.close();
 

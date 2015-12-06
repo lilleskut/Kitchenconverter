@@ -3,21 +3,12 @@ package com.example.jens.kitchenconverter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,23 +33,31 @@ import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.support.test.internal.util.Checks.checkNotNull;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.equalTo;
 
 public class UnitsActivityEspressoTest extends TestHelper {
 
     @Rule
     public ActivityTestRule<UnitsActivity> mActivityRule =
             new ActivityTestRule<>(UnitsActivity.class);
+    @BeforeClass
+    public static void onlyBefore() { // revert database in order to have the same database after running this test class
+        Context context = InstrumentationRegistry.getTargetContext();
+        final DataBaseHelper myDbHelper = new DataBaseHelper(context,context.getFilesDir().getAbsolutePath());
+        myDbHelper.revertDataBase();
+        myDbHelper.close();
+    }
+
 
     @Before
     public void setUp() throws Exception { // revert database in order to have the same database for each test
         Context context = InstrumentationRegistry.getTargetContext();
         final DataBaseHelper myDbHelper = new DataBaseHelper(context,context.getFilesDir().getAbsolutePath());
         myDbHelper.revertDataBase();
+        myDbHelper.close();
+        closeSoftKeyboard();
     }
 
     @Test
@@ -85,6 +84,8 @@ public class UnitsActivityEspressoTest extends TestHelper {
         onView(isRoot()).perform(pressBack());
         matchToolbarTitle(titleHome);
     }
+
+
 
     @Test
     public void testAddUnit() { // adds: "additem/volume/321/ml"
@@ -242,6 +243,7 @@ public class UnitsActivityEspressoTest extends TestHelper {
         closeSoftKeyboard();
 
         onView(withId(R.id.unit_spinner)).perform(click());
+
         onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
@@ -434,6 +436,14 @@ public class UnitsActivityEspressoTest extends TestHelper {
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(withBgColor(Color.LTGRAY)));
 
+    }
+
+    @AfterClass
+    public static void onlyAfter() { // revert database in order to have the same database after running this test class
+        Context context = InstrumentationRegistry.getTargetContext();
+        final DataBaseHelper myDbHelper = new DataBaseHelper(context,context.getFilesDir().getAbsolutePath());
+        myDbHelper.revertDataBase();
+        myDbHelper.close();
     }
 
 }
