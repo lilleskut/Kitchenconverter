@@ -112,7 +112,7 @@ public class TestHelper {
         };
     }
 
-    // custom matcher for unit name
+    // custom matcher for unit name from unit class
     public static Matcher<Object> withUnitName(String expectedText) {
         checkNotNull(expectedText);
         return withUnitName(equalTo(expectedText));
@@ -174,6 +174,72 @@ public class TestHelper {
             public void describeTo(Description description) {
                 description.appendText("with Density density: ");
                 itemDoubleMatcher.describeTo(description);
+            }
+        };
+    }
+
+    // custom matcher for substance name from packageDensities class
+    public static Matcher<Object> withSubstanceName(String expectedText) {
+        checkNotNull(expectedText);
+        return withSubstanceName(equalTo(expectedText));
+    }
+
+    public static Matcher<Object> withSubstanceName(final Matcher<String> itemTextMatcher) {
+        checkNotNull(itemTextMatcher);
+        return new BoundedMatcher<Object, PackageDensity>(PackageDensity.class) {
+            @Override
+            public boolean matchesSafely(PackageDensity packageDensity) {
+                return itemTextMatcher.matches(packageDensity.getSubstance());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Package Density substance: ");
+                itemTextMatcher.describeTo(description);
+            }
+        };
+    }
+
+    // custom matcher for package name from packageDensities class
+    public static Matcher<Object> withPackageName(String expectedText) {
+        checkNotNull(expectedText);
+        return withPackageName(equalTo(expectedText));
+    }
+
+    public static Matcher<Object> withPackageName(final Matcher<String> itemTextMatcher) {
+        checkNotNull(itemTextMatcher);
+        return new BoundedMatcher<Object, PackageDensity>(PackageDensity.class) {
+            @Override
+            public boolean matchesSafely(PackageDensity packageDensity) {
+                return itemTextMatcher.matches(packageDensity.getPackageName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Package type: ");
+                itemTextMatcher.describeTo(description);
+            }
+        };
+    }
+
+    // custom matcher for package name from packageDensities class
+    public static Matcher<Object> withPackageDensityDensity(Double density) {
+        checkNotNull(density);
+        return withPackageDensityDensity(equalTo(density));
+    }
+
+    public static Matcher<Object> withPackageDensityDensity(final Matcher<Double> itemDensity) {
+        checkNotNull(itemDensity);
+        return new BoundedMatcher<Object, PackageDensity>(PackageDensity.class) {
+            @Override
+            public boolean matchesSafely(PackageDensity packageDensity) {
+                return itemDensity.matches(packageDensity.getPackageDensity());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with Package density: ");
+                itemDensity.describeTo(description);
             }
         };
     }
