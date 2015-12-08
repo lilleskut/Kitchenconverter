@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class PackageType {
     private int id;
-    private String name; // name of substance
+    private String name;
 
     private final Context ctx;
 
@@ -25,4 +25,9 @@ public class PackageType {
     // getters
     public int getId() { return id; }
     public String getName() { return name; }
+
+    @Override
+    public String toString() {
+        return "PackageType [id=" + id + ", name=" + name;
+    }
 }

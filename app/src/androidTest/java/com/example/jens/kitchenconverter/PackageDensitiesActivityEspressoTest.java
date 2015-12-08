@@ -3,6 +3,7 @@ package com.example.jens.kitchenconverter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.AfterClass;
@@ -88,273 +89,237 @@ public class PackageDensitiesActivityEspressoTest extends TestHelper {
 
 
     @Test
-    public void testAddPackageDensity() { // adds: "water/barrel/123/l"
+    public void testAddPackageDensity() { // adds: "water/box/9/l"
         // check if item "addItem" does not exist yet
         onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("addItem")))));
+                .check(matches(not(withAdaptedData(withPackageName("box")))));
 
         // click on "add item" button
         onView(withId(99)).perform(click());
 
         // check whether add unit dialog appears
-        onView(withText(R.string.addUnit)).inRoot(isDialog()).check(matches(isDisplayed())); //  dialog title
+        onView(withText(R.string.addPackageDensity)).inRoot(isDialog()).check(matches(isDisplayed())); //  dialog title
         onView(withText(R.string.add)).inRoot(isDialog()).check(matches(isDisplayed())); //  add button
         onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // cancel button
 
-        onView(withText("mass")).inRoot(isDialog()).check(matches(isDisplayed())); // mass radio button exists
-        onView(withText("volume")).inRoot(isDialog()).check(matches(isDisplayed())); // volume radio button exists
-        onView(withId(R.id.editTextUnit)).check(matches(isDisplayed())); //  unitname editText is  visible
-        onView(withId(R.id.editTextFactor)).check(matches(isDisplayed())); // factor editText is  visible
-        onView(withId(R.id.unit_spinner)).check(matches(isDisplayed())); //  unit spinner is  visible
+        onView(withId(R.id.substance_spinner)).check(matches(isDisplayed())); //  substance spinner is  visible
+        onView(withId(R.id.package_spinner)).check(matches(isDisplayed())); //  package spinner is  visible
+        onView(withId(R.id.editTextPackageDensity)).check(matches(isDisplayed())); //  package density editText is  visible
+        onView(withId(R.id.package_density_dimension)).check(matches(isDisplayed())); // dimension is displayed
+
 
         // fill and submit dialog
-        onView(withText("volume")).inRoot(isDialog()).perform(click());
+        onView(withId(R.id.substance_spinner)).perform(click());
+        onData(withSubstance("water")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextUnit)).perform(replaceText("addItem"));
+        onView(withId(R.id.package_spinner)).perform(click());
+        onData(withPackage("box")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextFactor)).perform(replaceText("321"));
+        onView(withId(R.id.editTextPackageDensity)).perform(replaceText("9"));
         closeSoftKeyboard();
-
-        onView(withId(R.id.unit_spinner)).perform(click());
-        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
 
         // check whether item has been added
 
-
-        onData(withUnitName("addItem"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-
-        onData(withUnitFactor(0.321d)) // match with 0.321 since 321 ml in base unit are 0.321 l
+        onData(allOf(withSubstanceName("water"), withPackageName("box"), withPackageDensityDensity(9.0d)))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
 
     }
 
-    /*
-    @Test
-    public void testAddUnitSameAsExistingUnit() { // try to add: "g/mass/123/kg"; which should not be possible as unitName "g" exists
-        // check if item "g" exists and element with factor=123 does not exist
-        onView(withId(R.id.listView))
-                .check(matches(withAdaptedData(withUnitName("g"))));
 
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitFactor(123d)))));
+    @Test
+    public void testAddPackageDensitySameAsExisting() { // try to add same combination of substance/packagetype: "sugar/package" which should overwrite the existing value
+        // check if item exists
+
+        onData(allOf(withSubstanceName("sugar"), withPackageName("package"), withPackageDensityDensity(1.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
 
         // click on "add item" button
         onView(withId(99)).perform(click());
 
         // fill and submit dialog
-        onView(withText("mass")).inRoot(isDialog()).perform(click());
+        onView(withId(R.id.substance_spinner)).perform(click());
+        onData(withSubstance("sugar")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextUnit)).perform(replaceText("g"));
+        onView(withId(R.id.package_spinner)).perform(click());
+        onData(withPackage("package")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextFactor)).perform(replaceText("10"));
+        onView(withId(R.id.editTextPackageDensity)).perform(replaceText("123"));
         closeSoftKeyboard();
-
-        onView(withId(R.id.unit_spinner)).perform(click());
-        onData(withUnitName("kg")).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
 
-        // check whether item has not been added
-        onView(withId(R.id.listView))
-                .check(matches(withAdaptedData(withUnitName("g"))));
+        // check whether item has been added and old item does not exist anymore
+
+        onData(allOf(withSubstanceName("sugar"), withPackageName("package"), withPackageDensityDensity(123.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
 
         onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitFactor(123d)))));
+                .check(matches(not(withAdaptedData(allOf(withSubstanceName("sugar"), withPackageName("package"), withPackageDensityDensity(1.0d))))));
     }
 
-    @Test
-    public void testAddUnitWithFactorZero() { // try to add: "newUnit/volume/0/ml"
-        // check if item "newUnit" does not exist
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("newUnit")))));
 
+    @Test
+    public void testAddPackageDensityWithDensityZero() { // try to add: "water/box/0/l"
+        // check if item "addItem" does not exist yet
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withPackageName("box")))));
 
         // click on "add item" button
         onView(withId(99)).perform(click());
 
         // fill and submit dialog
-        onView(withText("volume")).inRoot(isDialog()).perform(click());
+        onView(withId(R.id.substance_spinner)).perform(click());
+        onData(withSubstance("water")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextUnit)).perform(replaceText("newUnit"));
+        onView(withId(R.id.package_spinner)).perform(click());
+        onData(withPackage("box")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.editTextFactor)).perform(replaceText("0"));
+        onView(withId(R.id.editTextPackageDensity)).perform(replaceText("0"));
         closeSoftKeyboard();
-
-        onView(withId(R.id.unit_spinner)).perform(click());
-        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText(R.string.add)).inRoot(isDialog()).perform(click());
 
         // check whether item has not been added
         onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("newUnit")))));
+                .check(matches(not(withAdaptedData(withPackageName("box")))));
 
     }
 
     @Test
-    public void testModifyUnit() { // change "g/mass/0.001/kg" to "dl/volume/456/ml"
+    public void testModifyPackageDensity() { // change "vanilla sugar/sachet/0.008" to "flour/box/456"
 
-        // check whether "dl" does not exist and whether "g" exists
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("dl")))));
+        // check if item exists
 
-        onData(withUnitName("g"))
+        onData(allOf(withSubstanceName("vanilla sugar"), withPackageName("sachet"), withPackageDensityDensity(0.008d)))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
 
-        // click on "g" which is to be modified
-        onData(withUnitName("g"))
+        // click on it
+        onData(allOf(withSubstanceName("vanilla sugar"), withPackageName("sachet"), withPackageDensityDensity(0.008d)))
                 .inAdapterView(withId(R.id.listView))
                 .perform(click());
 
-        // check whether modify unit dialog appears
-        onView(withText(R.string.editUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
+        // check whether modify packagedensity dialog appears
+        onView(withText(R.string.editPackageDensity)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
         onView(withText(R.string.modify)).inRoot(isDialog()).check(matches(isDisplayed())); // check modify button
         onView(withText(R.string.delete)).inRoot(isDialog()).check(matches(isDisplayed())); // check delete button
         onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
 
         // check saved values are properly displayed
-        onView(allOf(withId(R.id.editTextUnit), withText("g"))).check(matches(isDisplayed())); // editText says "g"
-        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editText says "0.001"
-        onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("kg")))); // base unit for mass
+        //onView(withId(R.id.substance_spinner)).check(matches(withSpinnerText(containsString("vanilla sugar"))));
 
+        onView(withId(R.id.substance_spinner)).inRoot(isDialog()).check(matches(withSpinnerText(containsString("vanilla sugar"))));
+        onView(withId(R.id.package_spinner)).inRoot(isDialog()).check(matches(withSpinnerText(containsString("sachet"))));
+        onView(allOf(withId(R.id.editTextPackageDensity), withText("0.008"))).check(matches(isDisplayed())); // editText says "0.008"
 
-        // modify mass->volume; and checks
-        onView(withText("volume")).perform(click());
-        onView(allOf(withId(R.id.editTextUnit), withText("g"))).check(matches(isDisplayed())); // editTextUnit says "g"
-        onView(allOf(withId(R.id.editTextFactor), withText("0.001"))).check(matches(isDisplayed())); // editTextFactor says "0.001"
-        onView(withId(R.id.unit_spinner)).check(matches(withSpinnerText(containsString("l")))); // base unit should change from "kg" to "l"
-
-        // modify unit name "g" -> "dl"; and factor "0.001" -> "0.1"
-        onView(withId(R.id.editTextUnit)).perform(replaceText("dl"));
-        closeSoftKeyboard();
-        onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
-
+        // modify
+        onView(withId(R.id.substance_spinner)).perform(click());
+        onData(withSubstance("flour")).inRoot(isPlatformPopup()).perform(click());
         closeSoftKeyboard();
 
-        onView(withId(R.id.unit_spinner)).perform(click());
+        onView(withId(R.id.package_spinner)).perform(click());
+        onData(withPackage("box")).inRoot(isPlatformPopup()).perform(click());
+        closeSoftKeyboard();
 
-        onData(withUnitName("ml")).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.editTextPackageDensity)).perform(replaceText("456"));
+        closeSoftKeyboard();
 
         onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
-        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
+        onView(withText(R.string.editPackageDensity)).check(doesNotExist()); // dialog closed
 
-        // check whether "dl"/"g" does/doesnt exist
+        // check whether old/new item does not/does exist
+        onData(allOf(withSubstanceName("flour"), withPackageName("box"), withPackageDensityDensity(456d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
         onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("g")))));
-
-        onData(withUnitName("dl"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-
-        onData(withUnitFactor(0.456d)) // match with 0.456 since 456 ml = 0.456 l (in base unit "l")
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
+                .check(matches(not(withAdaptedData(allOf(withSubstanceName("vanilla sugar"), withPackageName("sachet"), withPackageDensityDensity(0.008d))))));
     }
 
     @Test
-    public void testModifyBaseUnit() { // try to modify base unit (kg)
+    public void testDeletePackageDensity() { // delete "baking powder/sachet/0.015"
 
-        // check whether kg exists and kgnew not
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("kgnew")))));
-
-        onData(withUnitName("kg"))
+        onData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(0.015d)))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
 
-
-        onData(withUnitName("kg"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-
-        // click on "kg" which is to be modified
-        onData(withUnitName("kg"))
-                .inAdapterView(withId(R.id.listView))
-                .perform(click());
-
-        // check whether modify unit dialog appears with correct properties
-        onView(withText(R.string.editUnit)).inRoot(isDialog()).check(matches(isDisplayed())); // check dialog title
-        onView(withText("volume")).inRoot(isDialog()).check(doesNotExist()); // check volume radio button does not exist
-        onView(withId(R.id.editTextFactor)).check(matches(not(isDisplayed()))); // check factor is not visible
-        onView(withId(R.id.unit_spinner)).check(matches(not(isDisplayed()))); // check spinner is not visible
-
-        onView(withText(R.string.modify)).inRoot(isDialog()).check(matches(isDisplayed())); // check modify button
-        onView(withText(R.string.delete)).inRoot(isDialog()).check(matches(not(isEnabled()))); // check delete button is disabled
-        onView(withText(R.string.cancel)).inRoot(isDialog()).check(matches(isDisplayed())); // check cancel button
-
-        // check saved values are properly displayed
-        onView(allOf(withId(R.id.editTextUnit), withText("kg"))).check(matches(isDisplayed())); // editText says "kg"
-
-        // modify unit nam "kg" -> "kgnew";
-        onView(withId(R.id.editTextUnit)).perform(replaceText("kgnew"));
-
-        onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
-        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
-
-        // check whether "kg"/"kgnew" does/doesnt exist
-        onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitName("kg")))));
-
-        onData(withUnitName("kgnew"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testModifyToExistingUnit() { // change "g/mass/0.001/kg" to "l/mass/456/kg"
-
-        // check whether "dl" does not exist and whether "g" exists
-        onData(withUnitName("l"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-
-        onData(withUnitName("g"))
-                .inAdapterView(withId(R.id.listView))
-                .check(matches(isDisplayed()));
-
-        // click on "g" which is to be modified
-        onData(withUnitName("g"))
+        // click on it
+        onData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(0.015d)))
                 .inAdapterView(withId(R.id.listView))
                 .perform(click());
 
 
-        // modify unit name "g" -> "l"; and factor "0.001" -> "456"
-        onView(withId(R.id.editTextUnit)).perform(replaceText("l"));
-        closeSoftKeyboard();
-        onView(withId(R.id.editTextFactor)).perform(replaceText("456"));
+        onView(withText(R.string.delete)).inRoot(isDialog()).perform(click()); // press delete button
+        onView(withText(R.string.editPackageDensity)).check(doesNotExist()); // dialog closed
 
-        closeSoftKeyboard();
+        // check whether old item does not exist
 
-        onView(withId(R.id.unit_spinner)).perform(click());
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(0.015d))))));
+    }
 
-        onData(withUnitName("kg")).inRoot(isPlatformPopup()).perform(click());
 
-        onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
-        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
 
-        // check whether "g"/456 does/doesnt exist
+    @Test
+    public void testModifyToExistingUnit() { // change "water/bottle/1.5" to "baking powder/sachet/123"
 
-        onData(withUnitName("g"))
+        // check if items exist
+
+        onData(allOf(withSubstanceName("water"), withPackageName("bottle"), withPackageDensityDensity(1.5d)))
                 .inAdapterView(withId(R.id.listView))
                 .check(matches(isDisplayed()));
 
+        onData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(0.015d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        // click on it
+        onData(allOf(withSubstanceName("water"), withPackageName("bottle"), withPackageDensityDensity(1.5d)))
+                .inAdapterView(withId(R.id.listView))
+                .perform(click());
+
+        // modify
+        onView(withId(R.id.substance_spinner)).perform(click());
+        onData(withSubstance("baking powder")).inRoot(isPlatformPopup()).perform(click());
+        closeSoftKeyboard();
+
+        onView(withId(R.id.package_spinner)).perform(click());
+        onData(withPackage("sachet")).inRoot(isPlatformPopup()).perform(click());
+        closeSoftKeyboard();
+
+        onView(withId(R.id.editTextPackageDensity)).perform(replaceText("123"));
+        closeSoftKeyboard();
+
+        onView(withText(R.string.modify)).inRoot(isDialog()).perform(click()); // press modify button
+        onView(withText(R.string.editPackageDensity)).check(doesNotExist()); // dialog closed
+
+        // check result of modification
+
+        // new baking powder
+        onData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(123.0d)))
+                .inAdapterView(withId(R.id.listView))
+                .check(matches(isDisplayed()));
+
+        // water has been modified and does not exist anymore
         onView(withId(R.id.listView))
-                .check(matches(not(withAdaptedData(withUnitFactor(456.0d)))));
+                .check(matches(not(withAdaptedData(allOf(withSubstanceName("water"), withPackageName("bottle"), withPackageDensityDensity(1.5d))))));
+
+        // old baking powder does not exist anymore as it is overwritten
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(allOf(withSubstanceName("baking powder"), withPackageName("sachet"), withPackageDensityDensity(0.015d))))));
     }
 
-    */
 
     @AfterClass
     public static void onlyAfter() { // revert database in order to have the same database after running this test class

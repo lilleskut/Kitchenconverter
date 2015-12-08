@@ -200,6 +200,50 @@ public class TestHelper {
         };
     }
 
+    // custom matcher for substance name from substance class
+    public static Matcher<Object> withSubstance(String expectedText) {
+        checkNotNull(expectedText);
+        return withSubstance(equalTo(expectedText));
+    }
+
+    public static Matcher<Object> withSubstance(final Matcher<String> itemTextMatcher) {
+        checkNotNull(itemTextMatcher);
+        return new BoundedMatcher<Object, Substance>(Substance.class) {
+            @Override
+            public boolean matchesSafely(Substance substance) {
+                return itemTextMatcher.matches(substance.getName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with substance: ");
+                itemTextMatcher.describeTo(description);
+            }
+        };
+    }
+
+    // custom matcher for package type from packageType class
+    public static Matcher<Object> withPackage(String expectedText) {
+        checkNotNull(expectedText);
+        return withPackage(equalTo(expectedText));
+    }
+
+    public static Matcher<Object> withPackage(final Matcher<String> itemTextMatcher) {
+        checkNotNull(itemTextMatcher);
+        return new BoundedMatcher<Object, PackageType>(PackageType.class) {
+            @Override
+            public boolean matchesSafely(PackageType packageType) {
+                return itemTextMatcher.matches(packageType.getName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with package type: ");
+                itemTextMatcher.describeTo(description);
+            }
+        };
+    }
+
     // custom matcher for package name from packageDensities class
     public static Matcher<Object> withPackageName(String expectedText) {
         checkNotNull(expectedText);

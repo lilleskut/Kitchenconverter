@@ -246,6 +246,22 @@ public class DensitiesActivityEspressoTest extends TestHelper {
                 .check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testDeleteDensity() { // delete flour
+
+        // click on "flour" which is to be deleted
+        onData(withDensityName("flour"))
+                .inAdapterView(withId(R.id.listView))
+                .perform(click());
+
+        onView(withText(R.string.delete)).inRoot(isDialog()).perform(click()); // press modify button
+        onView(withText(R.string.editDensity)).check(doesNotExist()); // dialog closed
+
+        // check whether flour is deleted (does not exist)
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withDensityName("wodka")))));
+    }
+
 
 
     @Test

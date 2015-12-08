@@ -263,6 +263,22 @@ public class UnitsActivityEspressoTest extends TestHelper {
     }
 
     @Test
+    public void testDeleteUnit() { // delete "g/mass/0.001/kg"
+
+        // click on "g" which is to be modified
+        onData(withUnitName("g"))
+                .inAdapterView(withId(R.id.listView))
+                .perform(click());
+
+        onView(withText(R.string.delete)).inRoot(isDialog()).perform(click()); // press delete button
+        onView(withText(R.string.editUnit)).check(doesNotExist()); // dialog closed
+
+        // check whether "g" does not exist
+        onView(withId(R.id.listView))
+                .check(matches(not(withAdaptedData(withUnitName("g")))));
+    }
+
+    @Test
     public void testModifyBaseUnit() { // try to modify base unit (kg)
         /*
             only unit name should be allowed to change
