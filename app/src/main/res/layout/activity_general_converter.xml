@@ -17,7 +17,7 @@
 
         <TableRow
             android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/enter_value"
@@ -28,7 +28,9 @@
                 android:digits="0123456789/. "
                 android:inputType="number"
                 android:singleLine="true"
-                android:textSize="26sp">
+                android:textSize="24sp"
+                android:hint="@string/enter_value">
+
                 <requestFocus />
             </EditText>
             <com.example.jens.kitchenconverter.MySpinner
@@ -41,7 +43,7 @@
         </TableRow>
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false">
             <TextView
@@ -62,18 +64,22 @@
         </TableRow>
         <TableRow
             android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center">
             <Button
                 android:id="@+id/clear_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/clear">
-
-            </Button>
+                android:text="@string/clear"/>
+            </TableRow>
+        <TableRow
+            android:id="@+id/tableRow3b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
             <ToggleButton
                 android:id="@+id/toggle_button"
                 android:layout_width="wrap_content"
@@ -85,11 +91,10 @@
         </TableRow>
         <TableRow
             android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center">
             <com.example.jens.kitchenconverter.MySpinner
                 android:id="@+id/density_spinner"
                 android:layout_width="wrap_content"

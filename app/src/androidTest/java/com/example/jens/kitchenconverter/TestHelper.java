@@ -1,5 +1,6 @@
 package com.example.jens.kitchenconverter;
 
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
@@ -7,11 +8,14 @@ import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.internal.util.Checks;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -156,7 +160,7 @@ public class TestHelper {
         };
     }
 
-    // custom matcher for density density (= substance)
+    // custom matcher for density density
     public static Matcher<Object> withDensityDensity(Double expectedDensity) {
         checkNotNull(expectedDensity);
         return withDensityDensity(equalTo(expectedDensity));
@@ -399,4 +403,79 @@ public class TestHelper {
         }
         @Override public void describeTo(Description description) { }
     }
+
+
+
+    public static Matcher<View> withHint(final int resourceId) { // match EditText hint
+        return new BoundedMatcher<View, EditText>(EditText.class) {
+            private String expectedHint = null;
+            @Override
+            public boolean matchesSafely(final EditText editText) {
+                try {
+                    expectedHint = editText.getResources().getString(resourceId);
+
+                } catch (Resources.NotFoundException ignored) {
+                /* view could be from a context unaware of the resource id. */
+                }
+                if( null != expectedHint) {
+                    String hint = editText.getHint().toString();
+                    return expectedHint.equals(hint);
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with hint: " + expectedHint);
+            }
+        };
+    }
+
+
+    public static Matcher<View> withButtonText(final int resourceId) { // match Button text
+        return new BoundedMatcher<View, Button>(Button.class) {
+            private String expectedText = null;
+            @Override
+            public boolean matchesSafely(final Button button) {
+                try {
+                    expectedText = button.getResources().getString(resourceId);
+
+                } catch (Resources.NotFoundException ignored) {
+                /* view could be from a context unaware of the resource id. */
+                }
+                if( null != expectedText) {
+                    String buttonText = button.getText().toString();
+                    return expectedText.equals(buttonText);
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public void describeTo(Description description) {
+            }
+        };
+    }
+
+    public static Matcher<View> withoutText() { // match empty TextView
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+            @Override
+            public boolean matchesSafely(final TextView textView) {
+
+                String currentText = textView.getText().toString();
+                if( currentText.equals("") ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has no text");
+            }
+        };
+    }
+
 }
